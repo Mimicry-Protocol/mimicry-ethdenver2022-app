@@ -9,7 +9,7 @@ contract Mimicry {
     // what should we do on deploy?
   }
 
-  function setBetType(address _caller, uint _betType) public {
+  function setBetType(address _caller, uint _betType, string memory _collectionSlug) public {
       BetType tmp = BetType(_betType);
   }
 }

@@ -56,6 +56,7 @@ const { ethers } = require("ethers");
 const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
+const DEBUG_TRANSACTIONS = true;
 const DEBUG = true;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = true; // toggle burner wallet feature
@@ -133,7 +134,7 @@ function App(props) {
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = Transactor(userSigner, gasPrice);
+  const tx = DEBUG_TRANSACTIONS ? Transactor(localProvider, gasPrice) : Transactor(userSigner, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
@@ -257,12 +258,26 @@ function App(props) {
 
     const betType = shortMarketType ? 0 : forCollectionType ? 1 : 2;
     const slug = document.getElementById("collectionslug").value.trim();
+
+    // make sure they entered a collection slug if applicable
     if (betType > 0 && !slug) {
       alert("To bet for or against a collection, you must specify the collection");
       return;
     }
 
-    // TODO: make api call
+    if (DEBUG_TRANSACTIONS) {
+      // send faucet eth to debug transaction
+      tx({
+        to: address,
+        value: ethers.utils.parseEther("0.1"),
+      });
+    }
+
+    try {
+      tx(writeContracts.Mimicry.setBetType(address, betType, slug));
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
