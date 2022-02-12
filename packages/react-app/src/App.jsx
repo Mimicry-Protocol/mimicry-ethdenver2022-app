@@ -265,6 +265,12 @@ function App(props) {
       return;
     }
 
+    const usdcAmount = Number(document.getElementById("usdcbid").value);
+    if (usdcAmount <= 0) {
+      alert("Your bid amount must be greater than 0");
+      return;
+    }
+
     if (DEBUG_TRANSACTIONS) {
       // send faucet eth to debug transaction
       tx({
@@ -274,7 +280,7 @@ function App(props) {
     }
 
     try {
-      tx(writeContracts.Mimicry.setBetType(address, betType, slug));
+      tx(writeContracts.Mimicry.mintPosition(address, betType, slug, usdcAmount));
     } catch (e) {
       console.log(e);
     }
@@ -306,6 +312,8 @@ function App(props) {
             <input type="radio" value="against" id="betagainst" name="bettype" />
             <br />
             <input type="text" placeholder="Enter collection slug here" name="collection" id="collectionslug" />
+            <br />
+            <input type="number" placeholder="Enter USDC amount for your bid" name="usdcbid" id="usdcbid" />
             <button onClick={() => betTypeHandler()}>Submit</button>
           </div>
         </Route>

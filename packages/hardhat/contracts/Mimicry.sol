@@ -9,7 +9,8 @@ contract Mimicry {
     // what should we do on deploy?
   }
 
-  function setBetType(address _caller, uint _betType, string memory _collectionSlug) public {
-      BetType tmp = BetType(_betType);
+  function mintPosition(address _caller, uint _betType, string memory _collectionSlug, uint256 _usdcAmount) public {
+    // TODO: mint NFT to caller by passing in necessary info
+    BetType betType = BetType(_betType);
   }
 }
