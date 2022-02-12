@@ -272,7 +272,7 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
-  const betTypeHandler = () => {
+  const submitBetHandler = () => {
     const shortMarketType = document.getElementById("betshort").checked;
     const forCollectionType = document.getElementById("betfor").checked;
     const againstCollectionType = document.getElementById("betagainst").checked;
@@ -309,6 +309,16 @@ function App(props) {
     }
   };
 
+  const selectCollectionHandler = () => {
+    // TODO: set img component source to url
+    // TODO: set img display to not none
+    // TODO: show title above image with hyperlink to it
+    const collectionSelection = document.getElementById("collections");
+    const selectedCollectionKey = collectionSelection.options[collectionSelection.selectedIndex].text;
+    const collectionSlug = SUPPORTED_COLLECTIONS[selectedCollectionKey].slug;
+    const collectionImgSrc = SUPPORTED_COLLECTIONS[selectedCollectionKey].image;
+  };
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -337,14 +347,15 @@ function App(props) {
             <br />
             <label>Select your collection</label>
             <br />
-            <select name="collections" id="collections">
+            <select name="collections" id="collections" onChange={() => selectCollectionHandler()}>
               {Object.keys(SUPPORTED_COLLECTIONS).map(key => (
                 <option value={key}>{key}</option>
               ))}
             </select>
             <br />
+            <img id="collectionimage" style={{ display: "none" }} />
             <input type="number" placeholder="Enter USDC amount for your bid" name="usdcbid" id="usdcbid" />
-            <button onClick={() => betTypeHandler()}>Submit</button>
+            <button onClick={() => submitBetHandler()}>Submit</button>
           </div>
         </Route>
       </Switch>
