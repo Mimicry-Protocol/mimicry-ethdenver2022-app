@@ -12,29 +12,29 @@ describe("My Dapp", function () {
     setTimeout(done, 2000);
   });
 
-  describe("YourContract", function () {
-    it("Should deploy YourContract", async function () {
-      const YourContract = await ethers.getContractFactory("YourContract");
+  describe("Mimicry", function () {
+    it("Should deploy Mimicry", async function () {
+      const Mimicry = await ethers.getContractFactory("Mimicry");
 
-      myContract = await YourContract.deploy();
+      myContract = await Mimicry.deploy();
     });
 
-    describe("setPurpose()", function () {
+    describe("setBetType()", function () {
       it("Should be able to set a new purpose", async function () {
         const newPurpose = "Test Purpose";
 
-        await myContract.setPurpose(newPurpose);
+        await myContract.setBetType(newPurpose);
         expect(await myContract.purpose()).to.equal(newPurpose);
       });
 
-      // Uncomment the event and emit lines in YourContract.sol to make this test pass
+      // Uncomment the event and emit lines in Mimicry.sol to make this test pass
 
       /*it("Should emit a SetPurpose event ", async function () {
         const [owner] = await ethers.getSigners();
 
         const newPurpose = "Another Test Purpose";
 
-        expect(await myContract.setPurpose(newPurpose)).to.
+        expect(await myContract.setBetType(newPurpose)).to.
           emit(myContract, "SetPurpose").
             withArgs(owner.address, newPurpose);
       });*/
