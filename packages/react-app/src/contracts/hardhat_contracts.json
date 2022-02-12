@@ -1,0 +1,43 @@
+{
+  "31337": {
+    "localhost": {
+      "name": "localhost",
+      "chainId": "31337",
+      "contracts": {
+        "Mimicry": {
+          "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+          "abi": [
+            {
+              "inputs": [],
+              "stateMutability": "payable",
+              "type": "constructor"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "_caller",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "_betType",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "_collectionSlug",
+                  "type": "string"
+                }
+              ],
+              "name": "setBetType",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

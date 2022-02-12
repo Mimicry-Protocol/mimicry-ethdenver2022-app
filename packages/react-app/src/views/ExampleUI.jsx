@@ -36,9 +36,9 @@ export default function ExampleUI({
           <Button
             style={{ marginTop: 8 }}
             onClick={async () => {
-              /* look how you call setPurpose on your contract: */
+              /* look how you call setBetType on your contract: */
               /* notice how you pass a call back for tx updates too */
-              const result = tx(writeContracts.YourContract.setPurpose(newPurpose), update => {
+              const result = tx(writeContracts.Mimicry.setBetType(newPurpose), update => {
                 console.log("📡 Transaction Update:", update);
                 if (update && (update.status === "confirmed" || update.status === 1)) {
                   console.log(" 🍾 Transaction " + update.hash + " finished!");
@@ -84,7 +84,7 @@ export default function ExampleUI({
         <Divider />
         Your Contract Address:
         <Address
-          address={readContracts && readContracts.YourContract ? readContracts.YourContract.address : null}
+          address={readContracts && readContracts.Mimicry ? readContracts.Mimicry.address : null}
           ensProvider={mainnetProvider}
           fontSize={16}
         />
@@ -92,8 +92,8 @@ export default function ExampleUI({
         <div style={{ margin: 8 }}>
           <Button
             onClick={() => {
-              /* look how you call setPurpose on your contract: */
-              tx(writeContracts.YourContract.setPurpose("🍻 Cheers"));
+              /* look how you call setBetType on your contract: */
+              tx(writeContracts.Mimicry.setBetType("🍻 Cheers"));
             }}
           >
             Set Purpose to &quot;🍻 Cheers&quot;
@@ -107,7 +107,7 @@ export default function ExampleUI({
               here we are sending value straight to the contract's address:
             */
               tx({
-                to: writeContracts.YourContract.address,
+                to: writeContracts.Mimicry.address,
                 value: utils.parseEther("0.001"),
               });
               /* this should throw an error about "no fallback nor receive function" until you add it */
@@ -119,13 +119,13 @@ export default function ExampleUI({
         <div style={{ margin: 8 }}>
           <Button
             onClick={() => {
-              /* look how we call setPurpose AND send some value along */
+              /* look how we call setBetType AND send some value along */
               tx(
-                writeContracts.YourContract.setPurpose("💵 Paying for this one!", {
+                writeContracts.Mimicry.setBetType("💵 Paying for this one!", {
                   value: utils.parseEther("0.001"),
                 }),
               );
-              /* this will fail until you make the setPurpose function payable */
+              /* this will fail until you make the setBetType function payable */
             }}
           >
             Set Purpose With Value
@@ -136,11 +136,9 @@ export default function ExampleUI({
             onClick={() => {
               /* you can also just craft a transaction and send it to the tx() transactor */
               tx({
-                to: writeContracts.YourContract.address,
+                to: writeContracts.Mimicry.address,
                 value: utils.parseEther("0.001"),
-                data: writeContracts.YourContract.interface.encodeFunctionData("setPurpose(string)", [
-                  "🤓 Whoa so 1337!",
-                ]),
+                data: writeContracts.Mimicry.interface.encodeFunctionData("setBetType(string)", ["🤓 Whoa so 1337!"]),
               });
               /* this should throw an error about "no fallback nor receive function" until you add it */
             }}
@@ -152,11 +150,11 @@ export default function ExampleUI({
 
       {/*
         📑 Maybe display a list of events?
-          (uncomment the event and emit line in YourContract.sol! )
+          (uncomment the event and emit line in Mimicry.sol! )
       */}
       <Events
         contracts={readContracts}
-        contractName="YourContract"
+        contractName="Mimicry"
         eventName="SetPurpose"
         localProvider={localProvider}
         mainnetProvider={mainnetProvider}
