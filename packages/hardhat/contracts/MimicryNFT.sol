@@ -23,7 +23,7 @@ contract MimicryNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
 
     // map token id to that token's metadata
     mapping(uint256 => NFTMetadata) public tokenIdToMetadata;
-    // map address to tokens they own
+    // map address to tokens they have ever owned
     mapping(address => uint256[]) public walletToNFTsOwned;
 
     function GetWalletToNFTsOwned(address _adr)
@@ -46,11 +46,20 @@ contract MimicryNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
         ERC721(_name, _symbol)
     {}
 
-    function liquidatePosition(address _bidder, uint256 tokenId)
+    function liquidatePosition(address _bidder, uint256 _tokenId)
         public
         nonReentrant
     {
-        // TODO: use _burn API
+        NFTMetadata storage data = tokenIdToMetadata[_tokenId];
+        require(data.creationTimestamp > 0, "Token id has not been minted");
+        require(data.deletedTimestamp == 0, "Token has already been burned");
+        require(
+            _bidder == data.bidder,
+            "Can't liquidate someone else's position"
+        );
+
+        data.deletedTimestamp = block.timestamp;
+        _burn(_tokenId);
     }
 
     function userMint(

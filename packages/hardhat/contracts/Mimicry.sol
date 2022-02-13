@@ -40,30 +40,41 @@ contract Mimicry {
     ) public view returns (MimicryNFT.NFTMetadata[] memory, uint256) {
         uint256[] memory tokenIds = nft.GetWalletToNFTsOwned(_caller);
 
-        uint256[] memory tokenIdsCurrentPage = new uint256[](limit);
         uint256 tokensInCurrentPageCount = 0;
+        MimicryNFT.NFTMetadata[]
+            memory metadatas = new MimicryNFT.NFTMetadata[](limit);
 
-        // get current page of token ids
         while (
             tokensInCurrentPageCount < limit &&
             offset + tokensInCurrentPageCount < tokenIds.length
         ) {
-            tokenIdsCurrentPage[tokensInCurrentPageCount] = tokenIds[
+            uint256 currentTokenId = tokenIds[
                 offset + tokensInCurrentPageCount
             ];
-            tokensInCurrentPageCount++;
+            MimicryNFT.NFTMetadata memory data = nft.GetTokenIdToMetadata(
+                currentTokenId
+            );
+            if (data.deletedTimestamp == 0) {
+                metadatas[tokensInCurrentPageCount] = data;
+                tokensInCurrentPageCount++;
+            }
         }
 
-        // get metadata object for current page of NFTs
+        // don't return empty space at the end of the array because it confuses the FE
         MimicryNFT.NFTMetadata[]
-            memory metadatas = new MimicryNFT.NFTMetadata[](
+            memory metadatasToReturn = new MimicryNFT.NFTMetadata[](
                 tokensInCurrentPageCount
             );
         for (uint256 i = 0; i < tokensInCurrentPageCount; i++) {
-            metadatas[i] = nft.GetTokenIdToMetadata(tokenIdsCurrentPage[i]);
-            offset++;
+            metadatasToReturn[i] = metadatas[i];
         }
 
-        return (metadatas, offset);
+        return (metadatasToReturn, offset);
+    }
+
+    function liquidatePosition(address _bidder, uint256 tokenId) public {
+        nft.liquidatePosition(_bidder, tokenId);
+
+        // TODO: return collateral to _bidder's wallet
     }
 }
