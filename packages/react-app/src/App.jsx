@@ -317,6 +317,19 @@ function App(props) {
     const selectedCollectionKey = collectionSelection.options[collectionSelection.selectedIndex].text;
     const collectionSlug = SUPPORTED_COLLECTIONS[selectedCollectionKey].slug;
     const collectionImgSrc = SUPPORTED_COLLECTIONS[selectedCollectionKey].image;
+
+    // make image visible and set the source
+    const img = document.getElementById("collectionimage");
+    img.src = collectionImgSrc;
+    img.style.display = "block";
+
+    // make header click redirect to collection
+    const hrefTag = document.getElementById("collectionNameHref");
+    hrefTag.href = collectionSlug;
+
+    // make header text appear
+    const headerText = document.getElementById("collectionNameHeader");
+    headerText.textContent = selectedCollectionKey;
   };
 
   return (
@@ -353,7 +366,12 @@ function App(props) {
               ))}
             </select>
             <br />
-            <img id="collectionimage" style={{ display: "none" }} />
+            <a href="#" id="collectionNameHref">
+              <h2 id="collectionNameHeader"></h2>
+            </a>
+            <br />
+            <img id="collectionimage" style={{ display: "none", margin: "auto", maxWidth: "50%", maxHeight: "50%" }} />
+            <br />
             <input type="number" placeholder="Enter USDC amount for your bid" name="usdcbid" id="usdcbid" />
             <button onClick={() => submitBetHandler()}>Submit</button>
           </div>
