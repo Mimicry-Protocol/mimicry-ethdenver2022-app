@@ -52,7 +52,8 @@
     "deploy-and-graph": "yarn deploy && yarn graph-ship-local",
     "theme": "yarn workspace @scaffold-eth/react-app theme",
     "watch-theme": "yarn workspace @scaffold-eth/react-app watch",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "lint:fix": "./node_modules/.bin/prettier --write packages/hardhat/contracts/**/*.sol"
   },
   "workspaces": {
     "packages": [
@@ -67,8 +68,10 @@
       "**/hardhat-ts/**"
     ]
   },
-  "dependencies": {},
   "devDependencies": {
-    "husky": "^7.0.2"
+    "husky": "^7.0.2",
+    "prettier": "^2.5.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.19",
+    "solhint-plugin-prettier": "^0.0.5"
   }
 }
