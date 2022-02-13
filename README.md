@@ -6,5 +6,4 @@
 #### Locally
 1. Run `yarn install` in the root dir
 2. Run `yarn chain` in one terminal
-3. Once the first terminal is dumping ETH network logs, run `yarn deploy` in the second terminal
-4. When the second terminal finishes, run `yarn start` in that terminal to start the web app
+3. Once the first terminal is dumping ETH network logs, run `yarn deploy && yarn start` in the second terminal
