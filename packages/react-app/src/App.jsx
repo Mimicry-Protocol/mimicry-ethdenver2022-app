@@ -64,6 +64,33 @@ const USE_NETWORK_SELECTOR = false;
 
 const web3Modal = Web3ModalSetup();
 
+const SUPPORTED_COLLECTIONS = {
+  "Bufficorn Buidl Brigade": {
+    slug: "https://opensea.io/collection/bufficornbuidlbrigade",
+    image:
+      "https://lh3.googleusercontent.com/_Qfw2lI3pYbso5-EKD7VS76UQOd7NTtcaYJ9qSGovG1X0iVm2oJNNgnepXRN5-3dDC3R2OtZQT1TpGgzNr5vp5v53ez84_lQaTjBYyY=s130",
+    id: 0,
+  },
+  "Bored Ape Yacht Club": {
+    slug: "https://opensea.io/collection/boredapeyachtclub",
+    image:
+      "https://lh3.googleusercontent.com/Ju9CkWtV-1Okvf45wo8UctR-M9He2PjILP0oOvxE89AyiPPGtrR3gysu1Zgy0hjd2xKIgjJJtWIc0ybj4Vd7wv8t3pxDGHoJBzDB=s130",
+    id: 1,
+  },
+  "World of Women": {
+    slug: "https://opensea.io/collection/world-of-women-nft",
+    image:
+      "https://lh3.googleusercontent.com/7rQxqp2cAN4J-pFJ6A22Ncb_tm2j6Lz61zXMi9bNJbmAk8PheVXcL4zVIZptVQ8_owbOJAiYuhSbn0vtjwcE4Jg7FQqDGwZTndd-_A=s130",
+    id: 2,
+  },
+  Doodles: {
+    slug: "https://opensea.io/collection/doodles-official",
+    image:
+      "https://lh3.googleusercontent.com/7B0qai02OdHA8P_EOVK672qUliyjQdQDGNrACxs7WnTgZAkJa_wWURnIFKeOh5VTf8cfTqW3wQpozGedaC9mteKphEOtztls02RlWQ=s130",
+    id: 3,
+  },
+};
+
 // 🛰 providers
 const providers = [
   "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
@@ -245,7 +272,7 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
-  const betTypeHandler = () => {
+  const submitBetHandler = () => {
     const shortMarketType = document.getElementById("betshort").checked;
     const forCollectionType = document.getElementById("betfor").checked;
     const againstCollectionType = document.getElementById("betagainst").checked;
@@ -257,11 +284,13 @@ function App(props) {
     }
 
     const betType = shortMarketType ? 0 : forCollectionType ? 1 : 2;
-    const slug = document.getElementById("collectionslug").value.trim();
+    const collectionSelection = document.getElementById("collections");
+    const selectedCollectionKey = collectionSelection.options[collectionSelection.selectedIndex].text;
+    const selectedCollectionId = SUPPORTED_COLLECTIONS[selectedCollectionKey].id;
 
-    // make sure they entered a collection slug if applicable
-    if (betType > 0 && !slug) {
-      alert("To bet for or against a collection, you must specify the collection");
+    const usdcAmount = Number(document.getElementById("usdcbid").value);
+    if (usdcAmount <= 0) {
+      alert("Your bid amount must be greater than 0");
       return;
     }
 
@@ -274,10 +303,30 @@ function App(props) {
     }
 
     try {
-      tx(writeContracts.Mimicry.setBetType(address, betType, slug));
+      tx(writeContracts.Mimicry.mintPosition(address, betType, selectedCollectionId, usdcAmount));
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const selectCollectionHandler = () => {
+    const collectionSelection = document.getElementById("collections");
+    const selectedCollectionKey = collectionSelection.options[collectionSelection.selectedIndex].text;
+    const collectionSlug = SUPPORTED_COLLECTIONS[selectedCollectionKey].slug;
+    const collectionImgSrc = SUPPORTED_COLLECTIONS[selectedCollectionKey].image;
+
+    // make image visible and set the source
+    const img = document.getElementById("collectionimage");
+    img.src = collectionImgSrc;
+    img.style.display = "block";
+
+    // make header click redirect to collection
+    const hrefTag = document.getElementById("collectionNameHref");
+    hrefTag.href = collectionSlug;
+
+    // make header text appear
+    const headerText = document.getElementById("collectionNameHeader");
+    headerText.textContent = selectedCollectionKey;
   };
 
   return (
@@ -305,8 +354,23 @@ function App(props) {
             <label>Bet against a collection</label>
             <input type="radio" value="against" id="betagainst" name="bettype" />
             <br />
-            <input type="text" placeholder="Enter collection slug here" name="collection" id="collectionslug" />
-            <button onClick={() => betTypeHandler()}>Submit</button>
+            <br />
+            <label>Select your collection</label>
+            <br />
+            <select name="collections" id="collections" onChange={() => selectCollectionHandler()}>
+              {Object.keys(SUPPORTED_COLLECTIONS).map(key => (
+                <option value={key}>{key}</option>
+              ))}
+            </select>
+            <br />
+            <a href="#" id="collectionNameHref">
+              <h2 id="collectionNameHeader"></h2>
+            </a>
+            <br />
+            <img id="collectionimage" style={{ display: "none", margin: "auto", maxWidth: "50%", maxHeight: "50%" }} />
+            <br />
+            <input type="number" placeholder="Enter USDC amount for your bid" name="usdcbid" id="usdcbid" />
+            <button onClick={() => submitBetHandler()}>Submit</button>
           </div>
         </Route>
       </Switch>

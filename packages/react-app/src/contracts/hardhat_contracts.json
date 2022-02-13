@@ -5,7 +5,7 @@
       "chainId": "31337",
       "contracts": {
         "Mimicry": {
-          "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+          "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
           "abi": [
             {
               "inputs": [],
@@ -20,17 +20,40 @@
                   "type": "address"
                 },
                 {
+                  "internalType": "address",
+                  "name": "_positionNftAddress",
+                  "type": "address"
+                }
+              ],
+              "name": "burnPosition",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "_caller",
+                  "type": "address"
+                },
+                {
                   "internalType": "uint256",
                   "name": "_betType",
                   "type": "uint256"
                 },
                 {
-                  "internalType": "string",
-                  "name": "_collectionSlug",
-                  "type": "string"
+                  "internalType": "uint256",
+                  "name": "_collectionType",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "_usdcAmount",
+                  "type": "uint256"
                 }
               ],
-              "name": "setBetType",
+              "name": "mintPosition",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
