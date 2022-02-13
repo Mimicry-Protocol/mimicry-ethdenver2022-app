@@ -1,26 +1,35 @@
 pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
+import "./MimicryNFT.sol";
+import "./MimicryUtils.sol";
+
 contract Mimicry {
+    MimicryNFT private nft;
 
-  enum BetType{ SHORT_MARKET, FOR_COLLECTION, AGAINST_COLLECTION }
-  enum Collection { BUFFICORN, APES, WOMEN, DOODLES }
-
-  constructor() payable {
-    // what should we do on deploy?
-  }
-
-  function burnPosition(address _caller, address _positionNftAddress) public {
-    // TODO
-  }
-
-  function mintPosition(address _caller, uint _betType, uint _collectionType, uint256 _usdcAmount) public {
-    // TODO: mint NFT to caller by passing in necessary info
-    BetType betType = BetType(_betType);
-    Collection collectionType = Collection(_collectionType);
-
-    if (betType == BetType.SHORT_MARKET) {
-      // TODO: can ignore the collection type here
+    constructor() {
+        nft = new MimicryNFT("Mimicry", "MIME");
     }
-  }
+
+    function burnPosition(address _caller, address _positionNftAddress) public {
+        // TODO
+    }
+
+    function mintPosition(
+        address _bidder,
+        uint256 _betType,
+        uint256 _collectionType,
+        uint256 _usdcAmount
+    ) public {
+        // TODO: require that bidder's wallet has USDC >= collateral amount
+        // TODO: send USDC from _bidder to contract address
+
+        MimicryUtils.BetType betType = MimicryUtils.BetType(_betType);
+        MimicryUtils.Collection collectionType = MimicryUtils.Collection(
+            _collectionType
+        );
+
+        // mint nft to caller
+        nft.userMint(_bidder, _usdcAmount, betType, collectionType);
+    }
 }
