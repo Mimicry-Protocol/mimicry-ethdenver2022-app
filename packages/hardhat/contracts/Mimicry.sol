@@ -32,4 +32,38 @@ contract Mimicry {
         // mint nft to caller
         nft.userMint(_bidder, _usdcAmount, betType, collectionType);
     }
+
+    function getPositions(
+        address _caller,
+        uint256 limit,
+        uint256 offset
+    ) public view returns (MimicryNFT.NFTMetadata[] memory, uint256) {
+        uint256[] memory tokenIds = nft.GetWalletToNFTsOwned(_caller);
+
+        uint256[] memory tokenIdsCurrentPage = new uint256[](limit);
+        uint256 tokensInCurrentPageCount = 0;
+
+        // get current page of token ids
+        while (
+            tokensInCurrentPageCount < limit &&
+            offset + tokensInCurrentPageCount < tokenIds.length
+        ) {
+            tokenIdsCurrentPage[tokensInCurrentPageCount] = tokenIds[
+                offset + tokensInCurrentPageCount
+            ];
+            tokensInCurrentPageCount++;
+        }
+
+        // get metadata object for current page of NFTs
+        MimicryNFT.NFTMetadata[]
+            memory metadatas = new MimicryNFT.NFTMetadata[](
+                tokensInCurrentPageCount
+            );
+        for (uint256 i = 0; i < tokensInCurrentPageCount; i++) {
+            metadatas[i] = nft.GetTokenIdToMetadata(tokenIdsCurrentPage[i]);
+            offset++;
+        }
+
+        return (metadatas, offset);
+    }
 }

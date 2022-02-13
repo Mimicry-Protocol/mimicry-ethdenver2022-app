@@ -9,6 +9,7 @@ import "./MimicryUtils.sol";
 contract MimicryNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
     // TODO: this should conform to NFT metadata standard
     struct NFTMetadata {
+        uint256 tokenId;
         uint256 collateralAmt;
         uint256 creationTimestamp;
         uint256 deletedTimestamp;
@@ -22,6 +23,24 @@ contract MimicryNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
 
     // map token id to that token's metadata
     mapping(uint256 => NFTMetadata) public tokenIdToMetadata;
+    // map address to tokens they own
+    mapping(address => uint256[]) public walletToNFTsOwned;
+
+    function GetWalletToNFTsOwned(address _adr)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        return walletToNFTsOwned[_adr];
+    }
+
+    function GetTokenIdToMetadata(uint256 tokenId)
+        public
+        view
+        returns (NFTMetadata memory)
+    {
+        return tokenIdToMetadata[tokenId];
+    }
 
     constructor(string memory _name, string memory _symbol)
         ERC721(_name, _symbol)
@@ -46,6 +65,7 @@ contract MimicryNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
         uint256 tokenId = totalSupply(); // the next token's tokenId == totalSupply
 
         NFTMetadata storage data = tokenIdToMetadata[tokenId];
+        data.tokenId = tokenId;
         data.collateralAmt = _collateralAmt;
         data.creationTimestamp = block.timestamp;
         // _NB: shorting the market does not tie to a particular collection
