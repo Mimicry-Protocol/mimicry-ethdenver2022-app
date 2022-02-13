@@ -91,6 +91,22 @@ const SUPPORTED_COLLECTIONS = {
   },
 };
 
+const getCollectionByEnum = value => {
+  return value === 0
+    ? "Bufficorn Buidl Brigade"
+    : value === 1
+    ? "Bored Ape Yacht Club"
+    : value === 2
+    ? "World of Women"
+    : value === 3
+    ? "Doodles"
+    : "None";
+};
+
+const getBetTypeByEnum = value => {
+  return value === 0 ? "Short the market" : value === 1 ? "For the collection" : "Against the collection";
+};
+
 // 🛰 providers
 const providers = [
   "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
@@ -289,7 +305,6 @@ function App(props) {
     if (!didFetchLastPage && address && readContracts && readContracts.Mimicry) {
       try {
         const [nextPage, nextOffset] = await readContracts.Mimicry.getPositions(address, limit, offset);
-        debugger;
         if (nextPage && nextPage.length > 0) {
           const tmpPositions = userPositions.concat(nextPage);
           setUserPositions(tmpPositions);
@@ -378,6 +393,33 @@ function App(props) {
     headerText.textContent = selectedCollectionKey;
   };
 
+  const selectUserPositionHandler = () => {
+    // TODO -- display details in a pretty way
+  };
+
+  const submitLiquidateHandler = ({ userPositions, setUserPositions, setOffset, setDidFetchLastPage }) => {
+    const positionSelection = document.getElementById("userpositions");
+    const tokenId = Number(positionSelection.options[positionSelection.selectedIndex].value);
+
+    if (DEBUG_TRANSACTIONS) {
+      // send faucet eth to debug transaction
+      tx({
+        to: address,
+        value: ethers.utils.parseEther("0.1"),
+      });
+    }
+    try {
+      tx(writeContracts.Mimicry.liquidatePosition(address, tokenId));
+    } catch (e) {
+      console.log("error in liquidating", e);
+    }
+
+    const newUserPositions = userPositions.filter(x => Number(x.tokenId._hex) !== tokenId);
+    setUserPositions(newUserPositions);
+    setOffset(0);
+    setDidFetchLastPage(0);
+  };
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -429,18 +471,38 @@ function App(props) {
             <img id="collectionimage" style={{ display: "none", margin: "auto", maxWidth: "50%", maxHeight: "50%" }} />
             <br />
             <input type="number" placeholder="Enter USDC amount for your bid" name="usdcbid" id="usdcbid" />
-            <button onClick={() => submitBetHandler()}>Submit</button>
+            <button onClick={() => submitBetHandler({ setDidFetchLastPage })}>Submit</button>
           </div>
         </Route>
         <Route exact path="/liquidate">
           <br />
           <div>
-            {userPositions.length > 0 ? <select name="userpositions" id="userpositions" onChange={() => selectUserPositionHandler()}>
-              {userPositions.map(key => (
-                <option value={key}>{key}</option>
-              ))}
-            </select> : <h3>You don't have any open positions</h3>}
-            {userPositions.length > 0 ? <button onClick={() => submitLiquidateHandler()}>Liquidate</button> : null}
+            {userPositions.length > 0 ? (
+              <select name="userpositions" id="userpositions" onChange={() => selectUserPositionHandler()}>
+                {userPositions.map(key => {
+                  const tokenId = Number(key.tokenId._hex);
+                  const collateralAmt = Number(key.collateralAmt._hex);
+                  const collection = getCollectionByEnum(Number(key.collection._hex));
+                  const betType = getBetTypeByEnum(Number(key.betType._hex));
+                  return (
+                    <option
+                      value={tokenId}
+                    >{`Token: ${tokenId} - Collateral: ${collateralAmt} - Collection: ${collection} - Bet Type: ${betType}`}</option>
+                  );
+                })}
+              </select>
+            ) : (
+              <h3>You don't have any open positions</h3>
+            )}
+            {userPositions.length > 0 ? (
+              <button
+                onClick={() =>
+                  submitLiquidateHandler({ userPositions, setUserPositions, setOffset, setDidFetchLastPage })
+                }
+              >
+                Liquidate
+              </button>
+            ) : null}
           </div>
         </Route>
       </Switch>

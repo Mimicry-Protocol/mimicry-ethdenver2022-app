@@ -146,6 +146,19 @@
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "nft",
+              "outputs": [
+                {
+                  "internalType": "contract MimicryNFT",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
             }
           ]
         }

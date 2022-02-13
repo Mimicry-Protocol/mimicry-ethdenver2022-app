@@ -6,38 +6,45 @@ use(solidity);
 
 describe("My Dapp", function () {
   let myContract;
+  let owner;
 
   // quick fix to let gas reporter fetch data from gas station & coinmarketcap
   before((done) => {
     setTimeout(done, 2000);
   });
 
+  beforeEach(async () => {
+    const Mimicry = await ethers.getContractFactory("Mimicry");
+    owner = (await ethers.getSigners())[0];
+
+    myContract = await Mimicry.deploy();
+  });
+
   describe("Mimicry", function () {
-    it("Should deploy Mimicry", async function () {
-      const Mimicry = await ethers.getContractFactory("Mimicry");
+    describe("getPositions", function () {
+      it("Should be able to get positions", async function () {
+        await myContract.mintPosition(owner.address, 1, 0, 10);
 
-      myContract = await Mimicry.deploy();
-    });
-
-    describe("setBetType()", function () {
-      it("Should be able to set a new purpose", async function () {
-        const newPurpose = "Test Purpose";
-
-        await myContract.setBetType(newPurpose);
-        expect(await myContract.purpose()).to.equal(newPurpose);
+        const [res, offset] = await myContract.getPositions(owner.address, 100, 0);
+        expect(res.length).to.equal(1);
+        expect(res[0].bidder).to.equal(owner.address);
+        expect(offset).to.equal(1);
       });
 
-      // Uncomment the event and emit lines in Mimicry.sol to make this test pass
+      it.only("Should liquidate correctly", async function () {
+        await myContract.mintPosition(owner.address, 1, 0, 10);
+        await myContract.mintPosition(owner.address, 1, 0, 10);
 
-      /*it("Should emit a SetPurpose event ", async function () {
-        const [owner] = await ethers.getSigners();
+        await myContract.liquidatePosition(owner.address, 1);
+        const [res, offset] = await myContract.getPositions(owner.address, 100, 0);
+        console.log("res: ", res);
+        console.log("offset: ", offset);
+        expect(res.length).to.equal(1);
+        // expect(res[0].bidder).to.equal(owner.address);
+        // expect(offset).to.equal(2); // because second object is seen and skipped
+      });
 
-        const newPurpose = "Another Test Purpose";
 
-        expect(await myContract.setBetType(newPurpose)).to.
-          emit(myContract, "SetPurpose").
-            withArgs(owner.address, newPurpose);
-      });*/
     });
   });
 });
