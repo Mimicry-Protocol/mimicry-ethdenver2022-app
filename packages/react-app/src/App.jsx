@@ -270,6 +270,55 @@ function App(props) {
     }
   }, [loadWeb3Modal]);
 
+  const [userPositions, setUserPositions] = useState([]);
+  const [offset, setOffset] = useState(0);
+  const [didFetchLastPage, setDidFetchLastPage] = useState(false);
+  const limit = 100;
+
+  const getUserPositions = async ({
+    address,
+    readContracts,
+    limit,
+    offset,
+    setOffset,
+    didFetchLastPage,
+    setDidFetchLastPage,
+    userPositions,
+    setUserPositions,
+  }) => {
+    if (!didFetchLastPage && address && readContracts && readContracts.Mimicry) {
+      try {
+        const [nextPage, nextOffset] = await readContracts.Mimicry.getPositions(address, limit, offset);
+        debugger;
+        if (nextPage && nextPage.length > 0) {
+          const tmpPositions = userPositions.concat(nextPage);
+          setUserPositions(tmpPositions);
+        }
+        if (parseInt(nextOffset._hex) === offset || nextPage.length < limit) {
+          setDidFetchLastPage(true);
+        }
+        setOffset(parseInt(nextOffset._hex));
+      } catch (e) {
+        console.log("ERROR IN GETTING USER POSITIONS", e);
+        setDidFetchLastPage(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getUserPositions({
+      address,
+      readContracts,
+      limit,
+      offset,
+      setOffset,
+      didFetchLastPage,
+      setDidFetchLastPage,
+      userPositions,
+      setUserPositions,
+    });
+  }, [address, readContracts, offset]);
+
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
   const submitBetHandler = () => {
@@ -342,9 +391,19 @@ function App(props) {
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
 
+      <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
+        <Menu.Item key="/">
+          <Link to="/">Bid</Link>
+        </Menu.Item>
+        <Menu.Item key="/liquidate">
+          <Link to="/liquidate">Liquidate</Link>
+        </Menu.Item>
+      </Menu>
+
       <Switch>
         <Route exact path="/">
           <div>
+            <br />
             <label>Short the market</label>
             <input type="radio" value="short" id="betshort" name="bettype" />
             <br />
@@ -371,6 +430,17 @@ function App(props) {
             <br />
             <input type="number" placeholder="Enter USDC amount for your bid" name="usdcbid" id="usdcbid" />
             <button onClick={() => submitBetHandler()}>Submit</button>
+          </div>
+        </Route>
+        <Route exact path="/liquidate">
+          <br />
+          <div>
+            {userPositions.length > 0 ? <select name="userpositions" id="userpositions" onChange={() => selectUserPositionHandler()}>
+              {userPositions.map(key => (
+                <option value={key}>{key}</option>
+              ))}
+            </select> : <h3>You don't have any open positions</h3>}
+            {userPositions.length > 0 ? <button onClick={() => submitLiquidateHandler()}>Liquidate</button> : null}
           </div>
         </Route>
       </Switch>
