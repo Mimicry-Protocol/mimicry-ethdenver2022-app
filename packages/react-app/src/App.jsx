@@ -310,9 +310,6 @@ function App(props) {
   };
 
   const selectCollectionHandler = () => {
-    // TODO: set img component source to url
-    // TODO: set img display to not none
-    // TODO: show title above image with hyperlink to it
     const collectionSelection = document.getElementById("collections");
     const selectedCollectionKey = collectionSelection.options[collectionSelection.selectedIndex].text;
     const collectionSlug = SUPPORTED_COLLECTIONS[selectedCollectionKey].slug;
