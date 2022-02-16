@@ -9,6 +9,7 @@ import "./MimicryUtils.sol";
 contract MimicryNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
     // TODO: this should conform to NFT metadata standard
     struct NFTMetadata {
+        uint256 tokenId;
         uint256 collateralAmt;
         uint256 creationTimestamp;
         uint256 deletedTimestamp;
@@ -22,16 +23,43 @@ contract MimicryNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
 
     // map token id to that token's metadata
     mapping(uint256 => NFTMetadata) public tokenIdToMetadata;
+    // map address to tokens they have ever owned
+    mapping(address => uint256[]) public walletToNFTsOwned;
+
+    function GetWalletToNFTsOwned(address _adr)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        return walletToNFTsOwned[_adr];
+    }
+
+    function GetTokenIdToMetadata(uint256 tokenId)
+        public
+        view
+        returns (NFTMetadata memory)
+    {
+        return tokenIdToMetadata[tokenId];
+    }
 
     constructor(string memory _name, string memory _symbol)
         ERC721(_name, _symbol)
     {}
 
-    function liquidatePosition(address _bidder, uint256 tokenId)
+    function liquidatePosition(address _bidder, uint256 _tokenId)
         public
         nonReentrant
     {
-        // TODO: use _burn API
+        NFTMetadata storage data = tokenIdToMetadata[_tokenId];
+        require(data.creationTimestamp > 0, "Token id has not been minted");
+        require(data.deletedTimestamp == 0, "Token has already been burned");
+        require(
+            _bidder == data.bidder,
+            "Can't liquidate someone else's position"
+        );
+
+        data.deletedTimestamp = block.timestamp;
+        _burn(_tokenId);
     }
 
     function userMint(
@@ -46,6 +74,7 @@ contract MimicryNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
         uint256 tokenId = totalSupply(); // the next token's tokenId == totalSupply
 
         NFTMetadata storage data = tokenIdToMetadata[tokenId];
+        data.tokenId = tokenId;
         data.collateralAmt = _collateralAmt;
         data.creationTimestamp = block.timestamp;
         // _NB: shorting the market does not tie to a particular collection
@@ -58,6 +87,7 @@ contract MimicryNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
         data.bidder = _bidder;
 
         tokenIdToMetadata[tokenId] = data;
+        walletToNFTsOwned[_bidder].push(tokenId);
 
         _safeMint(_bidder, tokenId);
     }

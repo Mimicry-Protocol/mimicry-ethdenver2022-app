@@ -32,4 +32,49 @@ contract Mimicry {
         // mint nft to caller
         nft.userMint(_bidder, _usdcAmount, betType, collectionType);
     }
+
+    function getPositions(
+        address _caller,
+        uint256 limit,
+        uint256 offset
+    ) public view returns (MimicryNFT.NFTMetadata[] memory, uint256) {
+        uint256[] memory tokenIds = nft.GetWalletToNFTsOwned(_caller);
+
+        uint256 tokensInCurrentPageCount = 0;
+        MimicryNFT.NFTMetadata[]
+            memory metadatas = new MimicryNFT.NFTMetadata[](limit);
+
+        while (
+            tokensInCurrentPageCount < limit &&
+            offset + tokensInCurrentPageCount < tokenIds.length
+        ) {
+            uint256 currentTokenId = tokenIds[
+                offset + tokensInCurrentPageCount
+            ];
+            MimicryNFT.NFTMetadata memory data = nft.GetTokenIdToMetadata(
+                currentTokenId
+            );
+            if (data.deletedTimestamp == 0) {
+                metadatas[tokensInCurrentPageCount] = data;
+                tokensInCurrentPageCount++;
+            }
+        }
+
+        // don't return empty space at the end of the array because it confuses the FE
+        MimicryNFT.NFTMetadata[]
+            memory metadatasToReturn = new MimicryNFT.NFTMetadata[](
+                tokensInCurrentPageCount
+            );
+        for (uint256 i = 0; i < tokensInCurrentPageCount; i++) {
+            metadatasToReturn[i] = metadatas[i];
+        }
+
+        return (metadatasToReturn, offset);
+    }
+
+    function liquidatePosition(address _bidder, uint256 tokenId) public {
+        nft.liquidatePosition(_bidder, tokenId);
+
+        // TODO: return collateral to _bidder's wallet
+    }
 }
