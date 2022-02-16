@@ -1,3 +1,54 @@
+# Mimicry
+
+
+## TODO
+1. Change token name to MIME (@gracelyn)
+2. Create synthetics for sample NFT collection (@dallon) :white_check_mark:
+3. Hook FE into contract layer by using [Synthetix FE Repo](https://github.com/Synthetixio/synthetix-js) as an example (@jpapi, @dallon)
+4. Hook in oracle for NFT pricing (@jpapi, @dallon)
+
+## Dev notes
+
+To run Synthetix and Mimicry contracts on the same local node,
+1. Run `nvm use 16.0.0 && npm install` in Synthetix root
+2. Run `yarn chain` in monorepo root in one terminal to start a local node
+3. Run `node publish build -t` in a second terminal to build with test flags (required for local dev).
+4. Run `yarn deploy` from monorepo root
+5. Run `cp build/compiled/* ../hardhat/deployments/localhost/` to copy the json abis into the `yarn deploy` script
+5. Run `node publish deploy -y -n local --add-new-synths --ignore-safety-checks --fresh-deploy > deploy-log.txt && cd ../../ && yarn deploy` to deploy to the local node while ensuring new synth contracts will be generated and deployed. We need to ignore safety checks solely to acknowledge the contract is not upgradable and do a fresh deploy to avoid caching issues. The next command moves to the monorepo root and runs the monorepo build script that generates the interface file for the React FE.
+
+
+To expedite steps 3 onward, run `cd packages/synthetix && node publish build -t && cd ../../ && yarn deploy && cd packages/synthetix && cp build/compiled/* ../hardhat/deployments/localhost/ && node publish deploy -y -n local --add-new-synths --ignore-safety-checks --fresh-deploy && cd ../../ && yarn deploy` from the monorepo root. This takes ~10 minutes to run.
+
+Add `yarn start` to the end to start the web server.
+
+ ---------------------------------
+
+Our goal is to create new Synthetics for NFT collections. We can do that by using the existing `MultiCollateralSynth`. Synthetix deploys contracts representing an arbitrary synthetic by specifying the desired synthetic in config files and running a deploy script which generates a contract for that synth as a subclass of `MultiCollateralSynth`. 
+
+We can use the same mechanism to create a synthetic for a given NFT collection. While we can manually make changes in config files, the most reliable way to do it is a find-and-replace across the whole codebase to swap an existing synthetic name for the desired name of our collection. Find and replace is more reliable because tracking down each relevant file is difficult and causes deploy failures until done thoroughly.
+
+ ---------------------------------
+
+We want to change the chainlink oracle used so we can fetch dynamic collection price data. The current oracles in use are found in `ExchangeRates.sol` where `Aggregator` and `Flag` interfaces are imported. We can make a GET request within an oracle as described [here](https://docs.chain.link/docs/make-a-http-get-request/).
+
+An alternative approach to an oracle to fetch price data is to make a FE fetch and pass that result into the BE. This approach would require a nonce to verify request's validity, but the most complexity will likely come from changing flow from contract entrypoint to accommodate new argument passed from FE. So the recommended approach is to make an oracle.
+
+The oracle needs to make a post to our [firebase appraisal endpoint](https://github.com/Mimicry-Protocol/mimicry-firebase-api/blob/main/functions/public/collection/appraisal.f.js) by specifying the collection slug in the request and parsing a `averagePriceInUsd` string from the JSON response.
+
+Next steps are to make our specified NFT collection synths use our new oracle's method, while making sure existing synths instead use existing oracle methods. But we also need to make sure that the `Appraisal API` response includes all necessary data such that the new oracle return value shape matches that of existing oracle methods to facilitate new oracle method integration with the existing system. The former task may be approached by customizing the Synth generation logic in the deploy scripts, while the latter task may require tracking the flow of core methods (eg `issueSynths`) to the point that they interact with the existing oracle methods to know the expected return value shapes.
+
+ --------------------------------
+We want to hook the eth-scaffold FE into Synthetix. To do that, migrated Synthetics into the eth scaffold repo. The goal is use the eth scaffold `yarn deploy` script that generates contract interface files for the `react-app` package. 
+
+To do this, we need to build synthetics and copy the contract abis from `build/compiled` into `~/packages/react-app/deployments/<network>/`. Then you can run `yarn deploy` in the eth-scaffold repo to generate the interface problems.
+
+One problem is that Synthetics are generated in the deploy script, so we still need to get generated contracts that match the deployed contracts.
+
+Remaining TODO:
+1. Generate json files after deploy from Synth config instead of after -- we can do this by logging the output of the synthetix deploy and then running a script after deploy that scans the hardhat_config.json file and adds an address field to each json doc.
+
+
 # Synthetix
 
 [![CircleCI](https://circleci.com/gh/Synthetixio/synthetix.svg?style=svg)](https://circleci.com/gh/Synthetixio/synthetix)
