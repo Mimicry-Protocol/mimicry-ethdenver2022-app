@@ -4,15 +4,24 @@ pragma solidity >=0.8.0 <0.9.0;
 import "./MimicryNFT.sol";
 import "./MimicryUtils.sol";
 
+import "../../synthetix/contracts/Synthetix.sol";
+import "../../synthetix/contracts/FeePool.sol";
+import "../../synthetix/contracts/Exchanger.sol";
+import "../../synthetix/contracts/AddressResolver.sol";
+
 contract Mimicry {
     MimicryNFT private nft;
+    Synthetix private synthetix;
+    FeePool private feePool;
+    Exchanger private exchanger;
+    AddressResolver private resolver;
 
     constructor() {
         nft = new MimicryNFT("Mimicry", "MIME");
-    }
-
-    function burnPosition(address _caller, address _positionNftAddress) public {
-        // TODO
+        resolver = new AddressResolver(owner());
+        synthetix = Synthetix(resolver.getAddress("Synthetix"));
+        feePool = FeePool(resolver.getAddress("FeePool"));
+        exchanger = Exchanger(resolver.getAddress("Exchanger"));
     }
 
     function mintPosition(
