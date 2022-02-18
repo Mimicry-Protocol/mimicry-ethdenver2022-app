@@ -12,15 +12,14 @@
 To run Synthetix and Mimicry contracts on the same local node,
 1. Run `nvm use 16.0.0 && npm install` in Synthetix root
 2. Run `yarn chain` in monorepo root in one terminal to start a local node
-3. Run `node publish build -t` in a second terminal to build with test flags (required for local dev).
-4. Run `yarn deploy` from monorepo root
-5. Run `cp build/compiled/* ../hardhat/deployments/localhost/` to copy the json abis into the `yarn deploy` script
-5. Run `node publish deploy -y -n local --add-new-synths --ignore-safety-checks --fresh-deploy > deploy-log.txt && cd ../../ && yarn deploy` to deploy to the local node while ensuring new synth contracts will be generated and deployed. We need to ignore safety checks solely to acknowledge the contract is not upgradable and do a fresh deploy to avoid caching issues. The next command moves to the monorepo root and runs the monorepo build script that generates the interface file for the React FE.
+4. Run `./start.sh` from Synthetix root to build all contracts, deploy them and then start the web server.
 
 
-To expedite steps 3 onward, run `cd packages/synthetix && node publish build -t && cd ../../ && yarn deploy && cd packages/synthetix && cp build/compiled/* ../hardhat/deployments/localhost/ && node publish deploy -y -n local --add-new-synths --ignore-safety-checks --fresh-deploy && cd ../../ && yarn deploy` from the monorepo root. This takes ~10 minutes to run.
+The command to build is `node publish build -t` from Synthetix root.
 
-Add `yarn start` to the end to start the web server.
+The command to deploy is `node publish deploy -y -n local --add-new-synths --ignore-safety-checks --fresh-deploy` from Synthetix root.
+
+The command to start the web server is `yarn start` from the monorepo root or the react-app package.
 
  ---------------------------------
 
