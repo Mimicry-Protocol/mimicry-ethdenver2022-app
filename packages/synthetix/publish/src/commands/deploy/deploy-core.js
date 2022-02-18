@@ -276,4 +276,15 @@ module.exports = async ({
 		deps: ['AddressResolver'],
 		args: [account, addressOf(readProxyForResolver)],
 	});
+
+	await deployer.deployContract({
+		name: 'MimicryUtils',
+	})
+
+	await deployer.deployContract({
+		name: 'Mimicry',
+		// NB: don't specify `MultiCollateralSynth` as a dep because the transformation into specific Synth contracts
+		// will cause the below line to fail
+		deps: ['AddressResolver', 'Synthetix', 'FeePool', 'Exchanger', 'MimicryUtils'],
+	});
 };

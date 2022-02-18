@@ -226,6 +226,17 @@ function reportDeployedContracts({ deployer }) {
 		address,
 		deployer.deployment.targets[name].link,
 	]);
+
+	// parse and write a log file of only the mimicry address
+	const mimicryData = deployer.newContractsDeployed.map(({ name, address }) => {
+		return {
+			name,
+			address
+		}
+	}).filter(({ name }) => name === "Mimicry")[0];
+
+	fs.writeFileSync("publish/mimicry_deploy.json", stringify(mimicryData));
+
 	console.log();
 	if (tableData.length) {
 		console.log(gray(`All contracts deployed on "${deployer.network}" network:`));

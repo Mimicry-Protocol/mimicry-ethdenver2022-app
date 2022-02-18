@@ -388,5 +388,11 @@
 	},
 	"SystemSettingsLib": {
 		"deploy": true
+	},
+	"MimicryUtils": {
+		"deploy": true
+	},
+	"Mimicry": {
+		"deploy": true
 	}
 }
