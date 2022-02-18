@@ -5,7 +5,7 @@
 		"rewardsToken": "ProxyERC20"
 	},
 	{
-		"name": "SNXWETHUniswapV3",
+		"name": "MIMEWETHUniswapV3",
 		"stakingToken": "0x83beefb4ca39af649d03969b442c0e9f4e1732d8",
 		"rewardsToken": "ProxyERC20"
 	}

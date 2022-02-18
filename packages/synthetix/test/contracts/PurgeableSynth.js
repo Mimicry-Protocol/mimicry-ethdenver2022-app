@@ -27,7 +27,7 @@ const {
 const { setupAllContracts } = require('./setup');
 
 contract('PurgeableSynth', accounts => {
-	const [mUSD, SNX, sAUD, iETH] = ['mUSD', 'SNX', 'sAUD', 'iETH'].map(toBytes32);
+	const [mUSD, MIME, sAUD, iETH] = ['mUSD', 'MIME', 'sAUD', 'iETH'].map(toBytes32);
 	const synthKeys = [mUSD, sAUD, iETH];
 	const [deployerAccount, owner, , , account1, account2] = accounts;
 
@@ -158,7 +158,7 @@ contract('PurgeableSynth', accounts => {
 			beforeEach(async () => {
 				await updateAggregatorRates(
 					exchangeRates,
-					[sAUD, SNX, iETH],
+					[sAUD, MIME, iETH],
 					['0.5', '1', '170'].map(toUnit)
 				);
 				await debtCache.takeDebtSnapshot();

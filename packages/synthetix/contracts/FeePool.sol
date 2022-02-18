@@ -201,11 +201,11 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
     }
 
     /**
-     * @notice The RewardsDistribution contract informs us how many SNX rewards are sent to RewardEscrow to be claimed.
+     * @notice The RewardsDistribution contract informs us how many MIME rewards are sent to RewardEscrow to be claimed.
      */
     function setRewardsToDistribute(uint amount) external optionalProxy {
         require(messageSender == address(rewardsDistribution()), "RewardsDistribution only");
-        // Add the amount of SNX rewards to distribute on top of any rolling unclaimed amount
+        // Add the amount of MIME rewards to distribute on top of any rolling unclaimed amount
         _recentFeePeriodsStorage(0).rewardsToDistribute = _recentFeePeriodsStorage(0).rewardsToDistribute.add(amount);
     }
 
@@ -286,7 +286,7 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
 
         require(feesClaimable, "C-Ratio below penalty threshold");
 
-        require(!anyRateIsInvalid, "A synth or SNX rate is invalid");
+        require(!anyRateIsInvalid, "A synth or MIME rate is invalid");
 
         // Get the claimingAddress available fees and rewards
         (availableFees, availableRewards) = feesAvailable(claimingAddress);
@@ -383,11 +383,11 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
 
     /**
      * @notice Record the reward payment in our recentFeePeriods.
-     * @param snxAmount The amount of SNX tokens.
+     * @param MIMEAmount The amount of MIME tokens.
      */
-    function _recordRewardPayment(uint snxAmount) internal returns (uint) {
+    function _recordRewardPayment(uint MIMEAmount) internal returns (uint) {
         // Don't assign to the parameter
-        uint remainingToAllocate = snxAmount;
+        uint remainingToAllocate = MIMEAmount;
 
         uint rewardPaid;
 
@@ -436,15 +436,15 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
     /**
      * @notice Send the rewards to claiming address - will be locked in rewardEscrow.
      * @param account The address to send the fees to.
-     * @param snxAmount The amount of SNX.
+     * @param MIMEAmount The amount of MIME.
      */
-    function _payRewards(address account, uint snxAmount) internal notFeeAddress(account) {
+    function _payRewards(address account, uint MIMEAmount) internal notFeeAddress(account) {
         /* Escrow the tokens for 1 year. */
         uint escrowDuration = 52 weeks;
 
         // Record vesting entry for claiming address and amount
-        // SNX already minted to rewardEscrow balance
-        rewardEscrowV2().appendVestingEntry(account, snxAmount, escrowDuration);
+        // MIME already minted to rewardEscrow balance
+        rewardEscrowV2().appendVestingEntry(account, MIMEAmount, escrowDuration);
     }
 
     /**
@@ -463,7 +463,7 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
     }
 
     /**
-     * @notice The total SNX rewards available in the system to be withdrawn
+     * @notice The total MIME rewards available in the system to be withdrawn
      */
     function totalRewardsAvailable() external view returns (uint) {
         uint totalRewards = 0;
@@ -479,7 +479,7 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
 
     /**
      * @notice The fees available to be withdrawn by a specific account, priced in mUSD
-     * @dev Returns two amounts, one for fees and one for SNX rewards
+     * @dev Returns two amounts, one for fees and one for MIME rewards
      */
     function feesAvailable(address account) public view returns (uint, uint) {
         // Add up the fees
@@ -495,7 +495,7 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
         }
 
         // And convert totalFees to mUSD
-        // Return totalRewards as is in SNX amount
+        // Return totalRewards as is in MIME amount
         return (totalFees, totalRewards);
     }
 
@@ -664,14 +664,14 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
         proxy._emit(abi.encode(feePeriodId), 1, FEEPERIODCLOSED_SIG, 0, 0, 0);
     }
 
-    event FeesClaimed(address account, uint mUSDAmount, uint snxRewards);
+    event FeesClaimed(address account, uint mUSDAmount, uint MIMERewards);
     bytes32 private constant FEESCLAIMED_SIG = keccak256("FeesClaimed(address,uint256,uint256)");
 
     function emitFeesClaimed(
         address account,
         uint mUSDAmount,
-        uint snxRewards
+        uint MIMERewards
     ) internal {
-        proxy._emit(abi.encode(account, mUSDAmount, snxRewards), 1, FEESCLAIMED_SIG, 0, 0, 0);
+        proxy._emit(abi.encode(account, mUSDAmount, MIMERewards), 1, FEESCLAIMED_SIG, 0, 0, 0);
     }
 }

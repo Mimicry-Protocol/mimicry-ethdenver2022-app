@@ -27,7 +27,7 @@ const {
 } = require('../..');
 
 contract('BaseSynthetix', async accounts => {
-	const [mUSD, sAUD, sEUR, SNX, mETH] = ['mUSD', 'sAUD', 'sEUR', 'SNX', 'mETH'].map(toBytes32);
+	const [mUSD, sAUD, sEUR, MIME, mETH] = ['mUSD', 'sAUD', 'sEUR', 'MIME', 'mETH'].map(toBytes32);
 
 	const [, owner, account1, account2, account3] = accounts;
 
@@ -422,13 +422,13 @@ contract('BaseSynthetix', async accounts => {
 		});
 	});
 
-	describe('anySynthOrSNXRateIsInvalid()', () => {
+	describe('anySynthOrMIMERateIsInvalid()', () => {
 		it('should have stale rates initially', async () => {
-			assert.equal(await baseSynthetix.anySynthOrSNXRateIsInvalid(), true);
+			assert.equal(await baseSynthetix.anySynthOrMIMERateIsInvalid(), true);
 		});
 		describe('when synth rates set', () => {
 			beforeEach(async () => {
-				// fast forward to get past initial SNX setting
+				// fast forward to get past initial MIME setting
 				await fastForward((await exchangeRates.rateStalePeriod()).add(web3.utils.toBN('300')));
 
 				await updateAggregatorRates(
@@ -439,25 +439,25 @@ contract('BaseSynthetix', async accounts => {
 				await debtCache.takeDebtSnapshot();
 			});
 			it('should still have stale rates', async () => {
-				assert.equal(await baseSynthetix.anySynthOrSNXRateIsInvalid(), true);
+				assert.equal(await baseSynthetix.anySynthOrMIMERateIsInvalid(), true);
 			});
-			describe('when SNX is also set', () => {
+			describe('when MIME is also set', () => {
 				beforeEach(async () => {
-					await updateAggregatorRates(exchangeRates, [SNX], ['1'].map(toUnit));
+					await updateAggregatorRates(exchangeRates, [MIME], ['1'].map(toUnit));
 				});
 				it('then no stale rates', async () => {
-					assert.equal(await baseSynthetix.anySynthOrSNXRateIsInvalid(), false);
+					assert.equal(await baseSynthetix.anySynthOrMIMERateIsInvalid(), false);
 				});
 
 				describe('when only some synths are updated', () => {
 					beforeEach(async () => {
 						await fastForward((await exchangeRates.rateStalePeriod()).add(web3.utils.toBN('300')));
 
-						await updateAggregatorRates(exchangeRates, [SNX, sAUD], ['0.1', '0.78'].map(toUnit));
+						await updateAggregatorRates(exchangeRates, [MIME, sAUD], ['0.1', '0.78'].map(toUnit));
 					});
 
-					it('then anySynthOrSNXRateIsInvalid() returns true', async () => {
-						assert.equal(await baseSynthetix.anySynthOrSNXRateIsInvalid(), true);
+					it('then anySynthOrMIMERateIsInvalid() returns true', async () => {
+						assert.equal(await baseSynthetix.anySynthOrMIMERateIsInvalid(), true);
 					});
 				});
 			});
@@ -515,7 +515,7 @@ contract('BaseSynthetix', async accounts => {
 
 		it('should transfer using the ERC20 transfer function @gasprofile', async () => {
 			// Ensure our environment is set up correctly for our assumptions
-			// e.g. owner owns all SNX.
+			// e.g. owner owns all MIME.
 
 			assert.bnEqual(await baseSynthetix.totalSupply(), await baseSynthetix.balanceOf(owner));
 
@@ -532,26 +532,26 @@ contract('BaseSynthetix', async accounts => {
 
 		it('should revert when exceeding locked synthetix and calling the ERC20 transfer function', async () => {
 			// Ensure our environment is set up correctly for our assumptions
-			// e.g. owner owns all SNX.
+			// e.g. owner owns all MIME.
 			assert.bnEqual(await baseSynthetix.totalSupply(), await baseSynthetix.balanceOf(owner));
 
 			// Issue max synths.
 			await baseSynthetix.issueMaxSynths({ from: owner });
 
-			// Try to transfer 0.000000000000000001 SNX
+			// Try to transfer 0.000000000000000001 MIME
 			await assert.revert(
 				baseSynthetix.transfer(account1, '1', { from: owner }),
-				'Cannot transfer staked or escrowed SNX'
+				'Cannot transfer staked or escrowed MIME'
 			);
 		});
 
 		it('should transfer using the ERC20 transferFrom function @gasprofile', async () => {
 			// Ensure our environment is set up correctly for our assumptions
-			// e.g. owner owns all SNX.
+			// e.g. owner owns all MIME.
 			const previousOwnerBalance = await baseSynthetix.balanceOf(owner);
 			assert.bnEqual(await baseSynthetix.totalSupply(), previousOwnerBalance);
 
-			// Approve account1 to act on our behalf for 10 SNX.
+			// Approve account1 to act on our behalf for 10 MIME.
 			let transaction = await baseSynthetix.approve(account1, toUnit('10'), { from: owner });
 			assert.eventEqual(transaction, 'Approval', {
 				owner: owner,
@@ -570,7 +570,7 @@ contract('BaseSynthetix', async accounts => {
 				value: toUnit('10'),
 			});
 
-			// Assert that account2 has 10 SNX and owner has 10 less SNX
+			// Assert that account2 has 10 MIME and owner has 10 less MIME
 			assert.bnEqual(await baseSynthetix.balanceOf(account2), toUnit('10'));
 			assert.bnEqual(await baseSynthetix.balanceOf(owner), previousOwnerBalance.sub(toUnit('10')));
 
@@ -584,10 +584,10 @@ contract('BaseSynthetix', async accounts => {
 
 		it('should revert when exceeding locked synthetix and calling the ERC20 transferFrom function', async () => {
 			// Ensure our environment is set up correctly for our assumptions
-			// e.g. owner owns all SNX.
+			// e.g. owner owns all MIME.
 			assert.bnEqual(await baseSynthetix.totalSupply(), await baseSynthetix.balanceOf(owner));
 
-			// Approve account1 to act on our behalf for 10 SNX.
+			// Approve account1 to act on our behalf for 10 MIME.
 			const transaction = await baseSynthetix.approve(account1, toUnit('10'), { from: owner });
 			assert.eventEqual(transaction, 'Approval', {
 				owner: owner,
@@ -598,12 +598,12 @@ contract('BaseSynthetix', async accounts => {
 			// Issue max synths
 			await baseSynthetix.issueMaxSynths({ from: owner });
 
-			// Assert that transferFrom fails even for the smallest amount of SNX.
+			// Assert that transferFrom fails even for the smallest amount of MIME.
 			await assert.revert(
 				baseSynthetix.transferFrom(owner, account2, '1', {
 					from: account1,
 				}),
-				'Cannot transfer staked or escrowed SNX'
+				'Cannot transfer staked or escrowed MIME'
 			);
 		});
 
@@ -623,7 +623,7 @@ contract('BaseSynthetix', async accounts => {
 			it('should transfer using the ERC20 transferFrom function @gasprofile', async () => {
 				const previousOwnerBalance = await baseSynthetix.balanceOf(owner);
 
-				// Approve account1 to act on our behalf for 10 SNX.
+				// Approve account1 to act on our behalf for 10 MIME.
 				await baseSynthetix.approve(account1, toUnit('10'), { from: owner });
 
 				// Assert that transferFrom works.
@@ -631,7 +631,7 @@ contract('BaseSynthetix', async accounts => {
 					from: account1,
 				});
 
-				// Assert that account2 has 10 SNX and owner has 10 less SNX
+				// Assert that account2 has 10 MIME and owner has 10 less MIME
 				assert.bnEqual(await baseSynthetix.balanceOf(account2), toUnit('10'));
 				assert.bnEqual(
 					await baseSynthetix.balanceOf(owner),
@@ -652,18 +652,18 @@ contract('BaseSynthetix', async accounts => {
 			const ensureTransferReverts = async () => {
 				await assert.revert(
 					baseSynthetix.transfer(account2, value, { from: account1 }),
-					'A synth or SNX rate is invalid'
+					'A synth or MIME rate is invalid'
 				);
 				await assert.revert(
 					baseSynthetix.transferFrom(account2, account1, value, {
 						from: account3,
 					}),
-					'A synth or SNX rate is invalid'
+					'A synth or MIME rate is invalid'
 				);
 			};
 
 			beforeEach(async () => {
-				// Give some SNX to account1 & account2
+				// Give some MIME to account1 & account2
 				await baseSynthetix.transfer(account1, toUnit('10000'), {
 					from: owner,
 				});
@@ -692,7 +692,7 @@ contract('BaseSynthetix', async accounts => {
 					// Now jump forward in time so the rates are stale
 					await fastForward((await exchangeRates.rateStalePeriod()) + 1);
 				});
-				it('should not allow transfer if the exchange rate for SNX is stale', async () => {
+				it('should not allow transfer if the exchange rate for MIME is stale', async () => {
 					await ensureTransferReverts();
 
 					// now give some synth rates
@@ -708,10 +708,10 @@ contract('BaseSynthetix', async accounts => {
 
 					await ensureTransferReverts();
 
-					// now give SNX rate
-					await updateAggregatorRates(exchangeRates, [SNX], ['1'].map(toUnit));
+					// now give MIME rate
+					await updateAggregatorRates(exchangeRates, [MIME], ['1'].map(toUnit));
 
-					// now SNX transfer should work
+					// now MIME transfer should work
 					await baseSynthetix.transfer(account2, value, { from: account1 });
 					await baseSynthetix.transferFrom(account2, account1, value, {
 						from: account3,
@@ -721,8 +721,8 @@ contract('BaseSynthetix', async accounts => {
 				it('should not allow transfer if the exchange rate for any synth is stale', async () => {
 					await ensureTransferReverts();
 
-					// now give SNX rate
-					await updateAggregatorRates(exchangeRates, [SNX], ['1'].map(toUnit));
+					// now give MIME rate
+					await updateAggregatorRates(exchangeRates, [MIME], ['1'].map(toUnit));
 					await debtCache.takeDebtSnapshot();
 
 					await ensureTransferReverts();
@@ -737,7 +737,7 @@ contract('BaseSynthetix', async accounts => {
 					await updateAggregatorRates(exchangeRates, [mETH], ['100'].map(toUnit));
 					await debtCache.takeDebtSnapshot();
 
-					// now SNX transfer should work
+					// now MIME transfer should work
 					await baseSynthetix.transfer(account2, value, { from: account1 });
 					await baseSynthetix.transferFrom(account2, account1, value, {
 						from: account3,
@@ -746,8 +746,8 @@ contract('BaseSynthetix', async accounts => {
 			});
 
 			describe('when the user has no debt', () => {
-				it('should allow transfer if the exchange rate for SNX is stale', async () => {
-					// SNX transfer should work
+				it('should allow transfer if the exchange rate for MIME is stale', async () => {
+					// MIME transfer should work
 					await baseSynthetix.transfer(account2, value, { from: account1 });
 					await baseSynthetix.transferFrom(account2, account1, value, {
 						from: account3,
@@ -755,7 +755,7 @@ contract('BaseSynthetix', async accounts => {
 				});
 
 				it('should allow transfer if the exchange rate for any synth is stale', async () => {
-					// now SNX transfer should work
+					// now MIME transfer should work
 					await baseSynthetix.transfer(account2, value, { from: account1 });
 					await baseSynthetix.transferFrom(account2, account1, value, {
 						from: account3,
@@ -764,7 +764,7 @@ contract('BaseSynthetix', async accounts => {
 			});
 		});
 
-		describe('when the user holds SNX', () => {
+		describe('when the user holds MIME', () => {
 			beforeEach(async () => {
 				await baseSynthetix.transfer(account1, toUnit('1000'), {
 					from: owner,
@@ -793,7 +793,7 @@ contract('BaseSynthetix', async accounts => {
 						// Ensure the transfer fails as all the synthetix are in escrow
 						await assert.revert(
 							baseSynthetix.transfer(account2, toUnit('990'), { from: account1 }),
-							'Cannot transfer staked or escrowed SNX'
+							'Cannot transfer staked or escrowed MIME'
 						);
 					});
 				});
@@ -814,7 +814,7 @@ contract('BaseSynthetix', async accounts => {
 				baseSynthetix.transfer(account2, toUnit(issuedSynthetixs), {
 					from: account1,
 				}),
-				'Cannot transfer staked or escrowed SNX'
+				'Cannot transfer staked or escrowed MIME'
 			);
 		});
 
@@ -917,7 +917,7 @@ contract('BaseSynthetix', async accounts => {
 			it('should transfer using the ERC20 transferFrom function @gasprofile', async () => {
 				const previousOwnerBalance = await baseSynthetix.balanceOf(owner);
 
-				// Approve account1 to act on our behalf for 10 SNX.
+				// Approve account1 to act on our behalf for 10 MIME.
 				await baseSynthetix.approve(account1, toUnit('10'), { from: owner });
 
 				// Assert that transferFrom works.
@@ -925,7 +925,7 @@ contract('BaseSynthetix', async accounts => {
 					from: account1,
 				});
 
-				// Assert that account2 has 10 SNX and owner has 10 less SNX
+				// Assert that account2 has 10 MIME and owner has 10 less MIME
 				assert.bnEqual(await baseSynthetix.balanceOf(account2), toUnit('10'));
 				assert.bnEqual(
 					await baseSynthetix.balanceOf(owner),

@@ -6,7 +6,7 @@ import "./IVirtualSynth.sol";
 // https://docs.synthetix.io/contracts/source/interfaces/isynthetix
 interface ISynthetix {
     // Views
-    function anySynthOrSNXRateIsInvalid() external view returns (bool anyRateInvalid);
+    function anySynthOrMIMERateIsInvalid() external view returns (bool anyRateInvalid);
 
     function availableCurrencyKeys() external view returns (bytes32[] memory);
 

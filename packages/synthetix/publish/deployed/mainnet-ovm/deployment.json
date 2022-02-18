@@ -522,8 +522,8 @@
 			"txn": "",
 			"network": "mainnet"
 		},
-		"StakingRewardsSNXWETHUniswapV3": {
-			"name": "StakingRewardsSNXWETHUniswapV3",
+		"StakingRewardsMIMEWETHUniswapV3": {
+			"name": "StakingRewardsMIMEWETHUniswapV3",
 			"address": "0xfD49C7EE330fE060ca66feE33d49206eB96F146D",
 			"source": "StakingRewards",
 			"link": "https://explorer.optimism.io/address/0xfD49C7EE330fE060ca66feE33d49206eB96F146D",
@@ -10494,7 +10494,7 @@
 						{
 							"indexed": false,
 							"internalType": "uint256",
-							"name": "snxRewards",
+							"name": "MIMERewards",
 							"type": "uint256"
 						}
 					],
@@ -12809,7 +12809,7 @@
 						{
 							"indexed": false,
 							"internalType": "uint256",
-							"name": "snxRedeemed",
+							"name": "MIMERedeemed",
 							"type": "uint256"
 						},
 						{
@@ -13162,7 +13162,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "anySynthOrSNXRateIsInvalid",
+					"name": "anySynthOrMIMERateIsInvalid",
 					"outputs": [
 						{
 							"internalType": "bool",
@@ -16576,7 +16576,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "anySynthOrSNXRateIsInvalid",
+					"name": "anySynthOrMIMERateIsInvalid",
 					"outputs": [
 						{
 							"internalType": "bool",
@@ -21410,7 +21410,7 @@
 					"outputs": [
 						{
 							"internalType": "uint256[]",
-							"name": "snxIssuedDebts",
+							"name": "MIMEIssuedDebts",
 							"type": "uint256[]"
 						}
 					],
@@ -21651,7 +21651,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "totalNonSnxBackedDebt",
+					"name": "totalNonMIMEBackedDebt",
 					"outputs": [
 						{
 							"internalType": "uint256",
@@ -27122,7 +27122,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "anySynthOrSNXRateIsInvalid",
+					"name": "anySynthOrMIMERateIsInvalid",
 					"outputs": [
 						{
 							"internalType": "bool",

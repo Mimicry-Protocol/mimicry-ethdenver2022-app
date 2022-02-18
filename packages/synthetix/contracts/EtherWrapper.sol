@@ -32,7 +32,7 @@ contract EtherWrapper is Owned, Pausable, MixinResolver, MixinSystemSettings, IE
     bytes32 internal constant mUSD = "mUSD";
     bytes32 internal constant mETH = "mETH";
     bytes32 internal constant ETH = "ETH";
-    bytes32 internal constant SNX = "SNX";
+    bytes32 internal constant MIME = "MIME";
 
     /* ========== ADDRESS RESOLVER CONFIGURATION ========== */
     bytes32 private constant CONTRACT_SYNTHmETH = "SynthmETH";

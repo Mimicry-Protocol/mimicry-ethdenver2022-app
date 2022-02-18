@@ -60,7 +60,7 @@ contract CollateralManager is ICollateralManager, Owned, Pausable, MixinResolver
     // The factor that will scale the utilisation ratio.
     uint public utilisationMultiplier = 1e18;
 
-    // The maximum amount of debt in mUSD that can be issued by non snx collateral.
+    // The maximum amount of debt in mUSD that can be issued by non MIME collateral.
     uint public maxDebt;
 
     // The rate that determines the skew limit maximum.
@@ -224,17 +224,17 @@ contract CollateralManager is ICollateralManager, Owned, Pausable, MixinResolver
     }
 
     function getBorrowRate() public view returns (uint borrowRate, bool anyRateIsInvalid) {
-        // get the snx backed debt.
-        uint snxDebt = _issuer().totalIssuedSynths(mUSD, true);
+        // get the MIME backed debt.
+        uint MIMEDebt = _issuer().totalIssuedSynths(mUSD, true);
 
-        // now get the non snx backed debt.
-        (uint nonSnxDebt, bool ratesInvalid) = totalLong();
+        // now get the non MIME backed debt.
+        (uint nonMIMEDebt, bool ratesInvalid) = totalLong();
 
         // the total.
-        uint totalDebt = snxDebt.add(nonSnxDebt);
+        uint totalDebt = MIMEDebt.add(nonMIMEDebt);
 
         // now work out the utilisation ratio, and divide through to get a per second value.
-        uint utilisation = nonSnxDebt.divideDecimal(totalDebt).divideDecimal(SECONDS_IN_A_YEAR);
+        uint utilisation = nonMIMEDebt.divideDecimal(totalDebt).divideDecimal(SECONDS_IN_A_YEAR);
 
         // scale it by the utilisation multiplier.
         uint scaledUtilisation = utilisation.multiplyDecimal(utilisationMultiplier);

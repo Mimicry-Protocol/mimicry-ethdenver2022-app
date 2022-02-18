@@ -58,7 +58,7 @@ Remaining TODO:
 
 Synthetix is a crypto-backed synthetic asset platform.
 
-It is a multi-token system, powered by SNX, the Synthetix Network Token. SNX holders can stake SNX to issue Synths, on-chain synthetic assets via the [Staking dApp](https://staking.synthetix.io) The network currently supports an ever growing [list of synthetic assets](https://www.synthetix.io/synths/). Please see the [list of the deployed contracts on MAIN and TESTNETS](https://docs.synthetix.io/addresses/)
+It is a multi-token system, powered by MIME, the Synthetix Network Token. MIME holders can stake MIME to issue Synths, on-chain synthetic assets via the [Staking dApp](https://staking.synthetix.io) The network currently supports an ever growing [list of synthetic assets](https://www.synthetix.io/synths/). Please see the [list of the deployed contracts on MAIN and TESTNETS](https://docs.synthetix.io/addresses/)
 Synths can be traded using [Kwenta](https://kwenta.io)
 
 Synthetix uses a proxy system so that upgrades will not be disruptive to the functionality of the contract. This smooths user interaction, since new functionality will become available without any interruption in their experience. It is also transparent to the community at large, since each upgrade is accompanied by events announcing those upgrades. New releases are managed via the [Synthetix Improvement Proposal (SIP)](https://sips.synthetix.io/all-sip) system similar to the [EIPs](https://eips.ethereum.org/all)
@@ -134,8 +134,8 @@ contract MyContract {
   // see https://docs.synthetix.io/addresses for addresses in mainnet and testnets
   IAddressResolver public synthetixResolver;
 
-  constructor(IAddressResolver _snxResolver) public {
-    synthetixResolver = _snxResolver;
+  constructor(IAddressResolver _MIMEResolver) public {
+    synthetixResolver = _MIMEResolver;
   }
 
   function synthetixIssue() external {
@@ -166,7 +166,7 @@ contract MyContract {
 - `getStakingRewards({ network })` Return the list of staking reward contracts available.
 - `getSynths({ network })` Return the list of synths for a network
 - `getTarget({ network })` Return the information about a contract's `address` and `source` file. The contract names are those specified in [docs.synthetix.io/addresses](https://docs.synthetix.io/addresses)
-- `getTokens({ network })` Return the list of tokens (synths and `SNX`) used in the system, along with their addresses.
+- `getTokens({ network })` Return the list of tokens (synths and `MIME`) used in the system, along with their addresses.
 - `getUsers({ network })` Return the list of user accounts within the Synthetix protocol (e.g. `owner`, `fee`, etc)
 - `getVersions({ network, byContract = false })` Return the list of deployed versions to the network keyed by tagged version. If `byContract` is `true`, it keys by `contract` name.
 - `networks` Return the list of supported networks
@@ -175,9 +175,9 @@ contract MyContract {
 #### Via code
 
 ```javascript
-const snx = require('synthetix');
+const MIME = require('synthetix');
 
-snx.getAST();
+MIME.getAST();
 /*
 { 'contracts/AddressResolver.sol':
    { imports:
@@ -194,7 +194,7 @@ snx.getAST();
      libraries: {} },
 */
 
-snx.getAST({ source: 'Synthetix.sol' });
+MIME.getAST({ source: 'Synthetix.sol' });
 /*
 { imports:
    [ 'contracts/ExternStateToken.sol',
@@ -225,11 +225,11 @@ snx.getAST({ source: 'Synthetix.sol' });
 */
 
 // Get the path to the network
-snx.getPathToNetwork({ network: 'mainnet' });
+MIME.getPathToNetwork({ network: 'mainnet' });
 //'.../Synthetixio/synthetix/publish/deployed/mainnet'
 
 // retrieve an object detailing the contract ABI and bytecode
-snx.getSource({ network: 'rinkeby', contract: 'Proxy' });
+MIME.getSource({ network: 'rinkeby', contract: 'Proxy' });
 /*
 {
   bytecode: '0..0',
@@ -237,7 +237,7 @@ snx.getSource({ network: 'rinkeby', contract: 'Proxy' });
 }
 */
 
-snx.getSuspensionReasons();
+MIME.getSuspensionReasons();
 /*
 {
 	1: 'System Upgrade',
@@ -248,11 +248,11 @@ snx.getSuspensionReasons();
 */
 
 // retrieve the array of synths used
-snx.getSynths({ network: 'rinkeby' }).map(({ name }) => name);
+MIME.getSynths({ network: 'rinkeby' }).map(({ name }) => name);
 // ['mUSD', 'sEUR', ...]
 
 // retrieve an object detailing the contract deployed to the given network.
-snx.getTarget({ network: 'rinkeby', contract: 'ProxySynthetix' });
+MIME.getTarget({ network: 'rinkeby', contract: 'ProxySynthetix' });
 /*
 {
 	name: 'ProxySynthetix',
@@ -266,7 +266,7 @@ snx.getTarget({ network: 'rinkeby', contract: 'ProxySynthetix' });
 */
 
 // retrieve the list of system user addresses
-snx.getUsers({ network: 'mainnet' });
+MIME.getUsers({ network: 'mainnet' });
 /*
 [ { name: 'owner',
     address: '0xEb3107117FEAd7de89Cd14D463D340A2E6917769' },
@@ -282,7 +282,7 @@ snx.getUsers({ network: 'mainnet' });
     address: '0x0000000000000000000000000000000000000000' } ]
 */
 
-snx.getVersions();
+MIME.getVersions();
 /*
 { 'v2.21.12-107':
    { tag: 'v2.21.12-107',
@@ -296,10 +296,10 @@ snx.getVersions();
 }
 */
 
-snx.networks;
+MIME.networks;
 // [ 'local', 'kovan', 'rinkeby', 'ropsten', 'mainnet' ]
 
-snx.toBytes32('mUSD');
+MIME.toBytes32('mUSD');
 // '0x7355534400000000000000000000000000000000000000000000000000000000'
 ```
 

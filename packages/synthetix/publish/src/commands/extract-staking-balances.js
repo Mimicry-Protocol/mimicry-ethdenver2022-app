@@ -34,7 +34,7 @@ async function extractStakingBalances({ network = DEFAULTS.network, deploymentPa
 		path,
 	});
 
-	const { abi: snxABI } = getSource({ contract: 'Synthetix' });
+	const { abi: MIMEABI } = getSource({ contract: 'Synthetix' });
 
 	/** *********** Replace Settings Here *********** **/
 
@@ -154,8 +154,8 @@ async function extractStakingBalances({ network = DEFAULTS.network, deploymentPa
 
 	// Looks for all transfers into the staking contract
 	async function fetchStakedBalances() {
-		const iSynth = new ethers.Contract(iSynthAddress, snxABI, provider);
-		const stakingContract = new ethers.Contract(stakingAddress, snxABI, provider);
+		const iSynth = new ethers.Contract(iSynthAddress, MIMEABI, provider);
+		const stakingContract = new ethers.Contract(stakingAddress, MIMEABI, provider);
 
 		const currentBlock = await provider.getBlockNumber();
 		const deploymentBlockDetails = await provider.getBlock(deploymentBlock);

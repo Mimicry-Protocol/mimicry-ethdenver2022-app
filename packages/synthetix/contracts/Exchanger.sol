@@ -382,7 +382,7 @@ contract Exchanger is Owned, MixinSystemSettings, IExchanger {
         }
     }
 
-    function _updateSNXIssuedDebtOnExchange(bytes32[2] memory currencyKeys, uint[2] memory currencyRates) internal {
+    function _updateMIMEIssuedDebtOnExchange(bytes32[2] memory currencyKeys, uint[2] memory currencyRates) internal {
         bool includesmUSD = currencyKeys[0] == mUSD || currencyKeys[1] == mUSD;
         uint numKeys = includesmUSD ? 2 : 3;
 
@@ -527,7 +527,7 @@ contract Exchanger is Owned, MixinSystemSettings, IExchanger {
         // Nothing changes as far as issuance data goes because the total value in the system hasn't changed.
         // But we will update the debt snapshot in case exchange rates have fluctuated since the last exchange
         // in these currencies
-        _updateSNXIssuedDebtOnExchange(
+        _updateMIMEIssuedDebtOnExchange(
             [sourceCurrencyKey, destinationCurrencyKey],
             [entry.sourceRate, entry.destinationRate]
         );

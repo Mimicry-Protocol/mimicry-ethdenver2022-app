@@ -26,10 +26,10 @@ function itCanLiquidate({ ctx }) {
 			await SystemSettings.setLiquidationRatio(ethers.utils.parseEther('0.5'));
 		});
 
-		before('ensure someUser has SNX', async () => {
+		before('ensure someUser has MIME', async () => {
 			await ensureBalance({
 				ctx,
-				symbol: 'SNX',
+				symbol: 'MIME',
 				user: someUser,
 				balance: ethers.utils.parseEther('100'),
 			});
@@ -45,15 +45,15 @@ function itCanLiquidate({ ctx }) {
 		});
 
 		before('exchange rate is set', async () => {
-			exchangeRate = await getRate({ ctx, symbol: 'SNX' });
+			exchangeRate = await getRate({ ctx, symbol: 'MIME' });
 			await addAggregatorAndSetRate({
 				ctx,
-				currencyKey: toBytes32('SNX'),
+				currencyKey: toBytes32('MIME'),
 				rate: '1000000000000000000',
 			});
 		});
 
-		before('someUser stakes their SNX', async () => {
+		before('someUser stakes their MIME', async () => {
 			await Synthetix.connect(someUser).issueMaxSynths();
 		});
 
@@ -65,7 +65,7 @@ function itCanLiquidate({ ctx }) {
 			before('exchange rate changes to allow liquidation', async () => {
 				await addAggregatorAndSetRate({
 					ctx,
-					currencyKey: toBytes32('SNX'),
+					currencyKey: toBytes32('MIME'),
 					rate: '200000000000000000',
 				});
 			});
@@ -77,7 +77,7 @@ function itCanLiquidate({ ctx }) {
 			after('restore exchange rate', async () => {
 				await addAggregatorAndSetRate({
 					ctx,
-					currencyKey: toBytes32('SNX'),
+					currencyKey: toBytes32('MIME'),
 					rate: exchangeRate.toString(),
 				});
 			});
@@ -96,15 +96,15 @@ function itCanLiquidate({ ctx }) {
 				});
 
 				describe('getting liquidated', () => {
-					let beforeDebt, beforeDebttedSnx;
-					let beforeBalance, beforeCredittedSnx;
+					let beforeDebt, beforeDebttedMIME;
+					let beforeBalance, beforeCredittedMIME;
 
 					before('otherUser calls liquidateDelinquentAccount', async () => {
 						beforeDebt = (
 							await Synthetix.debtBalanceOf(someUser.address, toBytes32('mUSD'))
 						).toString();
-						beforeDebttedSnx = await Synthetix.balanceOf(someUser.address);
-						beforeCredittedSnx = await Synthetix.balanceOf(otherUser.address);
+						beforeDebttedMIME = await Synthetix.balanceOf(someUser.address);
+						beforeCredittedMIME = await Synthetix.balanceOf(otherUser.address);
 						beforeBalance = await SynthmUSD.balanceOf(otherUser.address);
 
 						await Synthetix.connect(otherUser).liquidateDelinquentAccount(
@@ -124,13 +124,13 @@ function itCanLiquidate({ ctx }) {
 						assert.bnLt(await SynthmUSD.balanceOf(otherUser.address), beforeBalance);
 					});
 
-					it('transfers SNX from otherUser', async () => {
-						const amountSent = beforeDebttedSnx.sub(await Synthetix.balanceOf(someUser.address));
+					it('transfers MIME from otherUser', async () => {
+						const amountSent = beforeDebttedMIME.sub(await Synthetix.balanceOf(someUser.address));
 
 						assert.bnNotEqual(amountSent, '0');
 						assert.bnEqual(
 							await Synthetix.balanceOf(otherUser.address),
-							beforeCredittedSnx.add(amountSent)
+							beforeCredittedMIME.add(amountSent)
 						);
 					});
 				});

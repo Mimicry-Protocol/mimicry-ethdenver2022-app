@@ -24,7 +24,7 @@ const commands = {
 	removeSynths: require('../../publish/src/commands/remove-synths').removeSynths,
 };
 
-const snx = require('../..');
+const MIME = require('../..');
 const {
 	toBytes32,
 	constants: {
@@ -52,7 +52,7 @@ const {
 		ATOMIC_TWAP_WINDOW,
 	},
 	wrap,
-} = snx;
+} = MIME;
 
 const concurrency = isCI ? 1 : 10;
 const limitPromise = pLimit(concurrency);
@@ -531,7 +531,7 @@ describe('publish scripts', () => {
 						'iETH2',
 						'iETH3',
 						'iBTC',
-						'SNXBalancer',
+						'MIMEBalancer',
 					];
 
 					await commands.deployStakingRewards({
@@ -713,7 +713,7 @@ describe('publish scripts', () => {
 				});
 			});
 
-			describe('when ExchangeRates has prices SNX $0.30 and all synths $1', () => {
+			describe('when ExchangeRates has prices MIME $0.30 and all synths $1', () => {
 				beforeEach(async () => {
 					// set default issuance of 0.2
 					const tx = await SystemSettings.setIssuanceRatio(
@@ -724,7 +724,7 @@ describe('publish scripts', () => {
 
 					// make sure exchange rates has prices for specific assets
 
-					const answersToSet = [{ asset: 'SNX', rate: 0.3 }].concat(
+					const answersToSet = [{ asset: 'MIME', rate: 0.3 }].concat(
 						synths.map(({ asset }) => {
 							// as the same assets are used for long and shorts, search by asset rather than
 							// name (currencyKey) here so that we don't accidentially override an inverse with
@@ -768,9 +768,9 @@ describe('publish scripts', () => {
 					}
 				});
 
-				describe('when transferring 100k SNX to user1', () => {
+				describe('when transferring 100k MIME to user1', () => {
 					beforeEach(async () => {
-						// transfer SNX to first account
+						// transfer MIME to first account
 						const tx = await Synthetix.transfer(
 							accounts.first.address,
 							ethers.utils.parseEther('100000'),
@@ -964,10 +964,10 @@ describe('publish scripts', () => {
 				beforeEach(async () => {
 					mockAggregator = await createMockAggregator();
 				});
-				describe('when Synthetix.anySynthOrSNXRateIsInvalid() is invoked', () => {
+				describe('when Synthetix.anySynthOrMIMERateIsInvalid() is invoked', () => {
 					it('then it returns true as expected', async () => {
-						const response = await Synthetix.anySynthOrSNXRateIsInvalid();
-						assert.strictEqual(response, true, 'anySynthOrSNXRateIsInvalid must be true');
+						const response = await Synthetix.anySynthOrMIMERateIsInvalid();
+						assert.strictEqual(response, true, 'anySynthOrMIMERateIsInvalid must be true');
 					});
 				});
 				describe('when one synth is configured to have a pricing aggregator', () => {
@@ -1012,16 +1012,16 @@ describe('publish scripts', () => {
 								// update rates
 								const synthsToUpdate = synths
 									.filter(({ name }) => name !== 'sEUR')
-									.concat({ asset: 'SNX', rate: 1 });
+									.concat({ asset: 'MIME', rate: 1 });
 
 								for (const { asset } of synthsToUpdate) {
 									await setAggregatorAnswer({ asset, rate: 1 });
 								}
 							});
-							describe('when Synthetix.anySynthOrSNXRateIsInvalid() is invoked', () => {
+							describe('when Synthetix.anySynthOrMIMERateIsInvalid() is invoked', () => {
 								it('then it returns true as sEUR still is', async () => {
-									const response = await Synthetix.anySynthOrSNXRateIsInvalid();
-									assert.strictEqual(response, true, 'anySynthOrSNXRateIsInvalid must be true');
+									const response = await Synthetix.anySynthOrMIMERateIsInvalid();
+									assert.strictEqual(response, true, 'anySynthOrMIMERateIsInvalid must be true');
 								});
 							});
 
@@ -1046,10 +1046,10 @@ describe('publish scripts', () => {
 									});
 								});
 
-								describe('when Synthetix.anySynthOrSNXRateIsInvalid() is invoked', () => {
+								describe('when Synthetix.anySynthOrMIMERateIsInvalid() is invoked', () => {
 									it('then it returns false as expected', async () => {
-										const response = await Synthetix.anySynthOrSNXRateIsInvalid();
-										assert.strictEqual(response, false, 'anySynthOrSNXRateIsInvalid must be false');
+										const response = await Synthetix.anySynthOrMIMERateIsInvalid();
+										assert.strictEqual(response, false, 'anySynthOrMIMERateIsInvalid must be false');
 									});
 								});
 							});
@@ -1115,7 +1115,7 @@ describe('publish scripts', () => {
 									'SystemStatus',
 								].map(contractName =>
 									callMethodWithRetry(
-										AddressResolver.getAddress(snx.toBytes32(contractName))
+										AddressResolver.getAddress(MIME.toBytes32(contractName))
 									).then(found => ({ contractName, ok: found === targets[contractName].address }))
 								)
 							);
@@ -1142,7 +1142,7 @@ describe('publish scripts', () => {
 							AddressResolver = getContract({ target: 'AddressResolver' });
 
 							const existingExchanger = await callMethodWithRetry(
-								AddressResolver.getAddress(snx.toBytes32('Exchanger'))
+								AddressResolver.getAddress(MIME.toBytes32('Exchanger'))
 							);
 
 							assert.strictEqual(existingExchanger, targets['Exchanger'].address);
@@ -1158,7 +1158,7 @@ describe('publish scripts', () => {
 							const targets = getTarget();
 
 							const actualExchanger = await callMethodWithRetry(
-								AddressResolver.getAddress(snx.toBytes32('Exchanger'))
+								AddressResolver.getAddress(MIME.toBytes32('Exchanger'))
 							);
 
 							assert.strictEqual(actualExchanger, targets['Exchanger'].address);

@@ -13,7 +13,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 		user1,
 		smockedMessenger,
 		rewardsDistribution,
-		snxBridgeToBase,
+		MIMEBridgeToBase,
 		SynthetixBridgeEscrow,
 		randomAddress,
 	] = accounts;
@@ -83,7 +83,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 					synthetix.address,
 					issuer.address,
 					rewardsDistribution,
-					snxBridgeToBase,
+					MIMEBridgeToBase,
 					rewardEscrow.address,
 					SynthetixBridgeEscrow,
 				],
@@ -97,7 +97,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 			synthetix.smocked.balanceOf.will.return.with(() => web3.utils.toWei('1'));
 			synthetix.smocked.transfer.will.return.with(() => true);
 			messenger.smocked.sendMessage.will.return.with(() => {});
-			messenger.smocked.xDomainMessageSender.will.return.with(() => snxBridgeToBase);
+			messenger.smocked.xDomainMessageSender.will.return.with(() => MIMEBridgeToBase);
 			issuer.smocked.debtBalanceOf.will.return.with(() => '0');
 			rewardEscrow.smocked.burnForMigration.will.return.with(() => [escrowAmount, emptyArray]);
 			flexibleStorage.smocked.getUIntValue.will.return.with(() => '3000000');
@@ -145,7 +145,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 
 					it('only one message is sent', async () => {
 						assert.equal(messenger.smocked.sendMessage.calls.length, 1);
-						assert.equal(messenger.smocked.sendMessage.calls[0][0], snxBridgeToBase);
+						assert.equal(messenger.smocked.sendMessage.calls[0][0], MIMEBridgeToBase);
 						const expectedData = getDataOfEncodedFncCall({
 							contract: 'SynthetixBridgeToBase',
 							fnc: 'finalizeDeposit',
@@ -187,7 +187,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 
 					it('only one message is sent', async () => {
 						assert.equal(messenger.smocked.sendMessage.calls.length, 1);
-						assert.equal(messenger.smocked.sendMessage.calls[0][0], snxBridgeToBase);
+						assert.equal(messenger.smocked.sendMessage.calls[0][0], MIMEBridgeToBase);
 						const expectedData = getDataOfEncodedFncCall({
 							contract: 'SynthetixBridgeToBase',
 							fnc: 'finalizeDeposit',
@@ -279,7 +279,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 						it('three messages are relayed from L1 to L2: finalizeEscrowMigration & finalizeDeposit', async () => {
 							assert.equal(messenger.smocked.sendMessage.calls.length, 3);
 
-							assert.equal(messenger.smocked.sendMessage.calls[0][0], snxBridgeToBase);
+							assert.equal(messenger.smocked.sendMessage.calls[0][0], MIMEBridgeToBase);
 							let expectedData = getDataOfEncodedFncCall({
 								contract: 'ISynthetixBridgeToBase',
 								fnc: 'finalizeEscrowMigration',
@@ -288,7 +288,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 							assert.equal(messenger.smocked.sendMessage.calls[0][1], expectedData);
 							assert.equal(messenger.smocked.sendMessage.calls[0][2], (3e6).toString());
 
-							assert.equal(messenger.smocked.sendMessage.calls[1][0], snxBridgeToBase);
+							assert.equal(messenger.smocked.sendMessage.calls[1][0], MIMEBridgeToBase);
 							expectedData = getDataOfEncodedFncCall({
 								contract: 'ISynthetixBridgeToBase',
 								fnc: 'finalizeEscrowMigration',
@@ -297,7 +297,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 							assert.equal(messenger.smocked.sendMessage.calls[1][1], expectedData);
 							assert.equal(messenger.smocked.sendMessage.calls[1][2], (3e6).toString());
 
-							assert.equal(messenger.smocked.sendMessage.calls[2][0], snxBridgeToBase);
+							assert.equal(messenger.smocked.sendMessage.calls[2][0], MIMEBridgeToBase);
 							expectedData = getDataOfEncodedFncCall({
 								contract: 'SynthetixBridgeToBase',
 								fnc: 'finalizeDeposit',
@@ -308,7 +308,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 							assert.equal(messenger.smocked.sendMessage.calls[2][2], (3e6).toString());
 						});
 
-						it('SNX is transferred from the user to the deposit contract', async () => {
+						it('MIME is transferred from the user to the deposit contract', async () => {
 							assert.equal(synthetix.smocked.transferFrom.calls[0][0], user1);
 							assert.equal(synthetix.smocked.transferFrom.calls[0][1], SynthetixBridgeEscrow);
 							assert.equal(synthetix.smocked.transferFrom.calls[0][2].toString(), amount);
@@ -337,7 +337,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 
 						it('one message is relayed: finalizeDeposit', async () => {
 							assert.equal(messenger.smocked.sendMessage.calls.length, 1);
-							assert.equal(messenger.smocked.sendMessage.calls[0][0], snxBridgeToBase);
+							assert.equal(messenger.smocked.sendMessage.calls[0][0], MIMEBridgeToBase);
 							const expectedData = getDataOfEncodedFncCall({
 								contract: 'SynthetixBridgeToBase',
 								fnc: 'finalizeDeposit',
@@ -368,7 +368,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 
 						it('two messages are relayed: finalizeEscrowMigration', async () => {
 							assert.equal(messenger.smocked.sendMessage.calls.length, 2);
-							assert.equal(messenger.smocked.sendMessage.calls[0][0], snxBridgeToBase);
+							assert.equal(messenger.smocked.sendMessage.calls[0][0], MIMEBridgeToBase);
 							let expectedData = getDataOfEncodedFncCall({
 								contract: 'ISynthetixBridgeToBase',
 								fnc: 'finalizeEscrowMigration',
@@ -377,7 +377,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 							assert.equal(messenger.smocked.sendMessage.calls[0][1], expectedData);
 							assert.equal(messenger.smocked.sendMessage.calls[0][2], (3e6).toString());
 
-							assert.equal(messenger.smocked.sendMessage.calls[1][0], snxBridgeToBase);
+							assert.equal(messenger.smocked.sendMessage.calls[1][0], MIMEBridgeToBase);
 							expectedData = getDataOfEncodedFncCall({
 								contract: 'ISynthetixBridgeToBase',
 								fnc: 'finalizeEscrowMigration',
@@ -420,7 +420,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 						txn = await instance.depositReward(amount, { from: user1 });
 					});
 
-					it('then SNX is transferred from the account to the bridge escrow', async () => {
+					it('then MIME is transferred from the account to the bridge escrow', async () => {
 						assert.equal(synthetix.smocked.transferFrom.calls[0][0], user1);
 						assert.equal(synthetix.smocked.transferFrom.calls[0][1], SynthetixBridgeEscrow);
 						assert.equal(synthetix.smocked.transferFrom.calls[0][2].toString(), amount);
@@ -428,7 +428,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 
 					it('and the message is relayed', async () => {
 						assert.equal(messenger.smocked.sendMessage.calls.length, 1);
-						assert.equal(messenger.smocked.sendMessage.calls[0][0], snxBridgeToBase);
+						assert.equal(messenger.smocked.sendMessage.calls[0][0], MIMEBridgeToBase);
 						const expectedData = getDataOfEncodedFncCall({
 							contract: 'SynthetixBridgeToBase',
 							fnc: 'finalizeRewardDeposit',
@@ -466,7 +466,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 
 					it('then the message is relayed', async () => {
 						assert.equal(messenger.smocked.sendMessage.calls.length, 1);
-						assert.equal(messenger.smocked.sendMessage.calls[0][0], snxBridgeToBase);
+						assert.equal(messenger.smocked.sendMessage.calls[0][0], MIMEBridgeToBase);
 
 						const expectedData = getDataOfEncodedFncCall({
 							contract: 'SynthetixBridgeToBase',
@@ -478,7 +478,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 						assert.equal(messenger.smocked.sendMessage.calls[0][2], (3e6).toString());
 					});
 
-					it('SNX is transferred from the bridge to the bridge escrow', async () => {
+					it('MIME is transferred from the bridge to the bridge escrow', async () => {
 						assert.equal(synthetix.smocked.transfer.calls[0][0], SynthetixBridgeEscrow);
 						assert.equal(synthetix.smocked.transfer.calls[0][1].toString(), amount);
 					});
@@ -533,7 +533,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 						});
 					});
 
-					it('then SNX is minted via MintableSynthetix.finalizeWithdrawal', async () => {
+					it('then MIME is minted via MintableSynthetix.finalizeWithdrawal', async () => {
 						assert.equal(synthetix.smocked.transferFrom.calls.length, 1);
 						assert.equal(synthetix.smocked.transferFrom.calls[0][0], SynthetixBridgeEscrow);
 						assert.equal(synthetix.smocked.transferFrom.calls[0][1], user1);

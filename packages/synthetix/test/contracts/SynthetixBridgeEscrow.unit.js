@@ -7,7 +7,7 @@ const { smockit } = require('@eth-optimism/smock');
 const SynthetixBridgeEscrow = artifacts.require('SynthetixBridgeEscrow');
 
 contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
-	const [owner, snxBridgeToOptimism] = accounts;
+	const [owner, MIMEBridgeToOptimism] = accounts;
 
 	it('ensure only known functions are mutative', () => {
 		ensureOnlyExpectedMutativeFunctions({
@@ -45,7 +45,7 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 					it('reverts when not invoked by the owner', async () => {
 						await onlyGivenAddressCanInvoke({
 							fnc: instance.approveBridge,
-							args: [IERC20.address, snxBridgeToOptimism, '100'],
+							args: [IERC20.address, MIMEBridgeToOptimism, '100'],
 							accounts,
 							reason: 'Only the contract owner may perform this action',
 							address: owner,
@@ -57,18 +57,18 @@ contract('SynthetixBridgeToOptimism (unit tests)', accounts => {
 					let txn;
 					const amount = '100';
 					beforeEach(async () => {
-						txn = await instance.approveBridge(IERC20.address, snxBridgeToOptimism, amount, {
+						txn = await instance.approveBridge(IERC20.address, MIMEBridgeToOptimism, amount, {
 							from: owner,
 						});
 					});
 
 					it('an BridgeApproval event is emitted', async () => {
-						assert.eventEqual(txn, 'BridgeApproval', [IERC20.address, snxBridgeToOptimism, amount]);
+						assert.eventEqual(txn, 'BridgeApproval', [IERC20.address, MIMEBridgeToOptimism, amount]);
 					});
 
 					it('approve is called via Synthetix', async () => {
 						assert.equal(IERC20.smocked.approve.calls.length, 1);
-						assert.equal(IERC20.smocked.approve.calls[0][0], snxBridgeToOptimism);
+						assert.equal(IERC20.smocked.approve.calls[0][0], MIMEBridgeToOptimism);
 						assert.equal(IERC20.smocked.approve.calls[0][1], amount);
 					});
 				});

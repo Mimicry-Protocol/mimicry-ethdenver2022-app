@@ -2580,7 +2580,7 @@
 						{
 							"indexed": false,
 							"internalType": "uint256",
-							"name": "snxRewards",
+							"name": "MIMERewards",
 							"type": "uint256"
 						}
 					],
@@ -4055,7 +4055,7 @@
 						{
 							"indexed": false,
 							"internalType": "uint256",
-							"name": "snxRedeemed",
+							"name": "MIMERedeemed",
 							"type": "uint256"
 						},
 						{
@@ -4466,7 +4466,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "anySynthOrSNXRateIsInvalid",
+					"name": "anySynthOrMIMERateIsInvalid",
 					"outputs": [
 						{
 							"internalType": "bool",
@@ -7277,7 +7277,7 @@
 				{
 					"constant": false,
 					"inputs": [],
-					"name": "exchangeEtherForSNX",
+					"name": "exchangeEtherForMIME",
 					"outputs": [
 						{
 							"name": "",
@@ -7611,7 +7611,7 @@
 							"type": "uint256"
 						}
 					],
-					"name": "exchangeEtherForSNXAtRate",
+					"name": "exchangeEtherForMIMEAtRate",
 					"outputs": [
 						{
 							"name": "",
@@ -7719,7 +7719,7 @@
 							"type": "uint256"
 						}
 					],
-					"name": "exchangeSynthsForSNXAtRate",
+					"name": "exchangeSynthsForMIMEAtRate",
 					"outputs": [
 						{
 							"name": "",
@@ -7879,7 +7879,7 @@
 							"type": "uint256"
 						}
 					],
-					"name": "exchangeSynthsForSNX",
+					"name": "exchangeSynthsForMIME",
 					"outputs": [
 						{
 							"name": "",
@@ -14584,7 +14584,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "anySynthOrSNXRateIsInvalid",
+					"name": "anySynthOrMIMERateIsInvalid",
 					"outputs": [
 						{
 							"internalType": "bool",
@@ -23487,7 +23487,7 @@
 					"outputs": [
 						{
 							"internalType": "uint256[]",
-							"name": "snxIssuedDebts",
+							"name": "MIMEIssuedDebts",
 							"type": "uint256[]"
 						}
 					],
@@ -23728,7 +23728,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "totalNonSnxBackedDebt",
+					"name": "totalNonMIMEBackedDebt",
 					"outputs": [
 						{
 							"internalType": "uint256",

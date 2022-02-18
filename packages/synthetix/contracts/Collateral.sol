@@ -257,7 +257,7 @@ contract Collateral is ICollateralLoan, Owned, MixinSystemSettings {
         // 3. Collateral >= minimum collateral size.
         require(collateral >= minCollateral, "Not enough collateral");
 
-        // 4. Check we haven't hit the debt cap for non snx collateral.
+        // 4. Check we haven't hit the debt cap for non MIME collateral.
         (bool canIssue, bool anyRateIsInvalid) = manager.exceedsDebtLimit(amount, currency);
 
         // 5. Check if we've hit the debt cap or any rate is invalid.

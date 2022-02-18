@@ -242,7 +242,7 @@ contract Wrapper is Owned, Pausable, MixinResolver, MixinSystemSettings, IWrappe
             synthmUSD().issue(address(wrapperFactory()), excessAmountUsd);
         }
 
-        // in the case of a negative fee extra synths will be issued, billed to the snx stakers
+        // in the case of a negative fee extra synths will be issued, billed to the MIME stakers
         _setTargetSynthIssued(reserves);
     }
 
@@ -264,7 +264,7 @@ contract Wrapper is Owned, Pausable, MixinResolver, MixinSystemSettings, IWrappe
             synthmUSD().issue(address(wrapperFactory()), excessAmountUsd);
         }
 
-        // in the case of a negative fee fewer synths will be burned, billed to the snx stakers
+        // in the case of a negative fee fewer synths will be burned, billed to the MIME stakers
         _setTargetSynthIssued(reserves);
     }
 

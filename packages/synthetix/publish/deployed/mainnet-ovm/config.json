@@ -167,7 +167,7 @@
 	"StakingRewardsmUSDDAIUniswapV3": {
 		"deploy": false
 	},
-	"StakingRewardsSNXWETHUniswapV3": {
+	"StakingRewardsMIMEWETHUniswapV3": {
 		"deploy": false
 	},
 	"SystemSettingsLib": {

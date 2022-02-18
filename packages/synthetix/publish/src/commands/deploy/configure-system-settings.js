@@ -234,7 +234,7 @@ module.exports = async ({
 		expected: allowZeroOrUpdateIfNonZero(minimumStakeTime),
 		write: 'setMinimumStakeTime',
 		writeArg: minimumStakeTime,
-		comment: 'Set the minimum amount of time SNX can be issued before any is burned (SIP-40)',
+		comment: 'Set the minimum amount of time MIME can be issued before any is burned (SIP-40)',
 	});
 
 	const debtSnapshotStaleTime = await getDeployParameter('DEBT_SNAPSHOT_STALE_TIME');
@@ -272,7 +272,7 @@ module.exports = async ({
 		expected: allowZeroOrUpdateIfNonZero(crossDomainEscrowGasLimit),
 		write: 'setCrossDomainMessageGasLimit',
 		writeArg: [1, crossDomainEscrowGasLimit],
-		comment: 'Set the gas limit for migrating escrowed SNX to L2',
+		comment: 'Set the gas limit for migrating escrowed MIME to L2',
 	});
 
 	const crossDomainRewardGasLimit = await getDeployParameter('CROSS_DOMAIN_REWARD_GAS_LIMIT');

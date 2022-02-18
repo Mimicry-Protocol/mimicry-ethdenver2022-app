@@ -10176,7 +10176,7 @@
 						{
 							"indexed": false,
 							"internalType": "uint256",
-							"name": "snxRewards",
+							"name": "MIMERewards",
 							"type": "uint256"
 						}
 					],
@@ -12567,7 +12567,7 @@
 						{
 							"indexed": false,
 							"internalType": "uint256",
-							"name": "snxRedeemed",
+							"name": "MIMERedeemed",
 							"type": "uint256"
 						},
 						{
@@ -12920,7 +12920,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "anySynthOrSNXRateIsInvalid",
+					"name": "anySynthOrMIMERateIsInvalid",
 					"outputs": [
 						{
 							"internalType": "bool",
@@ -16347,7 +16347,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "anySynthOrSNXRateIsInvalid",
+					"name": "anySynthOrMIMERateIsInvalid",
 					"outputs": [
 						{
 							"internalType": "bool",
@@ -21374,7 +21374,7 @@
 					"outputs": [
 						{
 							"internalType": "uint256[]",
-							"name": "snxIssuedDebts",
+							"name": "MIMEIssuedDebts",
 							"type": "uint256[]"
 						}
 					],
@@ -21615,7 +21615,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "totalNonSnxBackedDebt",
+					"name": "totalNonMIMEBackedDebt",
 					"outputs": [
 						{
 							"internalType": "uint256",
@@ -27089,7 +27089,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "anySynthOrSNXRateIsInvalid",
+					"name": "anySynthOrMIMERateIsInvalid",
 					"outputs": [
 						{
 							"internalType": "bool",

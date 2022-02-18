@@ -7,7 +7,7 @@ const { skipFeePeriod, skipMinimumStakeTime } = require('../utils/skip');
 
 function itCanStake({ ctx }) {
 	describe('staking and claiming', () => {
-		const SNXAmount = ethers.utils.parseEther('1000');
+		const MIMEAmount = ethers.utils.parseEther('1000');
 		const amountToIssueAndBurnmUSD = ethers.utils.parseEther('1');
 
 		let user;
@@ -20,8 +20,8 @@ function itCanStake({ ctx }) {
 			user = ctx.users.someUser;
 		});
 
-		before('ensure the user has enough SNX', async () => {
-			await ensureBalance({ ctx, symbol: 'SNX', user, balance: SNXAmount });
+		before('ensure the user has enough MIME', async () => {
+			await ensureBalance({ ctx, symbol: 'MIME', user, balance: MIMEAmount });
 		});
 
 		describe('when the user issues mUSD', () => {

@@ -88,7 +88,7 @@ contract FeePoolState is Owned, LimitedSetup {
      * @param debtRatio Debt of this account as a percentage of the global debt.
      * @param debtEntryIndex The index in the global debt ledger. synthetix.synthetixState().issuanceData(account)
      * @param currentPeriodStartDebtIndex The startingDebtIndex of the current fee period
-     * @dev onlyFeePool to call me on synthetix.issue() & synthetix.burn() calls to store the locked SNX
+     * @dev onlyFeePool to call me on synthetix.issue() & synthetix.burn() calls to store the locked MIME
      * per fee period so we know to allocate the correct proportions of fees and rewards per period
       accountIssuanceLedger[account][0] has the latest locked amount for the current period. This can be update as many time
       accountIssuanceLedger[account][1-2] has the last locked amount for a previous period they minted or burned

@@ -16,7 +16,7 @@ contract('SynthUtil', accounts => {
 	const [, ownerAccount, , account2] = accounts;
 	let synthUtil, mUSDContract, synthetix, exchangeRates, systemSettings, debtCache;
 
-	const [mUSD, mBTC, iBTC, SNX] = ['mUSD', 'mBTC', 'iBTC', 'SNX'].map(toBytes32);
+	const [mUSD, mBTC, iBTC, MIME] = ['mUSD', 'mBTC', 'iBTC', 'MIME'].map(toBytes32);
 	const synthKeys = [mUSD, mBTC, iBTC];
 	const synthPrices = [toUnit('1'), toUnit('5000'), toUnit('5000')];
 
@@ -54,7 +54,7 @@ contract('SynthUtil', accounts => {
 	beforeEach(async () => {
 		await updateAggregatorRates(
 			exchangeRates,
-			[mBTC, iBTC, SNX],
+			[mBTC, iBTC, MIME],
 			['5000', '5000', '0.2'].map(toUnit)
 		);
 		await debtCache.takeDebtSnapshot();

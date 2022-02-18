@@ -23,8 +23,8 @@ async function _readBalance({ ctx, symbol, user }) {
 }
 
 async function _getAmount({ ctx, symbol, user, amount }) {
-	if (symbol === 'SNX') {
-		await _getSNX({ ctx, user, amount });
+	if (symbol === 'MIME') {
+		await _getMIME({ ctx, user, amount });
 	} else if (symbol === 'WETH') {
 		await _getWETH({ ctx, user, amount });
 	} else if (symbol === 'mUSD') {
@@ -84,12 +84,12 @@ async function _getWETH({ ctx, user, amount }) {
 	await tx.wait();
 }
 
-async function _getSNX({ ctx, user, amount }) {
+async function _getMIME({ ctx, user, amount }) {
 	let { Synthetix } = ctx.contracts;
 
 	const ownerTransferable = await Synthetix.transferableSynthetix(ctx.users.owner.address);
 	if (ownerTransferable.lt(amount)) {
-		await _getSNXForOwner({ ctx, amount: amount.sub(ownerTransferable) });
+		await _getMIMEForOwner({ ctx, amount: amount.sub(ownerTransferable) });
 	}
 
 	Synthetix = Synthetix.connect(ctx.users.owner);
@@ -97,23 +97,23 @@ async function _getSNX({ ctx, user, amount }) {
 	await tx.wait();
 }
 
-async function _getSNXForOwner({ ctx, amount }) {
+async function _getMIMEForOwner({ ctx, amount }) {
 	if (!ctx.useOvm) {
-		throw new Error('There is no more SNX!');
+		throw new Error('There is no more MIME!');
 	} else {
 		if (ctx.l1) {
-			await _getSNXForOwnerOnL2ByDepositing({ ctx: ctx.l1, amount });
+			await _getMIMEForOwnerOnL2ByDepositing({ ctx: ctx.l1, amount });
 		} else {
-			await _getSNXForOwnerOnL2ByHackMinting({ ctx, amount });
+			await _getMIMEForOwnerOnL2ByHackMinting({ ctx, amount });
 		}
 	}
 }
 
-async function _getSNXForOwnerOnL2ByDepositing({ ctx, amount }) {
+async function _getMIMEForOwnerOnL2ByDepositing({ ctx, amount }) {
 	await deposit({ ctx, from: ctx.users.owner, to: ctx.users.owner, amount });
 }
 
-async function _getSNXForOwnerOnL2ByHackMinting({ ctx, amount }) {
+async function _getMIMEForOwnerOnL2ByHackMinting({ ctx, amount }) {
 	const owner = ctx.users.owner;
 
 	let { Synthetix, AddressResolver } = ctx.contracts;
@@ -144,8 +144,8 @@ async function _getmUSD({ ctx, user, amount }) {
 
 	let tx;
 
-	const requiredSNX = await _getSNXAmountRequiredFormUSDAmount({ ctx, amount });
-	await ensureBalance({ ctx, symbol: 'SNX', user, balance: requiredSNX });
+	const requiredMIME = await _getMIMEAmountRequiredFormUSDAmount({ ctx, amount });
+	await ensureBalance({ ctx, symbol: 'MIME', user, balance: requiredMIME });
 
 	Synthetix = Synthetix.connect(ctx.users.owner);
 
@@ -158,7 +158,7 @@ async function _getmUSD({ ctx, user, amount }) {
 		amount: ethers.utils.parseEther('1'),
 	});
 
-	tx = await Synthetix.transfer(tmpWallet.address, requiredSNX.mul(2));
+	tx = await Synthetix.transfer(tmpWallet.address, requiredMIME.mul(2));
 	await tx.wait();
 
 	Synthetix = Synthetix.connect(tmpWallet);
@@ -172,7 +172,7 @@ async function _getmUSD({ ctx, user, amount }) {
 	await tx.wait();
 }
 
-async function _getSNXAmountRequiredFormUSDAmount({ ctx, amount }) {
+async function _getMIMEAmountRequiredFormUSDAmount({ ctx, amount }) {
 	const { Exchanger, SystemSettings } = ctx.contracts;
 
 	const ratio = await SystemSettings.issuanceRatio();
@@ -181,14 +181,14 @@ async function _getSNXAmountRequiredFormUSDAmount({ ctx, amount }) {
 	const [expectedAmount, ,] = await Exchanger.getAmountsForExchange(
 		collateral,
 		toBytes32('mUSD'),
-		toBytes32('SNX')
+		toBytes32('MIME')
 	);
 
 	return expectedAmount;
 }
 
 function _getTokenFromSymbol({ ctx, symbol }) {
-	if (symbol === 'SNX') {
+	if (symbol === 'MIME') {
 		return ctx.contracts.Synthetix;
 	} else if (symbol === 'WETH') {
 		return ctx.contracts.WETH;

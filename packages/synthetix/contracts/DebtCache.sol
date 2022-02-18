@@ -29,14 +29,14 @@ contract DebtCache is BaseDebtCache {
         (uint[] memory values, uint excludedDebt, bool isInvalid) = _currentSynthDebts(currencyKeys);
 
         uint numValues = values.length;
-        uint snxCollateralDebt;
+        uint MIMECollateralDebt;
         for (uint i; i < numValues; i++) {
             uint value = values[i];
-            snxCollateralDebt = snxCollateralDebt.add(value);
+            MIMECollateralDebt = MIMECollateralDebt.add(value);
             _cachedSynthDebt[currencyKeys[i]] = value;
         }
         _cachedSynthDebt[EXCLUDED_DEBT_KEY] = excludedDebt;
-        uint newDebt = snxCollateralDebt.floorsub(excludedDebt);
+        uint newDebt = MIMECollateralDebt.floorsub(excludedDebt);
         _cachedDebt = newDebt;
         _cacheTimestamp = block.timestamp;
         emit DebtCacheUpdated(newDebt);

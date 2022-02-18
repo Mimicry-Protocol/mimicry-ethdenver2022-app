@@ -21,9 +21,9 @@ const { toBytes32 } = require('../..');
 contract('TradingRewards', accounts => {
 	const [, owner, account1] = accounts;
 
-	const synths = ['mUSD', 'mETH', 'mBTC', 'SNX'];
+	const synths = ['mUSD', 'mETH', 'mBTC', 'MIME'];
 	const synthKeys = synths.map(toBytes32);
-	const [mUSD, mETH, mBTC, SNX] = synthKeys;
+	const [mUSD, mETH, mBTC, MIME] = synthKeys;
 
 	let synthetix, exchanger, exchangeRates, rewards, resolver, systemSettings;
 	let mUSDContract, mETHContract, mBTCContract;
@@ -37,7 +37,7 @@ contract('TradingRewards', accounts => {
 	const rates = {
 		[mETH]: toUnit('100'),
 		[mBTC]: toUnit('12000'),
-		[SNX]: toUnit('0.2'),
+		[MIME]: toUnit('0.2'),
 	};
 
 	let feesPaidUSD;
@@ -109,7 +109,7 @@ contract('TradingRewards', accounts => {
 		});
 
 		before('set exchange rates', async () => {
-			await updateAggregatorRates(exchangeRates, [mETH, mBTC, SNX], Object.values(rates));
+			await updateAggregatorRates(exchangeRates, [mETH, mBTC, MIME], Object.values(rates));
 
 			await setExchangeFeeRateForSynths({
 				owner,

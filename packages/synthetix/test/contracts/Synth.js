@@ -25,7 +25,7 @@ const {
 } = require('../..');
 
 contract('Synth', async accounts => {
-	const [mUSD, SNX, sEUR] = ['mUSD', 'SNX', 'sEUR'].map(toBytes32);
+	const [mUSD, MIME, sEUR] = ['mUSD', 'MIME', 'sEUR'].map(toBytes32);
 
 	const [deployerAccount, owner, , , account1, account2] = accounts;
 
@@ -82,7 +82,7 @@ contract('Synth', async accounts => {
 
 	beforeEach(async () => {
 		// Send a price update to guarantee we're not stale.
-		await updateAggregatorRates(exchangeRates, [SNX], ['0.1'].map(toUnit));
+		await updateAggregatorRates(exchangeRates, [MIME], ['0.1'].map(toUnit));
 		await debtCache.takeDebtSnapshot();
 
 		// set default issuanceRatio to 0.2

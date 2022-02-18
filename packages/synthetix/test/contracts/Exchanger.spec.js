@@ -49,11 +49,11 @@ const MockDexPriceAggregator = artifacts.require('MockDexPriceAggregator');
 const MockToken = artifacts.require('MockToken');
 
 contract('Exchanger (spec tests)', async accounts => {
-	const [mUSD, sAUD, sEUR, SNX, mBTC, iBTC, mETH, iETH] = [
+	const [mUSD, sAUD, sEUR, MIME, mBTC, iBTC, mETH, iETH] = [
 		'mUSD',
 		'sAUD',
 		'sEUR',
-		'SNX',
+		'MIME',
 		'mBTC',
 		'iBTC',
 		'mETH',
@@ -3801,7 +3801,7 @@ contract('Exchanger (spec tests)', async accounts => {
 		addSnapshotBeforeRestoreAfterEach();
 
 		beforeEach(async () => {
-			const keys = [sAUD, sEUR, SNX, mETH, mBTC, iBTC];
+			const keys = [sAUD, sEUR, MIME, mETH, mBTC, iBTC];
 			const rates = ['0.5', '2', '1', '100', '5000', '5000'].map(toUnit);
 			await setupPriceAggregators(exchangeRates, owner, keys);
 			await updateRates(keys, rates);
@@ -3897,7 +3897,7 @@ contract('Exchanger (spec tests)', async accounts => {
 		addSnapshotBeforeRestoreAfterEach();
 
 		beforeEach(async () => {
-			const keys = [sAUD, sEUR, SNX, mETH, mBTC, iBTC];
+			const keys = [sAUD, sEUR, MIME, mETH, mBTC, iBTC];
 			const rates = ['0.5', '2', '1', '100', '5000', '5000'].map(toUnit);
 			await setupPriceAggregators(exchangeRates, owner, keys);
 			await updateRates(keys, rates);

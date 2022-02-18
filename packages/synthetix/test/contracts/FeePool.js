@@ -35,7 +35,7 @@ contract('FeePool', async accounts => {
 
 	// Updates rates with defaults so they're not stale.
 	const updateRatesWithDefaults = async () => {
-		await updateAggregatorRates(exchangeRates, [sAUD, SNX], ['0.5', '0.1'].map(toUnit));
+		await updateAggregatorRates(exchangeRates, [sAUD, MIME], ['0.5', '0.1'].map(toUnit));
 		await debtCache.takeDebtSnapshot();
 	};
 
@@ -57,7 +57,7 @@ contract('FeePool', async accounts => {
 	};
 
 	// CURRENCIES
-	const [mUSD, sAUD, SNX] = ['mUSD', 'sAUD', 'SNX'].map(toBytes32);
+	const [mUSD, sAUD, MIME] = ['mUSD', 'sAUD', 'MIME'].map(toBytes32);
 
 	let feePool,
 		debtCache,
@@ -787,7 +787,7 @@ contract('FeePool', async accounts => {
 						});
 					});
 				});
-				['SNX', 'sAUD', ['SNX', 'sAUD'], 'none'].forEach(type => {
+				['MIME', 'sAUD', ['MIME', 'sAUD'], 'none'].forEach(type => {
 					describe(`when ${type} is stale`, () => {
 						beforeEach(async () => {
 							await fastForward(
@@ -795,7 +795,7 @@ contract('FeePool', async accounts => {
 							);
 
 							// set all rates minus those to ignore
-							const ratesToUpdate = ['SNX']
+							const ratesToUpdate = ['MIME']
 								.concat(synths)
 								.filter(key => key !== 'mUSD' && ![].concat(type).includes(key));
 
@@ -815,7 +815,7 @@ contract('FeePool', async accounts => {
 							it('reverts on claimFees', async () => {
 								await assert.revert(
 									feePool.claimFees({ from: owner }),
-									'A synth or SNX rate is invalid'
+									'A synth or MIME rate is invalid'
 								);
 							});
 						}
@@ -854,7 +854,7 @@ contract('FeePool', async accounts => {
 
 				assert.eventEqual(claimFeesTx, 'FeesClaimed', {
 					mUSDAmount: feesAvailableUSD[0],
-					snxRewards: feesAvailableUSD[1],
+					MIMERewards: feesAvailableUSD[1],
 				});
 
 				const newUSDBalance = await mUSDContract.balanceOf(owner);
@@ -893,7 +893,7 @@ contract('FeePool', async accounts => {
 
 				assert.eventEqual(claimFeesTx, 'FeesClaimed', {
 					mUSDAmount: feesAvailableUSD[0],
-					snxRewards: feesAvailableUSD[1],
+					MIMERewards: feesAvailableUSD[1],
 				});
 
 				const newUSDBalance = await mUSDContract.balanceOf(owner);
@@ -1093,8 +1093,8 @@ contract('FeePool', async accounts => {
 				await synthetix.issueMaxSynths({ from: owner });
 
 				// Increase the price so we start well and truly within our 20% ratio.
-				const newRate = (await exchangeRates.rateForCurrency(SNX)).add(web3.utils.toBN('1'));
-				await updateAggregatorRates(exchangeRates, [SNX], [newRate]);
+				const newRate = (await exchangeRates.rateForCurrency(MIME)).add(web3.utils.toBN('1'));
+				await updateAggregatorRates(exchangeRates, [MIME], [newRate]);
 				await debtCache.takeDebtSnapshot();
 
 				assert.equal(await feePool.isFeesClaimable(owner), true);
@@ -1105,10 +1105,10 @@ contract('FeePool', async accounts => {
 				await synthetix.issueMaxSynths({ from: owner });
 
 				// Increase the price so we start well and truly within our 20% ratio.
-				const newRate = (await exchangeRates.rateForCurrency(SNX)).add(
+				const newRate = (await exchangeRates.rateForCurrency(MIME)).add(
 					step.mul(web3.utils.toBN('1'))
 				);
-				await updateAggregatorRates(exchangeRates, [SNX], [newRate]);
+				await updateAggregatorRates(exchangeRates, [MIME], [newRate]);
 				await debtCache.takeDebtSnapshot();
 
 				const issuanceRatio = fromUnit(await feePool.issuanceRatio());
@@ -1117,7 +1117,7 @@ contract('FeePool', async accounts => {
 				const threshold = Number(issuanceRatio) * (1 + Number(penaltyThreshold));
 				// Start from the current price of synthetix and slowly decrease the price until
 				// we hit almost zero. Assert the correct penalty at each point.
-				while ((await exchangeRates.rateForCurrency(SNX)).gt(step.mul(web3.utils.toBN('2')))) {
+				while ((await exchangeRates.rateForCurrency(MIME)).gt(step.mul(web3.utils.toBN('2')))) {
 					const ratio = await synthetix.collateralisationRatio(owner);
 
 					if (ratio.lte(toUnit(threshold))) {
@@ -1129,8 +1129,8 @@ contract('FeePool', async accounts => {
 					}
 
 					// Bump the rate down.
-					const newRate = (await exchangeRates.rateForCurrency(SNX)).sub(step);
-					await updateAggregatorRates(exchangeRates, [SNX], [newRate]);
+					const newRate = (await exchangeRates.rateForCurrency(MIME)).sub(step);
+					await updateAggregatorRates(exchangeRates, [MIME], [newRate]);
 					await debtCache.takeDebtSnapshot();
 				}
 			});
@@ -1158,11 +1158,11 @@ contract('FeePool', async accounts => {
 				await closeFeePeriod();
 				assert.bnClose(await getFeesAvailable(account1), fee.div(web3.utils.toBN('2')));
 
-				// But if the price of SNX decreases by 15%, we will lose all the fees.
-				const currentRate = await exchangeRates.rateForCurrency(SNX);
+				// But if the price of MIME decreases by 15%, we will lose all the fees.
+				const currentRate = await exchangeRates.rateForCurrency(MIME);
 				const newRate = currentRate.sub(multiplyDecimal(currentRate, toUnit('0.15')));
 
-				await updateAggregatorRates(exchangeRates, [SNX], [newRate]);
+				await updateAggregatorRates(exchangeRates, [MIME], [newRate]);
 				await debtCache.takeDebtSnapshot();
 
 				// fees available is unaffected but not claimable
@@ -1198,11 +1198,11 @@ contract('FeePool', async accounts => {
 				await closeFeePeriod();
 				assert.bnClose(await getFeesAvailable(account1), fee.div(web3.utils.toBN('2')));
 
-				// But if the price of SNX decreases by 15%, we will lose all the fees.
-				const currentRate = await exchangeRates.rateForCurrency(SNX);
+				// But if the price of MIME decreases by 15%, we will lose all the fees.
+				const currentRate = await exchangeRates.rateForCurrency(MIME);
 				const newRate = currentRate.sub(multiplyDecimal(currentRate, toUnit('0.15')));
 
-				await updateAggregatorRates(exchangeRates, [SNX], [newRate]);
+				await updateAggregatorRates(exchangeRates, [MIME], [newRate]);
 				await debtCache.takeDebtSnapshot();
 
 				// fees available is unaffected but not claimable
@@ -1285,7 +1285,7 @@ contract('FeePool', async accounts => {
 						});
 					});
 				});
-				['SNX', 'sAUD', ['SNX', 'sAUD'], 'none'].forEach(type => {
+				['MIME', 'sAUD', ['MIME', 'sAUD'], 'none'].forEach(type => {
 					describe(`when ${type} is stale`, () => {
 						beforeEach(async () => {
 							await fastForward(
@@ -1293,7 +1293,7 @@ contract('FeePool', async accounts => {
 							);
 
 							// set all rates minus those to ignore
-							const ratesToUpdate = ['SNX']
+							const ratesToUpdate = ['MIME']
 								.concat(synths)
 								.filter(key => key !== 'mUSD' && ![].concat(type).includes(key));
 
@@ -1313,7 +1313,7 @@ contract('FeePool', async accounts => {
 							it('reverts on claimFees', async () => {
 								await assert.revert(
 									feePool.claimOnBehalf(authoriser, { from: delegate }),
-									'A synth or SNX rate is invalid'
+									'A synth or MIME rate is invalid'
 								);
 							});
 						}

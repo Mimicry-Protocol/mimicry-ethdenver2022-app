@@ -37,7 +37,7 @@ interface IIssuerInternalDebtCache {
 
     function updateDebtCacheValidity(bool currentlyInvalid) external;
 
-    function totalNonSnxBackedDebt() external view returns (uint excludedDebt, bool isInvalid);
+    function totalNonMIMEBackedDebt() external view returns (uint excludedDebt, bool isInvalid);
 
     function cacheInfo()
         external
@@ -68,7 +68,7 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
 
     bytes32 internal constant mUSD = "mUSD";
     bytes32 internal constant mETH = "mETH";
-    bytes32 internal constant SNX = "SNX";
+    bytes32 internal constant MIME = "MIME";
 
     // Flexible storage names
 
@@ -172,22 +172,22 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
         return sharesAmount.multiplyDecimalRound(totalDebtShares).divideDecimalRound(totalSystemValue);
     }
 
-    function _availableCurrencyKeysWithOptionalSNX(bool withSNX) internal view returns (bytes32[] memory) {
-        bytes32[] memory currencyKeys = new bytes32[](availableSynths.length + (withSNX ? 1 : 0));
+    function _availableCurrencyKeysWithOptionalMIME(bool withMIME) internal view returns (bytes32[] memory) {
+        bytes32[] memory currencyKeys = new bytes32[](availableSynths.length + (withMIME ? 1 : 0));
 
         for (uint i = 0; i < availableSynths.length; i++) {
             currencyKeys[i] = synthsByAddress[address(availableSynths[i])];
         }
 
-        if (withSNX) {
-            currencyKeys[availableSynths.length] = SNX;
+        if (withMIME) {
+            currencyKeys[availableSynths.length] = MIME;
         }
 
         return currencyKeys;
     }
 
     // Returns the total value of the debt pool in currency specified by `currencyKey`.
-    // To return only the SNX-backed debt, set `excludeCollateral` to true.
+    // To return only the MIME-backed debt, set `excludeCollateral` to true.
     function _totalIssuedSynths(bytes32 currencyKey, bool excludeCollateral)
         internal
         view
@@ -198,10 +198,10 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
 
         IExchangeRates exRates = exchangeRates();
 
-        // Add total issued synths from non snx collateral back into the total if not excluded
+        // Add total issued synths from non MIME collateral back into the total if not excluded
         if (!excludeCollateral) {
-            (uint nonSnxDebt, bool invalid) = debtCache().totalNonSnxBackedDebt();
-            debt = debt.add(nonSnxDebt);
+            (uint nonMIMEDebt, bool invalid) = debtCache().totalNonMIMEBackedDebt();
+            debt = debt.add(nonMIMEDebt);
             anyRateIsInvalid = anyRateIsInvalid || invalid;
         }
 
@@ -227,7 +227,7 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
 
         // If it's zero, they haven't issued, and they have no debt.
         // Note: it's more gas intensive to put this check here rather than before _totalIssuedSynths
-        // if they have 0 SNX, but it's a necessary trade-off
+        // if they have 0 MIME, but it's a necessary trade-off
         if (debtShareBalance == 0) return (0, totalSystemValue, anyRateIsInvalid);
 
         debtBalance = _debtSharesToIssuedSynth(debtShareBalance, totalSystemValue, synthetixDebtShare().totalSupply());
@@ -267,18 +267,18 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
         }
     }
 
-    function _snxToUSD(uint amount, uint snxRate) internal pure returns (uint) {
-        return amount.multiplyDecimalRound(snxRate);
+    function _MIMEToUSD(uint amount, uint MIMERate) internal pure returns (uint) {
+        return amount.multiplyDecimalRound(MIMERate);
     }
 
-    function _usdToSnx(uint amount, uint snxRate) internal pure returns (uint) {
-        return amount.divideDecimalRound(snxRate);
+    function _usdToMIME(uint amount, uint MIMERate) internal pure returns (uint) {
+        return amount.divideDecimalRound(MIMERate);
     }
 
     function _maxIssuableSynths(address _issuer) internal view returns (uint, bool) {
-        // What is the value of their SNX balance in mUSD
-        (uint snxRate, bool isInvalid) = exchangeRates().rateAndInvalid(SNX);
-        uint destinationValue = _snxToUSD(_collateral(_issuer), snxRate);
+        // What is the value of their MIME balance in mUSD
+        (uint MIMERate, bool isInvalid) = exchangeRates().rateAndInvalid(MIME);
+        uint destinationValue = _MIMEToUSD(_collateral(_issuer), MIMERate);
 
         // They're allowed to issue up to issuanceRatio of that value
         return (destinationValue.multiplyDecimal(getIssuanceRatio()), isInvalid);
@@ -288,9 +288,9 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
         uint totalOwnedSynthetix = _collateral(_issuer);
 
         (uint debtBalance, , bool anyRateIsInvalid) =
-            _debtBalanceOfAndTotalDebt(synthetixDebtShare().balanceOf(_issuer), SNX);
+            _debtBalanceOfAndTotalDebt(synthetixDebtShare().balanceOf(_issuer), MIME);
 
-        // it's more gas intensive to put this check here if they have 0 SNX, but it complies with the interface
+        // it's more gas intensive to put this check here if they have 0 MIME, but it complies with the interface
         if (totalOwnedSynthetix == 0) return (0, anyRateIsInvalid);
 
         return (debtBalance.divideDecimalRound(totalOwnedSynthetix), anyRateIsInvalid);
@@ -319,15 +319,15 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
     }
 
     function availableCurrencyKeys() external view returns (bytes32[] memory) {
-        return _availableCurrencyKeysWithOptionalSNX(false);
+        return _availableCurrencyKeysWithOptionalMIME(false);
     }
 
     function availableSynthCount() external view returns (uint) {
         return availableSynths.length;
     }
 
-    function anySynthOrSNXRateIsInvalid() external view returns (bool anyRateInvalid) {
-        (, anyRateInvalid) = exchangeRates().ratesAndInvalidForCurrencies(_availableCurrencyKeysWithOptionalSNX(true));
+    function anySynthOrMIMERateIsInvalid() external view returns (bool anyRateInvalid) {
+        (, anyRateInvalid) = exchangeRates().ratesAndInvalidForCurrencies(_availableCurrencyKeysWithOptionalMIME(true));
     }
 
     function totalIssuedSynths(bytes32 currencyKey, bool excludeOtherCollateral) external view returns (uint totalIssued) {
@@ -388,19 +388,19 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
         view
         returns (uint transferable, bool anyRateIsInvalid)
     {
-        // How many SNX do they have, excluding escrow?
+        // How many MIME do they have, excluding escrow?
         // Note: We're excluding escrow here because we're interested in their transferable amount
-        // and escrowed SNX are not transferable.
+        // and escrowed MIME are not transferable.
 
         // How many of those will be locked by the amount they've issued?
-        // Assuming issuance ratio is 20%, then issuing 20 SNX of value would require
-        // 100 SNX to be locked in their wallet to maintain their collateralisation ratio
+        // Assuming issuance ratio is 20%, then issuing 20 MIME of value would require
+        // 100 MIME to be locked in their wallet to maintain their collateralisation ratio
         // The locked synthetix value can exceed their balance.
         uint debtBalance;
-        (debtBalance, , anyRateIsInvalid) = _debtBalanceOfAndTotalDebt(synthetixDebtShare().balanceOf(account), SNX);
+        (debtBalance, , anyRateIsInvalid) = _debtBalanceOfAndTotalDebt(synthetixDebtShare().balanceOf(account), MIME);
         uint lockedSynthetixValue = debtBalance.divideDecimalRound(getIssuanceRatio());
 
-        // If we exceed the balance, no SNX are transferable, otherwise the difference is.
+        // If we exceed the balance, no MIME are transferable, otherwise the difference is.
         if (lockedSynthetixValue >= balance) {
             transferable = 0;
         } else {
@@ -591,32 +591,32 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
         // What is their debt in mUSD?
         (uint debtBalance, uint totalDebtIssued, bool anyRateIsInvalid) =
             _debtBalanceOfAndTotalDebt(synthetixDebtShare().balanceOf(account), mUSD);
-        (uint snxRate, bool snxRateInvalid) = exchangeRates().rateAndInvalid(SNX);
-        _requireRatesNotInvalid(anyRateIsInvalid || snxRateInvalid);
+        (uint MIMERate, bool MIMERateInvalid) = exchangeRates().rateAndInvalid(MIME);
+        _requireRatesNotInvalid(anyRateIsInvalid || MIMERateInvalid);
 
         uint collateralForAccount = _collateral(account);
         uint amountToFixRatio =
-            liquidations().calculateAmountToFixCollateral(debtBalance, _snxToUSD(collateralForAccount, snxRate));
+            liquidations().calculateAmountToFixCollateral(debtBalance, _MIMEToUSD(collateralForAccount, MIMERate));
 
         // Cap amount to liquidate to repair collateral ratio based on issuance ratio
         amountToLiquidate = amountToFixRatio < mUSDAmount ? amountToFixRatio : mUSDAmount;
 
-        // what's the equivalent amount of snx for the amountToLiquidate?
-        uint snxRedeemed = _usdToSnx(amountToLiquidate, snxRate);
+        // what's the equivalent amount of MIME for the amountToLiquidate?
+        uint MIMERedeemed = _usdToMIME(amountToLiquidate, MIMERate);
 
         // Add penalty
-        totalRedeemed = snxRedeemed.multiplyDecimal(SafeDecimalMath.unit().add(liquidationPenalty));
+        totalRedeemed = MIMERedeemed.multiplyDecimal(SafeDecimalMath.unit().add(liquidationPenalty));
 
-        // if total SNX to redeem is greater than account's collateral
+        // if total MIME to redeem is greater than account's collateral
         // account is under collateralised, liquidate all collateral and reduce mUSD to burn
         if (totalRedeemed > collateralForAccount) {
             // set totalRedeemed to all transferable collateral
             totalRedeemed = collateralForAccount;
 
             // whats the equivalent mUSD to burn for all collateral less penalty
-            amountToLiquidate = _snxToUSD(
+            amountToLiquidate = _MIMEToUSD(
                 collateralForAccount.divideDecimal(SafeDecimalMath.unit().add(liquidationPenalty)),
-                snxRate
+                MIMERate
             );
         }
 
@@ -643,7 +643,7 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
     /* ========== INTERNAL FUNCTIONS ========== */
 
     function _requireRatesNotInvalid(bool anyRateIsInvalid) internal pure {
-        require(!anyRateIsInvalid, "A synth or SNX rate is invalid");
+        require(!anyRateIsInvalid, "A synth or MIME rate is invalid");
     }
 
     function _requireCanIssueOnBehalf(address issueForAddress, address from) internal view {
@@ -724,8 +724,8 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
 
         (uint existingDebt, uint totalSystemValue, bool anyRateIsInvalid) =
             _debtBalanceOfAndTotalDebt(synthetixDebtShare().balanceOf(from), mUSD);
-        (uint maxIssuableSynthsForAccount, bool snxRateInvalid) = _maxIssuableSynths(from);
-        _requireRatesNotInvalid(anyRateIsInvalid || snxRateInvalid);
+        (uint maxIssuableSynthsForAccount, bool MIMERateInvalid) = _maxIssuableSynths(from);
+        _requireRatesNotInvalid(anyRateIsInvalid || MIMERateInvalid);
         require(existingDebt > 0, "No debt to forgive");
 
         if (burnToTarget) {

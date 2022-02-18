@@ -581,13 +581,13 @@ const getTokens = ({ network = 'mainnet', path, fs, useOvm = false } = {}) => {
 	return [
 		Object.assign(
 			{
-				symbol: 'SNX',
-				asset: 'SNX',
+				symbol: 'MIME',
+				asset: 'MIME',
 				name: 'Synthetix',
 				address: targets.ProxyERC20.address,
 				decimals: 18,
 			},
-			feeds['SNX'].feed ? { feed: feeds['SNX'].feed } : {}
+			feeds['MIME'].feed ? { feed: feeds['MIME'].feed } : {}
 		),
 	].concat(
 		synths
