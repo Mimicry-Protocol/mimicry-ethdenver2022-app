@@ -14,16 +14,16 @@ const { skipWaitingPeriod } = require('../utils/skip');
 
 function itCanOpenAndCloseShort({ ctx }) {
 	describe('shorting', () => {
-		const amountOfsUSDRequired = parseEther('5000'); // sUSD
-		const amountToDeposit = parseEther('1000'); // sUSD
-		const amountToBorrow = parseEther('0.000001'); // sETH
-		const amountToExchange = parseEther('100'); // sUSD
+		const amountOfmUSDRequired = parseEther('5000'); // mUSD
+		const amountToDeposit = parseEther('1000'); // mUSD
+		const amountToBorrow = parseEther('0.000001'); // mETH
+		const amountToExchange = parseEther('100'); // mUSD
 
 		let user;
-		let CollateralShort, Synthetix, SynthsUSD, interactionDelay;
+		let CollateralShort, Synthetix, SynthmUSD, interactionDelay;
 
 		before('target contracts and users', () => {
-			({ CollateralShort, Synthetix, SynthsUSD } = ctx.contracts);
+			({ CollateralShort, Synthetix, SynthmUSD } = ctx.contracts);
 
 			user = ctx.users.someUser;
 
@@ -41,16 +41,16 @@ function itCanOpenAndCloseShort({ ctx }) {
 		});
 
 		describe('when opening is enabled', () => {
-			before('ensure user should have sUSD', async () => {
-				await ensureBalance({ ctx, symbol: 'sUSD', user, balance: amountOfsUSDRequired });
+			before('ensure user should have mUSD', async () => {
+				await ensureBalance({ ctx, symbol: 'mUSD', user, balance: amountOfmUSDRequired });
 			});
 
-			before('ensure sETH supply exists', async () => {
-				// CollateralManager.getShortRate requires existing sETH else div by zero
+			before('ensure mETH supply exists', async () => {
+				// CollateralManager.getShortRate requires existing mETH else div by zero
 				await exchangeSynths({
 					ctx,
-					src: 'sUSD',
-					dest: 'sETH',
+					src: 'mUSD',
+					dest: 'mETH',
 					amount: parseEther('1'),
 					user: ctx.users.otherUser,
 				});
@@ -73,7 +73,7 @@ function itCanOpenAndCloseShort({ ctx }) {
 					before('skip if max borrowing power reached', async function() {
 						const maxBorrowingPower = await CollateralShort.maxLoan(
 							amountToDeposit,
-							toBytes32('sETH')
+							toBytes32('mETH')
 						);
 						const maxBorrowingPowerReached = maxBorrowingPower <= amountToBorrow;
 
@@ -89,15 +89,15 @@ function itCanOpenAndCloseShort({ ctx }) {
 
 					before('approve the synths for collateral short', async () => {
 						await approveIfNeeded({
-							token: SynthsUSD,
+							token: SynthmUSD,
 							owner: user,
 							beneficiary: CollateralShort,
-							amount: amountOfsUSDRequired,
+							amount: amountOfmUSDRequired,
 						});
 					});
 
 					before('open the loan', async () => {
-						tx = await CollateralShort.open(amountToDeposit, amountToBorrow, toBytes32('sETH'));
+						tx = await CollateralShort.open(amountToDeposit, amountToBorrow, toBytes32('mETH'));
 
 						const { events } = await tx.wait();
 
@@ -156,20 +156,20 @@ function itCanOpenAndCloseShort({ ctx }) {
 
 							await exchangeSynths({
 								ctx,
-								src: 'sUSD',
-								dest: 'sETH',
+								src: 'mUSD',
+								dest: 'mETH',
 								amount: amountToExchange,
 								user,
 							});
 						});
 
 						before('skip waiting period', async () => {
-							// Ignore settlement period for sUSD --> sETH closing the loan
+							// Ignore settlement period for mUSD --> mETH closing the loan
 							await skipWaitingPeriod({ ctx });
 						});
 
 						before('settle', async () => {
-							const tx = await Synthetix.settle(toBytes32('sETH'));
+							const tx = await Synthetix.settle(toBytes32('mETH'));
 							await tx.wait();
 						});
 

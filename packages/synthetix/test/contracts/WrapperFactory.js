@@ -21,8 +21,8 @@ const { toBytes32 } = require('../..');
 const { toBN } = require('web3-utils');
 
 contract('WrapperFactory', async accounts => {
-	const synths = ['sUSD', 'sETH', 'ETH', 'SNX'];
-	const [sETH, ETH] = ['sETH', 'ETH'].map(toBytes32);
+	const synths = ['mUSD', 'mETH', 'ETH', 'MIME'];
+	const [mETH, ETH] = ['mETH', 'ETH'].map(toBytes32);
 
 	const [, owner, , , account1] = accounts;
 
@@ -32,7 +32,7 @@ contract('WrapperFactory', async accounts => {
 		feePool,
 		exchangeRates,
 		FEE_ADDRESS,
-		sUSDSynth,
+		mUSDSynth,
 		wrapperFactory,
 		weth;
 
@@ -43,7 +43,7 @@ contract('WrapperFactory', async accounts => {
 			FeePool: feePool,
 			ExchangeRates: exchangeRates,
 			WrapperFactory: wrapperFactory,
-			SynthsUSD: sUSDSynth,
+			SynthmUSD: mUSDSynth,
 			WETH: weth,
 			FlexibleStorage: flexibleStorage,
 		} = await setupAllContracts({
@@ -69,8 +69,8 @@ contract('WrapperFactory', async accounts => {
 		FEE_ADDRESS = await feePool.FEE_ADDRESS();
 
 		// Depot requires ETH rates
-		await setupPriceAggregators(exchangeRates, owner, [sETH, ETH]);
-		await updateAggregatorRates(exchangeRates, [sETH, ETH], ['1500', '1500'].map(toUnit));
+		await setupPriceAggregators(exchangeRates, owner, [mETH, ETH]);
+		await updateAggregatorRates(exchangeRates, [mETH, ETH], ['1500', '1500'].map(toUnit));
 	});
 
 	addSnapshotBeforeRestoreAfterEach();
@@ -130,7 +130,7 @@ contract('WrapperFactory', async accounts => {
 			let txn;
 
 			before(async () => {
-				txn = await wrapperFactory.createWrapper(weth.address, sETH, toBytes32('SynthsETH'), {
+				txn = await wrapperFactory.createWrapper(weth.address, mETH, toBytes32('SynthmETH'), {
 					from: owner,
 				});
 			});
@@ -165,7 +165,7 @@ contract('WrapperFactory', async accounts => {
 
 		before(async () => {
 			// deploy a wrapper
-			const txn = await wrapperFactory.createWrapper(weth.address, sETH, toBytes32('SynthsETH'), {
+			const txn = await wrapperFactory.createWrapper(weth.address, mETH, toBytes32('SynthmETH'), {
 				from: owner,
 			});
 
@@ -187,10 +187,10 @@ contract('WrapperFactory', async accounts => {
 			tx = await wrapperFactory.distributeFees();
 		});
 
-		it('issues sUSD to the feepool', async () => {
+		it('issues mUSD to the feepool', async () => {
 			const logs = await getDecodedLogs({
 				hash: tx.tx,
-				contracts: [sUSDSynth],
+				contracts: [mUSDSynth],
 			});
 
 			// sanity
@@ -198,7 +198,7 @@ contract('WrapperFactory', async accounts => {
 
 			decodedEventEqual({
 				event: 'Transfer',
-				emittedFrom: await sUSDSynth.proxy(),
+				emittedFrom: await mUSDSynth.proxy(),
 				args: [wrapperFactory.address, FEE_ADDRESS, feesEscrowed],
 				log: logs
 					.reverse()

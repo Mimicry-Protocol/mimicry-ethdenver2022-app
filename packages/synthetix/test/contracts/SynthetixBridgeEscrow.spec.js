@@ -4,7 +4,7 @@ const { assert } = require('./common');
 const { toBN } = web3.utils;
 
 contract('SynthetixBridgeEscrow (spec tests) @ovm-skip', accounts => {
-	const [, owner, snxBridgeToOptimism, user] = accounts;
+	const [, owner, MIMEBridgeToOptimism, user] = accounts;
 
 	let synthetix, synthetixBridgeEscrow;
 
@@ -33,7 +33,7 @@ contract('SynthetixBridgeEscrow (spec tests) @ovm-skip', accounts => {
 					it(' should fail', async () => {
 						await assert.revert(
 							synthetix.transferFrom(synthetixBridgeEscrow.address, user, amount, {
-								from: snxBridgeToOptimism,
+								from: MIMEBridgeToOptimism,
 							}),
 							'SafeMath: subtraction overflow'
 						);
@@ -44,7 +44,7 @@ contract('SynthetixBridgeEscrow (spec tests) @ovm-skip', accounts => {
 					beforeEach(async () => {
 						await synthetixBridgeEscrow.approveBridge(
 							synthetix.address,
-							snxBridgeToOptimism,
+							MIMEBridgeToOptimism,
 							amount,
 							{
 								from: owner,
@@ -55,7 +55,7 @@ contract('SynthetixBridgeEscrow (spec tests) @ovm-skip', accounts => {
 					describe('when the bridge invokes transferFrom()', () => {
 						beforeEach(async () => {
 							await synthetix.transferFrom(synthetixBridgeEscrow.address, user, amount, {
-								from: snxBridgeToOptimism,
+								from: MIMEBridgeToOptimism,
 							});
 						});
 

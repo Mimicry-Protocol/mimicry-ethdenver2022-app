@@ -24,7 +24,7 @@ interface IDebtCache {
 
     function cachedSynthDebts(bytes32[] calldata currencyKeys) external view returns (uint[] memory debtValues);
 
-    function totalNonSnxBackedDebt() external view returns (uint excludedDebt, bool isInvalid);
+    function totalNonMIMEBackedDebt() external view returns (uint excludedDebt, bool isInvalid);
 
     function currentDebt() external view returns (uint debt, bool anyRateIsInvalid);
 
@@ -54,5 +54,5 @@ interface IDebtCache {
 
     function recordExcludedDebtChange(bytes32 currencyKey, int256 delta) external;
 
-    function updateCachedsUSDDebt(int amount) external;
+    function updateCachedmUSDDebt(int amount) external;
 }

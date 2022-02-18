@@ -81,12 +81,12 @@ contract MultiCollateralSynth is Synth {
         bool isFeePool = msg.sender == address(feePool());
         bool isExchanger = msg.sender == address(exchanger());
         bool isIssuer = msg.sender == address(issuer());
-        bool isEtherWrapper = msg.sender == address(etherWrapper());
+        bool imETHerWrapper = msg.sender == address(etherWrapper());
         bool isWrapper = wrapperFactory().isWrapper(msg.sender);
         bool isMultiCollateral = collateralManager().hasCollateral(msg.sender);
 
         require(
-            isFeePool || isExchanger || isIssuer || isEtherWrapper || isWrapper || isMultiCollateral,
+            isFeePool || isExchanger || isIssuer || imETHerWrapper || isWrapper || isMultiCollateral,
             "Only FeePool, Exchanger, Issuer, Wrapper, or MultiCollateral contracts allowed"
         );
         _;

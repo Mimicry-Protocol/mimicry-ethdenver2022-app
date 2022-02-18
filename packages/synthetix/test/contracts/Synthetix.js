@@ -25,7 +25,7 @@ const {
 } = require('../..');
 
 contract('Synthetix', async accounts => {
-	const [sAUD, sEUR, sUSD, sETH] = ['sAUD', 'sEUR', 'sUSD', 'sETH'].map(toBytes32);
+	const [sAUD, sEUR, mUSD, mETH] = ['sAUD', 'sEUR', 'mUSD', 'mETH'].map(toBytes32);
 
 	const [, owner, account1, account2, account3] = accounts;
 
@@ -37,8 +37,8 @@ contract('Synthetix', async accounts => {
 		rewardEscrowV2,
 		addressResolver,
 		systemStatus,
-		sUSDContract,
-		sETHContract;
+		mUSDContract,
+		mETHContract;
 
 	before(async () => {
 		({
@@ -50,11 +50,11 @@ contract('Synthetix', async accounts => {
 			RewardEscrow: rewardEscrow,
 			RewardEscrowV2: rewardEscrowV2,
 			SupplySchedule: supplySchedule,
-			SynthsUSD: sUSDContract,
-			SynthsETH: sETHContract,
+			SynthmUSD: mUSDContract,
+			SynthmETH: mETHContract,
 		} = await setupAllContracts({
 			accounts,
-			synths: ['sUSD', 'sETH', 'sEUR', 'sAUD'],
+			synths: ['mUSD', 'mETH', 'sEUR', 'sAUD'],
 			contracts: [
 				'Synthetix',
 				'SupplySchedule',
@@ -71,7 +71,7 @@ contract('Synthetix', async accounts => {
 			],
 		}));
 
-		await setupPriceAggregators(exchangeRates, owner, [sAUD, sEUR, sETH]);
+		await setupPriceAggregators(exchangeRates, owner, [sAUD, sEUR, mETH]);
 	});
 
 	addSnapshotBeforeRestoreAfterEach();
@@ -406,7 +406,7 @@ contract('Synthetix', async accounts => {
 	describe('migration - transfer escrow balances to reward escrow v2', () => {
 		let rewardEscrowBalanceBefore;
 		beforeEach(async () => {
-			// transfer SNX to rewardEscrow
+			// transfer MIME to rewardEscrow
 			await synthetix.transfer(rewardEscrow.address, toUnit('100'), { from: owner });
 
 			rewardEscrowBalanceBefore = await synthetix.balanceOf(rewardEscrow.address);
@@ -432,9 +432,9 @@ contract('Synthetix', async accounts => {
 	describe('Using a contract to invoke exchangeWithTrackingForInitiator', () => {
 		describe('when a third party contract is setup to exchange synths', () => {
 			let contractExample;
-			let amountOfsUSD;
+			let amountOfmUSD;
 			beforeEach(async () => {
-				amountOfsUSD = toUnit('100');
+				amountOfmUSD = toUnit('100');
 
 				const MockThirdPartyExchangeContract = artifacts.require('MockThirdPartyExchangeContract');
 
@@ -444,26 +444,26 @@ contract('Synthetix', async accounts => {
 				// ensure rates are set
 				await updateRatesWithDefaults({ exchangeRates, owner, debtCache });
 
-				// issue sUSD from the owner
-				await synthetix.issueSynths(amountOfsUSD, { from: owner });
+				// issue mUSD from the owner
+				await synthetix.issueSynths(amountOfmUSD, { from: owner });
 
-				// transfer the sUSD to the contract
-				await sUSDContract.transfer(contractExample.address, toUnit('100'), { from: owner });
+				// transfer the mUSD to the contract
+				await mUSDContract.transfer(contractExample.address, toUnit('100'), { from: owner });
 			});
 
 			describe('when Barrie invokes the exchange function on the contract', () => {
 				let txn;
 				beforeEach(async () => {
-					// Barrie has no sETH to start
-					assert.equal(await sETHContract.balanceOf(account3), '0');
+					// Barrie has no mETH to start
+					assert.equal(await mETHContract.balanceOf(account3), '0');
 
-					txn = await contractExample.exchange(sUSD, amountOfsUSD, sETH, { from: account3 });
+					txn = await contractExample.exchange(mUSD, amountOfmUSD, mETH, { from: account3 });
 				});
 				it('then Barrie has the synths in her account', async () => {
-					assert.bnGt(await sETHContract.balanceOf(account3), toUnit('0.01'));
+					assert.bnGt(await mETHContract.balanceOf(account3), toUnit('0.01'));
 				});
 				it('and the contract has none', async () => {
-					assert.equal(await sETHContract.balanceOf(contractExample.address), '0');
+					assert.equal(await mETHContract.balanceOf(contractExample.address), '0');
 				});
 				it('and the event emitted indicates that Barrie was the destinationAddress', async () => {
 					const logs = artifacts.require('Synthetix').decodeLogs(txn.receipt.rawLogs);
@@ -472,9 +472,9 @@ contract('Synthetix', async accounts => {
 						'SynthExchange',
 						{
 							account: contractExample.address,
-							fromCurrencyKey: sUSD,
-							fromAmount: amountOfsUSD,
-							toCurrencyKey: sETH,
+							fromCurrencyKey: mUSD,
+							fromAmount: amountOfmUSD,
+							toCurrencyKey: mETH,
 							toAddress: account3,
 						}
 					);

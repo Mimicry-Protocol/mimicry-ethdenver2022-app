@@ -42,8 +42,8 @@ describe('WrapperFactory integration tests (L2)', () => {
 
 		await WrapperFactory.createWrapper(
 			ctx.contracts.WETH.address,
-			toBytes32('sETH'),
-			toBytes32('SynthsETH')
+			toBytes32('mETH'),
+			toBytes32('SynthmETH')
 		);
 
 		const event = await wrapperCreatedEvent;
@@ -57,7 +57,7 @@ describe('WrapperFactory integration tests (L2)', () => {
 			ctx.provider
 		);
 		wrapperOptions.Wrapper = ctx.contracts.Wrapper;
-		wrapperOptions.Synth = ctx.contracts.SynthsETH;
+		wrapperOptions.Synth = ctx.contracts.SynthmETH;
 		wrapperOptions.Token = ctx.contracts.WETH;
 	});
 

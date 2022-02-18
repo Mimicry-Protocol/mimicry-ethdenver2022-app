@@ -30,7 +30,7 @@ function itCanWrapETH({ ctx, wrapperOptions }) {
 					this.skip();
 				}
 			});
-			describe('when the user mints sETH', () => {
+			describe('when the user mints mETH', () => {
 				before('record balances', async () => {
 					balanceToken = await Token.balanceOf(user.address);
 					balanceSynth = await Synth.balanceOf(user.address);
@@ -58,7 +58,7 @@ function itCanWrapETH({ ctx, wrapperOptions }) {
 					assert.bnGt(await Synth.balanceOf(user.address), balanceSynth);
 				});
 
-				describe('when the user burns sETH', () => {
+				describe('when the user burns mETH', () => {
 					before('record balances', async () => {
 						balanceToken = await Token.balanceOf(user.address);
 						balanceSynth = await Synth.balanceOf(user.address);

@@ -163,22 +163,22 @@
 				"status": "current",
 				"keccak256": "0x7f6b493628926e40b72bfc16414f9afea5d777cc001bc140b1804597dfd4cf3f"
 			},
-			"TokenStatesUSD": {
+			"TokenStatemUSD": {
 				"address": "0xc081FB7104e7eC62bfdaE4983A782b110b162C39",
 				"status": "current",
 				"keccak256": "0xf21329a188a29886c60f6cefaba24298faee0fba7c13eac581a7b94820e9726b"
 			},
-			"ProxysUSD": {
+			"ProxymUSD": {
 				"address": "0xd5cCFDD54E82E2aceFF1cF5479a925228380a503",
 				"status": "current",
 				"keccak256": "0x680dbc00b1b3884976ce60a5bfac4f218e89133835c193f9fe9d02b162fd2058"
 			},
-			"ProxyERC20sUSD": {
+			"ProxyERC20mUSD": {
 				"address": "0x85a02d90B62c454d69eE1F3660BA5c2135Da0cd2",
 				"status": "current",
 				"keccak256": "0x680dbc00b1b3884976ce60a5bfac4f218e89133835c193f9fe9d02b162fd2058"
 			},
-			"SynthsUSD": {
+			"SynthmUSD": {
 				"address": "0xF0DCA25941c5Fd1D440868a41a5581898e6d6d07",
 				"status": "current",
 				"keccak256": "0x8da9e910f3b5084a5cd123a4ae91d1760daf39f835316ead2eb8b3e7b1a5e486"
@@ -188,7 +188,7 @@
 				"status": "current",
 				"keccak256": "0xc8f8ad82d5057f273812f5530fd020a245f3aae7fc6a7331f7eb7028667a7e23"
 			},
-			"EtherCollateralsUSD": {
+			"EtherCollateralmUSD": {
 				"address": "0x1b022bA8333d6b942FC02917D86564855Bd5F3B9",
 				"status": "current",
 				"keccak256": "0xc8f8ad82d5057f273812f5530fd020a245f3aae7fc6a7331f7eb7028667a7e23"

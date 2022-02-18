@@ -26,7 +26,7 @@ interface IFeePool {
 
     function closeCurrentFeePeriod() external;
 
-    function recordFeePaid(uint sUSDAmount) external;
+    function recordFeePaid(uint mUSDAmount) external;
 
     function setRewardsToDistribute(uint amount) external;
 }

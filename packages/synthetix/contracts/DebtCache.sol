@@ -29,14 +29,14 @@ contract DebtCache is BaseDebtCache {
         (uint[] memory values, uint excludedDebt, bool isInvalid) = _currentSynthDebts(currencyKeys);
 
         uint numValues = values.length;
-        uint snxCollateralDebt;
+        uint MIMECollateralDebt;
         for (uint i; i < numValues; i++) {
             uint value = values[i];
-            snxCollateralDebt = snxCollateralDebt.add(value);
+            MIMECollateralDebt = MIMECollateralDebt.add(value);
             _cachedSynthDebt[currencyKeys[i]] = value;
         }
         _cachedSynthDebt[EXCLUDED_DEBT_KEY] = excludedDebt;
-        uint newDebt = snxCollateralDebt.floorsub(excludedDebt);
+        uint newDebt = MIMECollateralDebt.floorsub(excludedDebt);
         _cachedDebt = newDebt;
         _cacheTimestamp = block.timestamp;
         emit DebtCacheUpdated(newDebt);
@@ -78,13 +78,13 @@ contract DebtCache is BaseDebtCache {
         _excludedIssuedDebt[currencyKey] = uint(newExcludedDebt);
     }
 
-    function updateCachedsUSDDebt(int amount) external onlyIssuer {
+    function updateCachedmUSDDebt(int amount) external onlyIssuer {
         uint delta = SafeDecimalMath.abs(amount);
         if (amount > 0) {
-            _cachedSynthDebt[sUSD] = _cachedSynthDebt[sUSD].add(delta);
+            _cachedSynthDebt[mUSD] = _cachedSynthDebt[mUSD].add(delta);
             _cachedDebt = _cachedDebt.add(delta);
         } else {
-            _cachedSynthDebt[sUSD] = _cachedSynthDebt[sUSD].sub(delta);
+            _cachedSynthDebt[mUSD] = _cachedSynthDebt[mUSD].sub(delta);
             _cachedDebt = _cachedDebt.sub(delta);
         }
 

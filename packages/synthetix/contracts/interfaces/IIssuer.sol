@@ -5,7 +5,7 @@ import "../interfaces/ISynth.sol";
 // https://docs.synthetix.io/contracts/source/interfaces/iissuer
 interface IIssuer {
     // Views
-    function anySynthOrSNXRateIsInvalid() external view returns (bool anyRateInvalid);
+    function anySynthOrMIMERateIsInvalid() external view returns (bool anyRateInvalid);
 
     function availableCurrencyKeys() external view returns (bytes32[] memory);
 
@@ -89,7 +89,7 @@ interface IIssuer {
 
     function liquidateDelinquentAccount(
         address account,
-        uint susdAmount,
+        uint mUSDAmount,
         address liquidator
     ) external returns (uint totalRedeemed, uint amountToLiquidate);
 

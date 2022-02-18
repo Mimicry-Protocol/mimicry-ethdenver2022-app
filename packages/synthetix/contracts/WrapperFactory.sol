@@ -17,7 +17,7 @@ contract WrapperFactory is Owned, MixinResolver, IWrapperFactory {
     bytes32 public constant CONTRACT_NAME = "WrapperFactory";
 
     bytes32 internal constant CONTRACT_FLEXIBLESTORAGE = "FlexibleStorage";
-    bytes32 internal constant CONTRACT_SYNTH_SUSD = "SynthsUSD";
+    bytes32 internal constant CONTRACT_SYNTH_mUSD = "SynthmUSD";
     bytes32 internal constant CONTRACT_FEEPOOL = "FeePool";
 
     uint internal constant WRAPPER_VERSION = 1;
@@ -27,14 +27,14 @@ contract WrapperFactory is Owned, MixinResolver, IWrapperFactory {
 
     function resolverAddressesRequired() public view returns (bytes32[] memory addresses) {
         addresses = new bytes32[](3);
-        addresses[0] = CONTRACT_SYNTH_SUSD;
+        addresses[0] = CONTRACT_SYNTH_mUSD;
         addresses[1] = CONTRACT_FLEXIBLESTORAGE;
         addresses[2] = CONTRACT_FEEPOOL;
     }
 
     /* ========== INTERNAL VIEWS ========== */
-    function synthsUSD() internal view returns (IERC20) {
-        return IERC20(requireAndGetAddress(CONTRACT_SYNTH_SUSD));
+    function synthmUSD() internal view returns (IERC20) {
+        return IERC20(requireAndGetAddress(CONTRACT_SYNTH_mUSD));
     }
 
     function flexibleStorage() internal view returns (IFlexibleStorage) {
@@ -53,7 +53,7 @@ contract WrapperFactory is Owned, MixinResolver, IWrapperFactory {
     }
 
     function feesEscrowed() public view returns (uint) {
-        return synthsUSD().balanceOf(address(this));
+        return synthmUSD().balanceOf(address(this));
     }
 
     // ========== RESTRICTED ==========
@@ -86,12 +86,12 @@ contract WrapperFactory is Owned, MixinResolver, IWrapperFactory {
     }
 
     function distributeFees() external {
-        // Normalize fee to sUSD
-        uint amountSUSD = feesEscrowed();
+        // Normalize fee to mUSD
+        uint amountmUSD = feesEscrowed();
 
-        if (amountSUSD > 0) {
-            // Transfer sUSD to the fee pool
-            bool success = synthsUSD().transfer(feePool().FEE_ADDRESS(), amountSUSD);
+        if (amountmUSD > 0) {
+            // Transfer mUSD to the fee pool
+            bool success = synthmUSD().transfer(feePool().FEE_ADDRESS(), amountmUSD);
             require(success, "Transfer did not succeed");
         }
     }

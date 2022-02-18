@@ -31,14 +31,14 @@ contract('VirtualSynth (unit tests)', async accounts => {
 		const behaviors = require('./VirtualSynth.behaviors').call(this, { accounts });
 		describe('initialize', () => {
 			const amount = '1001';
-			behaviors.whenInstantiated({ amount, user: owner, synth: 'sBTC' }, () => {
+			behaviors.whenInstantiated({ amount, user: owner, synth: 'mBTC' }, () => {
 				it('is initialized', async () => {
 					assert.isTrue(await this.instance.initialized());
 				});
 
 				it('and each initialize arg is set correctly', async () => {
-					assert.equal(trimUtf8EscapeChars(await this.instance.name()), 'Virtual Synth sBTC');
-					assert.equal(trimUtf8EscapeChars(await this.instance.symbol()), 'vsBTC');
+					assert.equal(trimUtf8EscapeChars(await this.instance.name()), 'Virtual Synth mBTC');
+					assert.equal(trimUtf8EscapeChars(await this.instance.symbol()), 'vmBTC');
 					assert.equal(await this.instance.decimals(), '18');
 				});
 
@@ -63,7 +63,7 @@ contract('VirtualSynth (unit tests)', async accounts => {
 							this.resolver.address,
 							owner,
 							amount,
-							toBytes32('sUSD')
+							toBytes32('mUSD')
 						),
 						'vSynth already initialized'
 					);
@@ -237,7 +237,7 @@ contract('VirtualSynth (unit tests)', async accounts => {
 		});
 
 		describe('secsLeftInWaitingPeriod()', () => {
-			behaviors.whenInstantiated({ amount: '1000', user: owner, synth: 'sBTC' }, () => {
+			behaviors.whenInstantiated({ amount: '1000', user: owner, synth: 'mBTC' }, () => {
 				behaviors.whenMockedWithMaxSecsLeft({ maxSecsLeft: 100 }, () => {
 					it('then secs left in waiting period returns 100', async () => {
 						assert.equal(await this.instance.secsLeftInWaitingPeriod(), '100');
@@ -257,7 +257,7 @@ contract('VirtualSynth (unit tests)', async accounts => {
 		});
 
 		describe('readyToSettle()', () => {
-			behaviors.whenInstantiated({ amount: '999', user: owner, synth: 'sBTC' }, () => {
+			behaviors.whenInstantiated({ amount: '999', user: owner, synth: 'mBTC' }, () => {
 				behaviors.whenMockedWithMaxSecsLeft({ maxSecsLeft: 100 }, () => {
 					it('then ready to settle is false', async () => {
 						assert.equal(await this.instance.readyToSettle(), false);
@@ -278,7 +278,7 @@ contract('VirtualSynth (unit tests)', async accounts => {
 
 		describe('settlement', () => {
 			const amount = '999';
-			behaviors.whenInstantiated({ amount, user: owner, synth: 'sBTC' }, () => {
+			behaviors.whenInstantiated({ amount, user: owner, synth: 'mBTC' }, () => {
 				behaviors.whenMockedSynthBalance({ balanceOf: amount }, () => {
 					describe('settled()', () => {
 						it('is false by default', async () => {
@@ -298,7 +298,7 @@ contract('VirtualSynth (unit tests)', async accounts => {
 									this.mocks.Exchanger.smocked.settle.calls[0][0],
 									this.instance.address
 								);
-								assert.equal(this.mocks.Exchanger.smocked.settle.calls[0][1], toBytes32('sBTC'));
+								assert.equal(this.mocks.Exchanger.smocked.settle.calls[0][1], toBytes32('mBTC'));
 							});
 							it('then Exchanger.settle() emits a Settled event with the supply and balance params', () => {
 								assert.eventEqual(this.txn, 'Settled', [amount, amount]);

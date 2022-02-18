@@ -11,7 +11,7 @@ const {
 	constants: { ZERO_ADDRESS },
 } = require('../..');
 
-const [sUSD, sETH] = ['sUSD', 'sETH'].map(toBytes32);
+const [mUSD, mETH] = ['mUSD', 'mETH'].map(toBytes32);
 
 let ExchangerWithFeeRecAlternatives;
 
@@ -303,8 +303,8 @@ module.exports = function({ accounts }) {
 				cb();
 			});
 		},
-		whenMockedSusdAndSethSeparatelyToIssueAndBurn: cb => {
-			describe(`when mocked sUSD and sETH`, () => {
+		whenMockedmUSDAndmETHSeparatelyToIssueAndBurn: cb => {
+			describe(`when mocked mUSD and mETH`, () => {
 				async function mockSynth(currencyKey) {
 					const synth = await smockit(artifacts.require('Synth').abi);
 					synth.smocked.currencyKey.will.return.with(currencyKey);
@@ -313,13 +313,13 @@ module.exports = function({ accounts }) {
 				}
 
 				beforeEach(async () => {
-					this.mocks.sUSD = await mockSynth(sUSD);
-					this.mocks.sETH = await mockSynth(sETH);
+					this.mocks.mUSD = await mockSynth(mUSD);
+					this.mocks.mETH = await mockSynth(mETH);
 					this.mocks.Issuer.smocked.synths.will.return.with(currencyKey => {
-						if (currencyKey === sUSD) {
-							return this.mocks.sUSD.address;
-						} else if (currencyKey === sETH) {
-							return this.mocks.sETH.address;
+						if (currencyKey === mUSD) {
+							return this.mocks.mUSD.address;
+						} else if (currencyKey === mETH) {
+							return this.mocks.mETH.address;
 						}
 						// mimic on-chain default of 0s
 						return ZERO_ADDRESS;

@@ -31,7 +31,7 @@ contract Collateral is ICollateralLoan, Owned, MixinSystemSettings {
 
     /* ========== CONSTANTS ========== */
 
-    bytes32 private constant sUSD = "sUSD";
+    bytes32 private constant mUSD = "mUSD";
 
     // ========== STATE VARIABLES ==========
 
@@ -71,7 +71,7 @@ contract Collateral is ICollateralLoan, Owned, MixinSystemSettings {
     bytes32 private constant CONTRACT_EXRATES = "ExchangeRates";
     bytes32 private constant CONTRACT_EXCHANGER = "Exchanger";
     bytes32 private constant CONTRACT_FEEPOOL = "FeePool";
-    bytes32 private constant CONTRACT_SYNTHSUSD = "SynthsUSD";
+    bytes32 private constant CONTRACT_SYNTHmUSD = "SynthmUSD";
     bytes32 private constant CONTRACT_COLLATERALUTIL = "CollateralUtil";
 
     /* ========== CONSTRUCTOR ========== */
@@ -99,7 +99,7 @@ contract Collateral is ICollateralLoan, Owned, MixinSystemSettings {
         newAddresses[1] = CONTRACT_EXRATES;
         newAddresses[2] = CONTRACT_EXCHANGER;
         newAddresses[3] = CONTRACT_SYSTEMSTATUS;
-        newAddresses[4] = CONTRACT_SYNTHSUSD;
+        newAddresses[4] = CONTRACT_SYNTHmUSD;
         newAddresses[5] = CONTRACT_COLLATERALUTIL;
 
         bytes32[] memory combined = combineArrays(existingAddresses, newAddresses);
@@ -117,8 +117,8 @@ contract Collateral is ICollateralLoan, Owned, MixinSystemSettings {
         return ISynth(requireAndGetAddress(synthName));
     }
 
-    function _synthsUSD() internal view returns (ISynth) {
-        return ISynth(requireAndGetAddress(CONTRACT_SYNTHSUSD));
+    function _synthmUSD() internal view returns (ISynth) {
+        return ISynth(requireAndGetAddress(CONTRACT_SYNTHmUSD));
     }
 
     function _exchangeRates() internal view returns (IExchangeRates) {
@@ -257,7 +257,7 @@ contract Collateral is ICollateralLoan, Owned, MixinSystemSettings {
         // 3. Collateral >= minimum collateral size.
         require(collateral >= minCollateral, "Not enough collateral");
 
-        // 4. Check we haven't hit the debt cap for non snx collateral.
+        // 4. Check we haven't hit the debt cap for non MIME collateral.
         (bool canIssue, bool anyRateIsInvalid) = manager.exceedsDebtLimit(amount, currency);
 
         // 5. Check if we've hit the debt cap or any rate is invalid.
@@ -294,9 +294,9 @@ contract Collateral is ICollateralLoan, Owned, MixinSystemSettings {
         // 12. Pay the minting fees to the fee pool.
         _payFees(issueFee, currency);
 
-        // 13. If its short, convert back to sUSD, otherwise issue the loan.
+        // 13. If its short, convert back to mUSD, otherwise issue the loan.
         if (short) {
-            _synthsUSD().issue(msg.sender, _exchangeRates().effectiveValue(currency, loanAmountMinusFee, sUSD));
+            _synthmUSD().issue(msg.sender, _exchangeRates().effectiveValue(currency, loanAmountMinusFee, mUSD));
             manager.incrementShorts(currency, amount);
 
             if (shortingRewards[currency] != address(0)) {
@@ -383,7 +383,7 @@ contract Collateral is ICollateralLoan, Owned, MixinSystemSettings {
 
         // 2. Pay the service fee for collapsing the loan.
         uint serviceFee = amount.multiplyDecimalRound(getCollapseFeeRate(address(this)));
-        _payFees(serviceFee, sUSD);
+        _payFees(serviceFee, mUSD);
         collateral = collateral.sub(serviceFee);
 
         // 3. Record loan as closed.
@@ -537,15 +537,15 @@ contract Collateral is ICollateralLoan, Owned, MixinSystemSettings {
         // 3. Make sure they are not overpaying.
         require(payment <= loan.amount.add(loan.accruedInterest), "Payment too high");
 
-        // 4. Get the expected amount for the exchange from borrowed synth -> sUSD.
-        (uint expectedAmount, uint fee, ) = _exchanger().getAmountsForExchange(payment, loan.currency, sUSD);
+        // 4. Get the expected amount for the exchange from borrowed synth -> mUSD.
+        (uint expectedAmount, uint fee, ) = _exchanger().getAmountsForExchange(payment, loan.currency, mUSD);
 
         // 5. Reduce the collateral by the amount repaid (minus the exchange fees).
         loan.collateral = loan.collateral.sub(expectedAmount);
 
         // 6. Process the payment and pay the exchange fees if needed.
         _processPayment(loan, payment);
-        _payFees(fee, sUSD);
+        _payFees(fee, mUSD);
 
         // 7. Update the last interaction time.
         loan.lastInteraction = block.timestamp;
@@ -579,7 +579,7 @@ contract Collateral is ICollateralLoan, Owned, MixinSystemSettings {
         // 6. If its short, issue the synths.
         if (loan.short) {
             manager.incrementShorts(loan.currency, amount);
-            _synthsUSD().issue(msg.sender, _exchangeRates().effectiveValue(loan.currency, amountMinusFee, sUSD));
+            _synthmUSD().issue(msg.sender, _exchangeRates().effectiveValue(loan.currency, amountMinusFee, mUSD));
 
             if (shortingRewards[loan.currency] != address(0)) {
                 IShortingRewards(shortingRewards[loan.currency]).enrol(msg.sender, amount);
@@ -642,13 +642,13 @@ contract Collateral is ICollateralLoan, Owned, MixinSystemSettings {
         }
     }
 
-    // Take an amount of fees in a certain synth and convert it to sUSD before paying the fee pool.
+    // Take an amount of fees in a certain synth and convert it to mUSD before paying the fee pool.
     function _payFees(uint amount, bytes32 synth) internal {
         if (amount > 0) {
-            if (synth != sUSD) {
-                amount = _exchangeRates().effectiveValue(synth, amount, sUSD);
+            if (synth != mUSD) {
+                amount = _exchangeRates().effectiveValue(synth, amount, mUSD);
             }
-            _synthsUSD().issue(_feePool().FEE_ADDRESS(), amount);
+            _synthmUSD().issue(_feePool().FEE_ADDRESS(), amount);
             _feePool().recordFeePaid(amount);
         }
     }

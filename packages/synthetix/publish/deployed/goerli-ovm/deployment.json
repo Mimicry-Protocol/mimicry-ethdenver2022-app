@@ -270,8 +270,8 @@
 			"txn": "",
 			"network": "goerli"
 		},
-		"TokenStatesUSD": {
-			"name": "TokenStatesUSD",
+		"TokenStatemUSD": {
+			"name": "TokenStatemUSD",
 			"address": "0xc081FB7104e7eC62bfdaE4983A782b110b162C39",
 			"source": "TokenState",
 			"link": "https://goerli.etherscan.io/address/0xc081FB7104e7eC62bfdaE4983A782b110b162C39",
@@ -279,8 +279,8 @@
 			"txn": "",
 			"network": "goerli"
 		},
-		"ProxysUSD": {
-			"name": "ProxysUSD",
+		"ProxymUSD": {
+			"name": "ProxymUSD",
 			"address": "0xd5cCFDD54E82E2aceFF1cF5479a925228380a503",
 			"source": "ProxyERC20",
 			"link": "https://goerli.etherscan.io/address/0xd5cCFDD54E82E2aceFF1cF5479a925228380a503",
@@ -288,8 +288,8 @@
 			"txn": "",
 			"network": "goerli"
 		},
-		"ProxyERC20sUSD": {
-			"name": "ProxyERC20sUSD",
+		"ProxyERC20mUSD": {
+			"name": "ProxyERC20mUSD",
 			"address": "0x85a02d90B62c454d69eE1F3660BA5c2135Da0cd2",
 			"source": "ProxyERC20",
 			"link": "https://goerli.etherscan.io/address/0x85a02d90B62c454d69eE1F3660BA5c2135Da0cd2",
@@ -297,8 +297,8 @@
 			"txn": "",
 			"network": "goerli"
 		},
-		"SynthsUSD": {
-			"name": "SynthsUSD",
+		"SynthmUSD": {
+			"name": "SynthmUSD",
 			"address": "0xF0DCA25941c5Fd1D440868a41a5581898e6d6d07",
 			"source": "Synth",
 			"link": "https://goerli.etherscan.io/address/0xF0DCA25941c5Fd1D440868a41a5581898e6d6d07",
@@ -315,8 +315,8 @@
 			"txn": "",
 			"network": "goerli"
 		},
-		"EtherCollateralsUSD": {
-			"name": "EtherCollateralsUSD",
+		"EtherCollateralmUSD": {
+			"name": "EtherCollateralmUSD",
 			"address": "0x1b022bA8333d6b942FC02917D86564855Bd5F3B9",
 			"source": "EmptyEtherCollateral",
 			"link": "https://goerli.etherscan.io/address/0x1b022bA8333d6b942FC02917D86564855Bd5F3B9",
@@ -9755,13 +9755,13 @@
 						{
 							"indexed": false,
 							"internalType": "uint256",
-							"name": "sUSDAmount",
+							"name": "mUSDAmount",
 							"type": "uint256"
 						},
 						{
 							"indexed": false,
 							"internalType": "uint256",
-							"name": "snxRewards",
+							"name": "MIMERewards",
 							"type": "uint256"
 						}
 					],
@@ -12659,7 +12659,7 @@
 						{
 							"indexed": false,
 							"internalType": "uint256",
-							"name": "snxRedeemed",
+							"name": "MIMERedeemed",
 							"type": "uint256"
 						},
 						{
@@ -13084,7 +13084,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "anySynthOrSNXRateIsInvalid",
+					"name": "anySynthOrMIMERateIsInvalid",
 					"outputs": [
 						{
 							"internalType": "bool",
@@ -13802,7 +13802,7 @@
 						},
 						{
 							"internalType": "uint256",
-							"name": "susdAmount",
+							"name": "mUSDAmount",
 							"type": "uint256"
 						}
 					],
@@ -14026,7 +14026,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "sUSD",
+					"name": "mUSD",
 					"outputs": [
 						{
 							"internalType": "bytes32",
@@ -16133,7 +16133,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "anySynthOrSNXRateIsInvalid",
+					"name": "anySynthOrMIMERateIsInvalid",
 					"outputs": [
 						{
 							"internalType": "bool",
@@ -16596,7 +16596,7 @@
 						},
 						{
 							"internalType": "uint256",
-							"name": "susdAmount",
+							"name": "mUSDAmount",
 							"type": "uint256"
 						},
 						{
@@ -20446,7 +20446,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "anySynthOrSNXRateIsInvalid",
+					"name": "anySynthOrMIMERateIsInvalid",
 					"outputs": [
 						{
 							"internalType": "bool",
@@ -21343,7 +21343,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "sUSD",
+					"name": "mUSD",
 					"outputs": [
 						{
 							"internalType": "bytes32",
@@ -21920,7 +21920,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "anySynthOrSNXRateIsInvalid",
+					"name": "anySynthOrMIMERateIsInvalid",
 					"outputs": [
 						{
 							"internalType": "bool",
@@ -22074,7 +22074,7 @@
 				{
 					"constant": false,
 					"inputs": [],
-					"name": "cacheSNXIssuedDebt",
+					"name": "cacheMIMEIssuedDebt",
 					"outputs": [],
 					"payable": false,
 					"stateMutability": "nonpayable",
@@ -22090,11 +22090,11 @@
 							"type": "bytes32[]"
 						}
 					],
-					"name": "cachedSNXIssuedDebtForCurrencies",
+					"name": "cachedMIMEIssuedDebtForCurrencies",
 					"outputs": [
 						{
 							"internalType": "uint256[]",
-							"name": "snxIssuedDebts",
+							"name": "MIMEIssuedDebts",
 							"type": "uint256[]"
 						}
 					],
@@ -22106,7 +22106,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "cachedSNXIssuedDebtInfo",
+					"name": "cachedMIMEIssuedDebtInfo",
 					"outputs": [
 						{
 							"internalType": "uint256",
@@ -22225,11 +22225,11 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "currentSNXIssuedDebt",
+					"name": "currentMIMEIssuedDebt",
 					"outputs": [
 						{
 							"internalType": "uint256",
-							"name": "snxIssuedDebt",
+							"name": "MIMEIssuedDebt",
 							"type": "uint256"
 						},
 						{
@@ -22252,11 +22252,11 @@
 							"type": "bytes32[]"
 						}
 					],
-					"name": "currentSNXIssuedDebtForCurrencies",
+					"name": "currentMIMEIssuedDebtForCurrencies",
 					"outputs": [
 						{
 							"internalType": "uint256[]",
-							"name": "snxIssuedDebts",
+							"name": "MIMEIssuedDebts",
 							"type": "uint256[]"
 						},
 						{
@@ -22499,7 +22499,7 @@
 						},
 						{
 							"internalType": "uint256",
-							"name": "susdAmount",
+							"name": "mUSDAmount",
 							"type": "uint256"
 						},
 						{
@@ -22842,7 +22842,7 @@
 							"type": "bytes32[]"
 						}
 					],
-					"name": "updateSNXIssuedDebtForCurrencies",
+					"name": "updateMIMEIssuedDebtForCurrencies",
 					"outputs": [],
 					"payable": false,
 					"stateMutability": "nonpayable",
@@ -22863,7 +22863,7 @@
 							"type": "uint256[2]"
 						}
 					],
-					"name": "updateSNXIssuedDebtOnExchange",
+					"name": "updateMIMEIssuedDebtOnExchange",
 					"outputs": [],
 					"payable": false,
 					"stateMutability": "nonpayable",

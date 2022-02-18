@@ -32,7 +32,7 @@ contract TokenExchanger is Owned {
         return IERC20(integrationProxy).allowance(tokenOwner, spender);
     }
 
-    function checkBalanceSNXDirect(address account) public view synthetixProxyIsSet returns (uint) {
+    function checkBalanceMIMEDirect(address account) public view synthetixProxyIsSet returns (uint) {
         return IERC20(synthetix).balanceOf(account);
     }
 

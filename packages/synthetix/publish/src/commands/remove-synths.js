@@ -70,7 +70,7 @@ const removeSynths = async ({
 			console.error(red(`Synth ${synth} not found!`));
 			process.exitCode = 1;
 			return;
-		} else if (['sUSD'].indexOf(synth) >= 0) {
+		} else if (['mUSD'].indexOf(synth) >= 0) {
 			console.error(red(`Synth ${synth} cannot be removed`));
 			process.exitCode = 1;
 			return;
@@ -163,13 +163,13 @@ const removeSynths = async ({
 		const { abi: synthABI } = deployment.sources[synthSource];
 		const Synth = new ethers.Contract(synthAddress, synthABI, wallet);
 
-		const currentSynthInSNX = await Synthetix.synths(toBytes32(currencyKey));
+		const currentSynthInMIME = await Synthetix.synths(toBytes32(currencyKey));
 
-		if (synthAddress !== currentSynthInSNX) {
+		if (synthAddress !== currentSynthInMIME) {
 			console.error(
 				red(
 					`Synth address in Synthetix for ${currencyKey} is different from what's deployed in Synthetix to the local ${DEPLOYMENT_FILENAME} of ${network} \ndeployed: ${yellow(
-						currentSynthInSNX
+						currentSynthInMIME
 					)}\nlocal:    ${yellow(synthAddress)}`
 				)
 			);
@@ -184,7 +184,7 @@ const removeSynths = async ({
 				await ExchangeRates.effectiveValue(
 					toBytes32(currencyKey),
 					ethers.utils.parseEther(totalSupply),
-					toBytes32('sUSD')
+					toBytes32('mUSD')
 				)
 			);
 			try {

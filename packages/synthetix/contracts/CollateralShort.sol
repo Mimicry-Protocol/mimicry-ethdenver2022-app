@@ -21,7 +21,7 @@ contract CollateralShort is Collateral {
         bytes32 currency
     ) external returns (uint id) {
         // Transfer from will throw if they didn't set the allowance
-        IERC20(address(_synthsUSD())).transferFrom(msg.sender, address(this), collateral);
+        IERC20(address(_synthmUSD())).transferFrom(msg.sender, address(this), collateral);
 
         id = _open(collateral, amount, currency, true);
     }
@@ -29,7 +29,7 @@ contract CollateralShort is Collateral {
     function close(uint id) external returns (uint amount, uint collateral) {
         (amount, collateral) = _close(msg.sender, id);
 
-        IERC20(address(_synthsUSD())).transfer(msg.sender, collateral);
+        IERC20(address(_synthmUSD())).transfer(msg.sender, collateral);
     }
 
     function deposit(
@@ -37,9 +37,9 @@ contract CollateralShort is Collateral {
         uint id,
         uint amount
     ) external returns (uint principal, uint collateral) {
-        require(amount <= IERC20(address(_synthsUSD())).allowance(msg.sender, address(this)), "Allowance too low");
+        require(amount <= IERC20(address(_synthmUSD())).allowance(msg.sender, address(this)), "Allowance too low");
 
-        IERC20(address(_synthsUSD())).transferFrom(msg.sender, address(this), amount);
+        IERC20(address(_synthmUSD())).transferFrom(msg.sender, address(this), amount);
 
         (principal, collateral) = _deposit(borrower, id, amount);
     }
@@ -47,7 +47,7 @@ contract CollateralShort is Collateral {
     function withdraw(uint id, uint amount) external returns (uint principal, uint collateral) {
         (principal, collateral) = _withdraw(id, amount);
 
-        IERC20(address(_synthsUSD())).transfer(msg.sender, amount);
+        IERC20(address(_synthmUSD())).transfer(msg.sender, amount);
     }
 
     function repay(
@@ -62,7 +62,7 @@ contract CollateralShort is Collateral {
         (amount, collateral) = _closeLoanByRepayment(msg.sender, id);
 
         if (collateral > 0) {
-            IERC20(address(_synthsUSD())).transfer(msg.sender, collateral);
+            IERC20(address(_synthmUSD())).transfer(msg.sender, collateral);
         }
     }
 
@@ -90,6 +90,6 @@ contract CollateralShort is Collateral {
     ) external {
         uint collateralLiquidated = _liquidate(borrower, id, amount);
 
-        IERC20(address(_synthsUSD())).transfer(msg.sender, collateralLiquidated);
+        IERC20(address(_synthmUSD())).transfer(msg.sender, collateralLiquidated);
     }
 }

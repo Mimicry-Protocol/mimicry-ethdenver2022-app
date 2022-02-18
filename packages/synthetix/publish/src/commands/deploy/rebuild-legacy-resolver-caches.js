@@ -110,7 +110,7 @@ module.exports = async ({ addressOf, compiled, deployer, network, runStep, useOv
 		});
 
 	// Now perform a sync of legacy contracts that have not been replaced in Shaula (v2.35.x)
-	// EtherCollateral, EtherCollateralsUSD
+	// EtherCollateral, EtherCollateralmUSD
 	console.log(gray('Checking all legacy contracts with setResolverAndSyncCache() are rebuilt...'));
 	const contractsWithLegacyResolverCaching = filterTargetsWith({
 		prop: 'setResolverAndSyncCache',

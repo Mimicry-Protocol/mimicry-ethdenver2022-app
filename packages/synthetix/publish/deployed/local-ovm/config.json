@@ -80,13 +80,13 @@
 	"DappMaintenance": {
 		"deploy": true
 	},
-	"SynthsUSD": {
+	"SynthmUSD": {
 		"deploy": true
 	},
 	"ProxyERC20": {
 		"deploy": true
 	},
-	"ProxyERC20sUSD": {
+	"ProxyERC20mUSD": {
 		"deploy": true
 	},
 	"ProxyFeePool": {
@@ -95,7 +95,7 @@
 	"ProxySynthetix": {
 		"deploy": true
 	},
-	"ProxysUSD": {
+	"ProxymUSD": {
 		"deploy": true
 	},
 	"SafeDecimalMath": {
@@ -107,25 +107,25 @@
 	"TokenStateSynthetix": {
 		"deploy": true
 	},
-	"TokenStatesUSD": {
+	"TokenStatemUSD": {
 		"deploy": true
 	},
-	"TokenStatesETH": {
+	"TokenStatemETH": {
 		"deploy": true
 	},
-	"TokenStatesBTC": {
+	"TokenStatemBTC": {
 		"deploy": true
 	},
-	"ProxysETH": {
+	"ProxymETH": {
 		"deploy": true
 	},
-	"ProxysBTC": {
+	"ProxymBTC": {
 		"deploy": true
 	},
-	"SynthsAPE": {
+	"SynthmBTC": {
 		"deploy": true
 	},
-	"SynthsETH": {
+	"SynthmETH": {
 		"deploy": true
 	},
 	"SynthetixBridgeToBase": {

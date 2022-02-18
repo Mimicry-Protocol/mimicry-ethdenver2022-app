@@ -246,7 +246,7 @@ const owner = async ({
 	const warnings = [];
 	if (!skipAcceptance) {
 		console.log(gray('Looking for contracts whose ownership we should accept'));
-		// prevent dupes if some contracts are in there twice (looking at you ProxyERC20 and ProxyERC20sUSD)
+		// prevent dupes if some contracts are in there twice (looking at you ProxyERC20 and ProxyERC20mUSD)
 		const appendedOwnerCache = {};
 		for (const contract of Object.keys(config)) {
 			if (!deployment.targets[contract]) {

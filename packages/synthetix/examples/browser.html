@@ -26,17 +26,17 @@
       console.log("users", users);
       console.log(
         "synthetix.toBytes32 correct?",
-        synthetix.toBytes32("SNX") ===
+        synthetix.toBytes32("MIME") ===
           "0x534e580000000000000000000000000000000000000000000000000000000000"
       );
-      const sETHContract = new ethers.Contract(
-        targets.SynthsETH.address,
-        sources[targets.SynthsETH.source].abi,
+      const mETHContract = new ethers.Contract(
+        targets.SynthmETH.address,
+        sources[targets.SynthmETH.source].abi,
         ethers.getDefaultProvider(network)
       );
-      sETHContract.totalSupply().then(unformattedTotalSupply => {
+      mETHContract.totalSupply().then(unformattedTotalSupply => {
         console.log(
-          "sETH supply",
+          "mETH supply",
           ethers.utils.formatEther(unformattedTotalSupply)
         );
       });

@@ -69,12 +69,12 @@ const actions = {
 			deploymentPath,
 		});
 
-		const anySynthOrSNXRateIsInvalid = await Synthetix.anySynthOrSNXRateIsInvalid(blockOptions);
+		const anySynthOrMIMERateIsInvalid = await Synthetix.anySynthOrMIMERateIsInvalid(blockOptions);
 		logItem(
-			'Synthetix.anySynthOrSNXRateIsInvalid',
-			anySynthOrSNXRateIsInvalid,
+			'Synthetix.anySynthOrMIMERateIsInvalid',
+			anySynthOrMIMERateIsInvalid,
 			1,
-			anySynthOrSNXRateIsInvalid ? bgRed : undefined
+			anySynthOrMIMERateIsInvalid ? bgRed : undefined
 		);
 
 		logItem('Synthetix.totalSupply', (await Synthetix.totalSupply(blockOptions)).toString() / 1e18);
@@ -329,7 +329,7 @@ const actions = {
 		} else {
 			currencyKeys = [
 				...(await Issuer.availableCurrencyKeys()),
-				ethers.utils.formatBytes32String('SNX'),
+				ethers.utils.formatBytes32String('MIME'),
 			];
 		}
 

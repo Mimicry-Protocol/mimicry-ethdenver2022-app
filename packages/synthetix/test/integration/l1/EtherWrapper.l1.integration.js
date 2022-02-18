@@ -9,7 +9,7 @@ describe('EtherWrapper integration tests (L1)', () => {
 
 	before(() => {
 		wrapperOptions.Wrapper = ctx.contracts.EtherWrapper;
-		wrapperOptions.Synth = ctx.contracts.SynthsETH;
+		wrapperOptions.Synth = ctx.contracts.SynthmETH;
 		wrapperOptions.Token = ctx.contracts.WETH;
 	});
 

@@ -56,7 +56,7 @@ async function _isCacheInvalid({ ctx }) {
 async function _areRatesInvalid({ ctx }) {
 	const { Synthetix } = ctx.contracts;
 
-	return Synthetix.anySynthOrSNXRateIsInvalid();
+	return Synthetix.anySynthOrMIMERateIsInvalid();
 }
 
 async function _printCacheInfo({ ctx }) {
@@ -90,8 +90,8 @@ async function _getAvailableCurrencyKeys({ ctx }) {
 	const availableCurrencyKeys = await Issuer.availableCurrencyKeys();
 
 	return availableCurrencyKeys
-		.filter(key => key !== toBytes32('sUSD'))
-		.concat(['SNX', 'ETH'].map(toBytes32));
+		.filter(key => key !== toBytes32('mUSD'))
+		.concat(['MIME', 'ETH'].map(toBytes32));
 }
 
 async function _setMissingRates({ ctx }) {

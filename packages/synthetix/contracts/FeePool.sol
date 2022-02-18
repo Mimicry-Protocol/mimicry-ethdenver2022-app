@@ -34,11 +34,11 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
 
     bytes32 public constant CONTRACT_NAME = "FeePool";
 
-    // Where fees are pooled in sUSD.
+    // Where fees are pooled in mUSD.
     address public constant FEE_ADDRESS = 0xfeEFEEfeefEeFeefEEFEEfEeFeefEEFeeFEEFEeF;
 
-    // sUSD currencyKey. Fees stored and paid in sUSD
-    bytes32 private sUSD = "sUSD";
+    // mUSD currencyKey. Fees stored and paid in mUSD
+    bytes32 private mUSD = "mUSD";
 
     // This struct represents the issuance activity that's happened in a fee period.
     struct FeePeriod {
@@ -193,19 +193,19 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
 
     /**
      * @notice The Exchanger contract informs us when fees are paid.
-     * @param amount susd amount in fees being paid.
+     * @param amount mUSD amount in fees being paid.
      */
     function recordFeePaid(uint amount) external onlyInternalContracts {
-        // Keep track off fees in sUSD in the open fee pool period.
+        // Keep track off fees in mUSD in the open fee pool period.
         _recentFeePeriodsStorage(0).feesToDistribute = _recentFeePeriodsStorage(0).feesToDistribute.add(amount);
     }
 
     /**
-     * @notice The RewardsDistribution contract informs us how many SNX rewards are sent to RewardEscrow to be claimed.
+     * @notice The RewardsDistribution contract informs us how many MIME rewards are sent to RewardEscrow to be claimed.
      */
     function setRewardsToDistribute(uint amount) external optionalProxy {
         require(messageSender == address(rewardsDistribution()), "RewardsDistribution only");
-        // Add the amount of SNX rewards to distribute on top of any rolling unclaimed amount
+        // Add the amount of MIME rewards to distribute on top of any rolling unclaimed amount
         _recentFeePeriodsStorage(0).rewardsToDistribute = _recentFeePeriodsStorage(0).rewardsToDistribute.add(amount);
     }
 
@@ -286,7 +286,7 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
 
         require(feesClaimable, "C-Ratio below penalty threshold");
 
-        require(!anyRateIsInvalid, "A synth or SNX rate is invalid");
+        require(!anyRateIsInvalid, "A synth or MIME rate is invalid");
 
         // Get the claimingAddress available fees and rewards
         (availableFees, availableRewards) = feesAvailable(claimingAddress);
@@ -351,11 +351,11 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
 
     /**
      * @notice Record the fee payment in our recentFeePeriods.
-     * @param sUSDAmount The amount of fees priced in sUSD.
+     * @param mUSDAmount The amount of fees priced in mUSD.
      */
-    function _recordFeePayment(uint sUSDAmount) internal returns (uint) {
+    function _recordFeePayment(uint mUSDAmount) internal returns (uint) {
         // Don't assign to the parameter
-        uint remainingToAllocate = sUSDAmount;
+        uint remainingToAllocate = mUSDAmount;
 
         uint feesPaid;
         // Start at the oldest period and record the amount, moving to newer periods
@@ -383,11 +383,11 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
 
     /**
      * @notice Record the reward payment in our recentFeePeriods.
-     * @param snxAmount The amount of SNX tokens.
+     * @param MIMEAmount The amount of MIME tokens.
      */
-    function _recordRewardPayment(uint snxAmount) internal returns (uint) {
+    function _recordRewardPayment(uint MIMEAmount) internal returns (uint) {
         // Don't assign to the parameter
-        uint remainingToAllocate = snxAmount;
+        uint remainingToAllocate = MIMEAmount;
 
         uint rewardPaid;
 
@@ -416,39 +416,39 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
     /**
      * @notice Send the fees to claiming address.
      * @param account The address to send the fees to.
-     * @param sUSDAmount The amount of fees priced in sUSD.
+     * @param mUSDAmount The amount of fees priced in mUSD.
      */
-    function _payFees(address account, uint sUSDAmount) internal notFeeAddress(account) {
-        // Grab the sUSD Synth
-        ISynth sUSDSynth = issuer().synths(sUSD);
+    function _payFees(address account, uint mUSDAmount) internal notFeeAddress(account) {
+        // Grab the mUSD Synth
+        ISynth mUSDSynth = issuer().synths(mUSD);
 
         // NOTE: we do not control the FEE_ADDRESS so it is not possible to do an
         // ERC20.approve() transaction to allow this feePool to call ERC20.transferFrom
         // to the accounts address
 
         // Burn the source amount
-        sUSDSynth.burn(FEE_ADDRESS, sUSDAmount);
+        mUSDSynth.burn(FEE_ADDRESS, mUSDAmount);
 
         // Mint their new synths
-        sUSDSynth.issue(account, sUSDAmount);
+        mUSDSynth.issue(account, mUSDAmount);
     }
 
     /**
      * @notice Send the rewards to claiming address - will be locked in rewardEscrow.
      * @param account The address to send the fees to.
-     * @param snxAmount The amount of SNX.
+     * @param MIMEAmount The amount of MIME.
      */
-    function _payRewards(address account, uint snxAmount) internal notFeeAddress(account) {
+    function _payRewards(address account, uint MIMEAmount) internal notFeeAddress(account) {
         /* Escrow the tokens for 1 year. */
         uint escrowDuration = 52 weeks;
 
         // Record vesting entry for claiming address and amount
-        // SNX already minted to rewardEscrow balance
-        rewardEscrowV2().appendVestingEntry(account, snxAmount, escrowDuration);
+        // MIME already minted to rewardEscrow balance
+        rewardEscrowV2().appendVestingEntry(account, MIMEAmount, escrowDuration);
     }
 
     /**
-     * @notice The total fees available in the system to be withdrawnn in sUSD
+     * @notice The total fees available in the system to be withdrawnn in mUSD
      */
     function totalFeesAvailable() external view returns (uint) {
         uint totalFees = 0;
@@ -463,7 +463,7 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
     }
 
     /**
-     * @notice The total SNX rewards available in the system to be withdrawn
+     * @notice The total MIME rewards available in the system to be withdrawn
      */
     function totalRewardsAvailable() external view returns (uint) {
         uint totalRewards = 0;
@@ -478,8 +478,8 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
     }
 
     /**
-     * @notice The fees available to be withdrawn by a specific account, priced in sUSD
-     * @dev Returns two amounts, one for fees and one for SNX rewards
+     * @notice The fees available to be withdrawn by a specific account, priced in mUSD
+     * @dev Returns two amounts, one for fees and one for MIME rewards
      */
     function feesAvailable(address account) public view returns (uint, uint) {
         // Add up the fees
@@ -494,8 +494,8 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
             totalRewards = totalRewards.add(userFees[i][1]);
         }
 
-        // And convert totalFees to sUSD
-        // Return totalRewards as is in SNX amount
+        // And convert totalFees to mUSD
+        // Return totalRewards as is in MIME amount
         return (totalFees, totalRewards);
     }
 
@@ -527,7 +527,7 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
     }
 
     /**
-     * @notice Calculates fees by period for an account, priced in sUSD
+     * @notice Calculates fees by period for an account, priced in mUSD
      * @param account The address you want to query the fees for
      */
     function feesByPeriod(address account) public view returns (uint[2][FEE_PERIOD_LENGTH] memory results) {
@@ -638,10 +638,10 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
         bool isExchanger = msg.sender == address(exchanger());
         bool isSynth = issuer().synthsByAddress(msg.sender) != bytes32(0);
         bool isCollateral = collateralManager().hasCollateral(msg.sender);
-        bool isEtherWrapper = msg.sender == address(etherWrapper());
+        bool imETHerWrapper = msg.sender == address(etherWrapper());
         bool isWrapper = msg.sender == address(wrapperFactory());
 
-        require(isExchanger || isSynth || isCollateral || isEtherWrapper || isWrapper, "Only Internal Contracts");
+        require(isExchanger || isSynth || isCollateral || imETHerWrapper || isWrapper, "Only Internal Contracts");
         _;
     }
 
@@ -664,14 +664,14 @@ contract FeePool is Owned, Proxyable, LimitedSetup, MixinSystemSettings, IFeePoo
         proxy._emit(abi.encode(feePeriodId), 1, FEEPERIODCLOSED_SIG, 0, 0, 0);
     }
 
-    event FeesClaimed(address account, uint sUSDAmount, uint snxRewards);
+    event FeesClaimed(address account, uint mUSDAmount, uint MIMERewards);
     bytes32 private constant FEESCLAIMED_SIG = keccak256("FeesClaimed(address,uint256,uint256)");
 
     function emitFeesClaimed(
         address account,
-        uint sUSDAmount,
-        uint snxRewards
+        uint mUSDAmount,
+        uint MIMERewards
     ) internal {
-        proxy._emit(abi.encode(account, sUSDAmount, snxRewards), 1, FEESCLAIMED_SIG, 0, 0, 0);
+        proxy._emit(abi.encode(account, mUSDAmount, MIMERewards), 1, FEESCLAIMED_SIG, 0, 0, 0);
     }
 }

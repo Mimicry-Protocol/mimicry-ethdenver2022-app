@@ -92,7 +92,7 @@ const migrateDebtShares = async ({
 
 	const addressCollateralAmounts = [];
 
-	const sUSD = ethers.utils.formatBytes32String('sUSD');
+	const mUSD = ethers.utils.formatBytes32String('mUSD');
 
 	let totalDebtAccounted = ethers.BigNumber.from(0);
 	let totalDebtForgiven = ethers.BigNumber.from(0);
@@ -107,7 +107,7 @@ const migrateDebtShares = async ({
 		}
 
 		try {
-			const debtBalanceOf = await Synthetix.debtBalanceOf(address, sUSD);
+			const debtBalanceOf = await Synthetix.debtBalanceOf(address, mUSD);
 
 			if (debtBalanceOf.gt(ethers.utils.parseEther(threshold))) {
 				addressCollateralAmounts.push({ address, debtBalanceOf });
@@ -174,7 +174,7 @@ module.exports = {
 				'-p, --provider-url <value>',
 				'Ethereum network provider URL. If default, will use PROVIDER_URL found in the .env file.'
 			)
-			.option('--etherscan-address-csv <file>', 'CSV of all addresses to scan', 'snx-addrs.csv')
+			.option('--etherscan-address-csv <file>', 'CSV of all addresses to scan', 'MIME-addrs.csv')
 			.option(
 				'--threshold <amount>',
 				'Forgive debt amounts for holders who have less than the given threshold of debt',

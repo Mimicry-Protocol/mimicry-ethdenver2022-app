@@ -61,7 +61,7 @@ const purgeSynths = async ({
 			console.error(red(`Synth ${synth} not found!`));
 			process.exitCode = 1;
 			return;
-		} else if (['sUSD'].indexOf(synth) >= 0) {
+		} else if (['mUSD'].indexOf(synth) >= 0) {
 			console.error(red(`Synth ${synth} cannot be purged`));
 			process.exitCode = 1;
 			return;
@@ -147,13 +147,13 @@ const purgeSynths = async ({
 			)
 		);
 
-		const currentSynthInSNX = await Synthetix.synths(toBytes32(currencyKey));
+		const currentSynthInMIME = await Synthetix.synths(toBytes32(currencyKey));
 
-		if (synthAddress !== currentSynthInSNX) {
+		if (synthAddress !== currentSynthInMIME) {
 			console.error(
 				red(
 					`Synth address in Synthetix for ${currencyKey} is different from what's deployed in Synthetix to the local ${DEPLOYMENT_FILENAME} of ${network} \ndeployed: ${yellow(
-						currentSynthInSNX
+						currentSynthInMIME
 					)}\nlocal:    ${yellow(synthAddress)}`
 				)
 			);

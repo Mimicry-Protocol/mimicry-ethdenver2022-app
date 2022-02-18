@@ -12,31 +12,31 @@ function itCanRedeem({ ctx }) {
 	describe('redemption of deprecated synths', () => {
 		let owner;
 		let someUser;
-		let Synthetix, Issuer, SynthToRedeem, SynthsUSD, SynthToRedeemProxy, SynthRedeemer;
+		let Synthetix, Issuer, SynthToRedeem, SynthmUSD, SynthToRedeemProxy, SynthRedeemer;
 		let totalDebtBeforeRemoval;
 		let synth;
 
 		before('target contracts and users', () => {
 			const { addedSynths } = ctx;
-			// when no added synths, then just use sETH for testing (useful for the simulation)
-			synth = addedSynths.length ? addedSynths[0].name : 'sBTC';
+			// when no added synths, then just use mETH for testing (useful for the simulation)
+			synth = addedSynths.length ? addedSynths[0].name : 'mBTC';
 
 			({
 				Synthetix,
 				Issuer,
 				[`Synth${synth}`]: SynthToRedeem,
 				[`Proxy${synth}`]: SynthToRedeemProxy,
-				SynthsUSD,
+				SynthmUSD,
 				SynthRedeemer,
 			} = ctx.contracts);
 
 			({ owner, someUser } = ctx.users);
 		});
 
-		before('ensure the user has sUSD', async () => {
+		before('ensure the user has mUSD', async () => {
 			await ensureBalance({
 				ctx,
-				symbol: 'sUSD',
+				symbol: 'mUSD',
 				user: someUser,
 				balance: ethers.utils.parseEther('100'),
 			});
@@ -45,7 +45,7 @@ function itCanRedeem({ ctx }) {
 		before(`ensure the user has some of the target synth`, async () => {
 			Synthetix = Synthetix.connect(someUser);
 			const tx = await Synthetix.exchange(
-				toBytes32('sUSD'),
+				toBytes32('mUSD'),
 				ethers.utils.parseEther('50'),
 				toBytes32(synth)
 			);
@@ -61,7 +61,7 @@ function itCanRedeem({ ctx }) {
 		});
 
 		before('record total system debt', async () => {
-			totalDebtBeforeRemoval = await Issuer.totalIssuedSynths(toBytes32('sUSD'), true);
+			totalDebtBeforeRemoval = await Issuer.totalIssuedSynths(toBytes32('mUSD'), true);
 		});
 
 		describe(`deprecating the synth`, () => {
@@ -75,7 +75,7 @@ function itCanRedeem({ ctx }) {
 
 			it('then the total system debt is unchanged', async () => {
 				assert.bnEqual(
-					await Issuer.totalIssuedSynths(toBytes32('sUSD'), true),
+					await Issuer.totalIssuedSynths(toBytes32('mUSD'), true),
 					totalDebtBeforeRemoval
 				);
 			});
@@ -83,9 +83,9 @@ function itCanRedeem({ ctx }) {
 				assert.equal(await Synthetix.synths(toBytes32(synth)), ZERO_ADDRESS);
 			});
 			describe('user redemption', () => {
-				let sUSDBeforeRedemption;
+				let mUSDBeforeRedemption;
 				before(async () => {
-					sUSDBeforeRedemption = await SynthsUSD.balanceOf(someUser.address);
+					mUSDBeforeRedemption = await SynthmUSD.balanceOf(someUser.address);
 				});
 
 				before(`when the user redeems their synth`, async () => {
@@ -98,8 +98,8 @@ function itCanRedeem({ ctx }) {
 					assert.equal(await SynthToRedeem.balanceOf(someUser.address), '0');
 				});
 
-				it('and they have more sUSD again', async () => {
-					assert.bnGt(await SynthsUSD.balanceOf(someUser.address), sUSDBeforeRedemption);
+				it('and they have more mUSD again', async () => {
+					assert.bnGt(await SynthmUSD.balanceOf(someUser.address), mUSDBeforeRedemption);
 				});
 			});
 		});

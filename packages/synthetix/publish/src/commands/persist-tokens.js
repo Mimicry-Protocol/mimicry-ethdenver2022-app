@@ -51,7 +51,7 @@ const persistTokens = async ({ network, yes, privateKey, assetsVersion }) => {
 
 	const output = {
 		name: 'Synthetix',
-		logoURI: `${baseURI}/snx/SNX.svg`,
+		logoURI: `${baseURI}/MIME/MIME.svg`,
 		keywords: ['synthetix', 'defi', 'derivatives', 'synths', 'synthetics'],
 		timestamp: new Date().toISOString(),
 		tags: {
@@ -78,10 +78,10 @@ const persistTokens = async ({ network, yes, privateKey, assetsVersion }) => {
 			chainId,
 			address,
 			symbol,
-			name: symbol === 'SNX' ? 'Synthetix Network Token' : `Synth ${name}`,
+			name: symbol === 'MIME' ? 'Synthetix Network Token' : `Synth ${name}`,
 			decimals,
-			logoURI: baseURI + (symbol === 'SNX' ? '/snx/SNX.svg' : `/synths/${symbol}.svg`),
-			tags: [].concat(index ? 'index' : []).concat(symbol !== 'SNX' ? 'synth' : []),
+			logoURI: baseURI + (symbol === 'MIME' ? '/MIME/MIME.svg' : `/synths/${symbol}.svg`),
+			tags: [].concat(index ? 'index' : []).concat(symbol !== 'MIME' ? 'synth' : []),
 		})),
 	};
 
@@ -128,7 +128,7 @@ const persistTokens = async ({ network, yes, privateKey, assetsVersion }) => {
 		process.exit(1);
 	}
 
-	const ensName = 'synths.snx.eth';
+	const ensName = 'synths.MIME.eth';
 	const content = `ipfs://${hash}`;
 
 	console.log(red('setContent not emitted. Not supported at the moment.'));

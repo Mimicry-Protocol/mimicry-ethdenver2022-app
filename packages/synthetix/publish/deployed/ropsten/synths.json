@@ -1,6 +1,6 @@
 [
 	{
-		"name": "sUSD",
+		"name": "mUSD",
 		"asset": "USD"
 	},
 	{
@@ -32,12 +32,12 @@
 		"asset": "XAG"
 	},
 	{
-		"name": "sBTC",
+		"name": "mBTC",
 		"asset": "BTC",
 		"subclass": "MultiCollateralSynth"
 	},
 	{
-		"name": "sETH",
+		"name": "mETH",
 		"asset": "ETH",
 		"subclass": "MultiCollateralSynth"
 	},
@@ -144,7 +144,7 @@
 				"units": 502.718
 			},
 			{
-				"asset": "SNX",
+				"asset": "MIME",
 				"units": 107.686
 			},
 			{

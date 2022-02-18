@@ -24,7 +24,7 @@ contract Synth is Owned, IERC20, ExternStateToken, MixinResolver, ISynth {
 
     uint8 public constant DECIMALS = 18;
 
-    // Where fees are pooled in sUSD
+    // Where fees are pooled in mUSD
     address public constant FEE_ADDRESS = 0xfeEFEEfeefEeFeefEEFEEfEeFeefEEFeeFEEFEeF;
 
     /* ========== ADDRESS RESOLVER CONFIGURATION ========== */
@@ -61,7 +61,7 @@ contract Synth is Owned, IERC20, ExternStateToken, MixinResolver, ISynth {
     function transfer(address to, uint value) public optionalProxy returns (bool) {
         _ensureCanTransfer(messageSender, value);
 
-        // transfers to FEE_ADDRESS will be exchanged into sUSD and recorded as fee
+        // transfers to FEE_ADDRESS will be exchanged into mUSD and recorded as fee
         if (to == FEE_ADDRESS) {
             return _transferToFeeAddress(to, value);
         }
@@ -124,23 +124,23 @@ contract Synth is Owned, IERC20, ExternStateToken, MixinResolver, ISynth {
 
     /**
      * @notice _transferToFeeAddress function
-     * non-sUSD synths are exchanged into sUSD via synthInitiatedExchange
+     * non-mUSD synths are exchanged into mUSD via synthInitiatedExchange
      * notify feePool to record amount as fee paid to feePool */
     function _transferToFeeAddress(address to, uint value) internal returns (bool) {
         uint amountInUSD;
 
-        // sUSD can be transferred to FEE_ADDRESS directly
-        if (currencyKey == "sUSD") {
+        // mUSD can be transferred to FEE_ADDRESS directly
+        if (currencyKey == "mUSD") {
             amountInUSD = value;
             super._internalTransfer(messageSender, to, value);
         } else {
-            // else exchange synth into sUSD and send to FEE_ADDRESS
+            // else exchange synth into mUSD and send to FEE_ADDRESS
             (amountInUSD, ) = exchanger().exchange(
                 messageSender,
                 messageSender,
                 currencyKey,
                 value,
-                "sUSD",
+                "mUSD",
                 FEE_ADDRESS,
                 false,
                 address(0),
@@ -148,7 +148,7 @@ contract Synth is Owned, IERC20, ExternStateToken, MixinResolver, ISynth {
             );
         }
 
-        // Notify feePool to record sUSD to distribute as fees
+        // Notify feePool to record mUSD to distribute as fees
         feePool().recordFeePaid(amountInUSD);
 
         return true;

@@ -19,12 +19,12 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
     using SafeMath for uint;
     using SafeDecimalMath for uint;
 
-    bytes32 internal constant SNX = "SNX";
+    bytes32 internal constant MIME = "MIME";
     bytes32 internal constant ETH = "ETH";
 
     /* ========== STATE VARIABLES ========== */
 
-    // Address where the ether and Synths raised for selling SNX is transfered to
+    // Address where the ether and Synths raised for selling MIME is transfered to
     // Any ether raised for selling Synths gets sent back to whoever deposited the Synths,
     // and doesn't have anything to do with this address.
     address payable public fundsWallet;
@@ -54,15 +54,15 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
     // The ending index of our queue exclusive
     uint public depositEndIndex;
 
-    /* This is a convenience variable so users and dApps can just query how much sUSD
+    /* This is a convenience variable so users and dApps can just query how much mUSD
        we have available for purchase without having to iterate the mapping with a
        O(n) amount of calls for something we'll probably want to display quite regularly. */
     uint public totalSellableDeposits;
 
-    // The minimum amount of sUSD required to enter the FiFo queue
+    // The minimum amount of mUSD required to enter the FiFo queue
     uint public minimumDepositAmount = 50 * SafeDecimalMath.unit();
 
-    // A cap on the amount of sUSD you can buy with ETH in 1 transaction
+    // A cap on the amount of mUSD you can buy with ETH in 1 transaction
     uint public maxEthPurchase = 500 * SafeDecimalMath.unit();
 
     // If a user deposits a synth amount < the minimumDepositAmount the contract will keep
@@ -72,7 +72,7 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
 
     /* ========== ADDRESS RESOLVER CONFIGURATION ========== */
 
-    bytes32 private constant CONTRACT_SYNTHSUSD = "SynthsUSD";
+    bytes32 private constant CONTRACT_SYNTHmUSD = "SynthmUSD";
     bytes32 private constant CONTRACT_EXRATES = "ExchangeRates";
     bytes32 private constant CONTRACT_SYNTHETIX = "Synthetix";
 
@@ -103,8 +103,8 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
     }
 
     /**
-     * @notice Set the minimum deposit amount required to depoist sUSD into the FIFO queue
-     * @param _amount The new new minimum number of sUSD required to deposit
+     * @notice Set the minimum deposit amount required to depoist mUSD into the FIFO queue
+     * @param _amount The new new minimum number of mUSD required to deposit
      */
     function setMinimumDepositAmount(uint _amount) external onlyOwner {
         // Do not allow us to set it less than 1 dollar opening up to fractional desposits in the queue again
@@ -116,14 +116,14 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
     /* ========== MUTATIVE FUNCTIONS ========== */
 
     /**
-     * @notice Fallback function (exchanges ETH to sUSD)
+     * @notice Fallback function (exchanges ETH to mUSD)
      */
     function() external payable nonReentrant rateNotInvalid(ETH) notPaused {
         _exchangeEtherForSynths();
     }
 
     /**
-     * @notice Exchange ETH to sUSD.
+     * @notice Exchange ETH to mUSD.
      */
     /* solhint-disable multiple-sends, reentrancy */
     function exchangeEtherForSynths()
@@ -133,7 +133,7 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
         rateNotInvalid(ETH)
         notPaused
         returns (
-            uint // Returns the number of Synths (sUSD) received
+            uint // Returns the number of Synths (mUSD) received
         )
     {
         return _exchangeEtherForSynths();
@@ -189,7 +189,7 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
                     // Note: Fees are calculated by the Synth contract, so when
                     //       we request a specific transfer here, the fee is
                     //       automatically deducted and sent to the fee pool.
-                    synthsUSD().transfer(msg.sender, remainingToFulfill);
+                    synthmUSD().transfer(msg.sender, remainingToFulfill);
 
                     // And we have nothing left to fulfill on this order.
                     remainingToFulfill = 0;
@@ -224,7 +224,7 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
                     // Note: Fees are calculated by the Synth contract, so when
                     //       we request a specific transfer here, the fee is
                     //       automatically deducted and sent to the fee pool.
-                    synthsUSD().transfer(msg.sender, deposit.amount);
+                    synthmUSD().transfer(msg.sender, deposit.amount);
 
                     // And subtract the order from our outstanding amount remaining
                     // for the next iteration of the loop.
@@ -244,7 +244,7 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
 
         if (fulfilled > 0) {
             // Now tell everyone that we gave them that many (only if the amount is greater than 0).
-            emit Exchange("ETH", msg.value, "sUSD", fulfilled);
+            emit Exchange("ETH", msg.value, "mUSD", fulfilled);
         }
 
         return fulfilled;
@@ -253,7 +253,7 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
     /* solhint-enable multiple-sends, reentrancy */
 
     /**
-     * @notice Exchange ETH to sUSD while insisting on a particular rate. This allows a user to
+     * @notice Exchange ETH to mUSD while insisting on a particular rate. This allows a user to
      *         exchange while protecting against frontrunning by the contract owner on the exchange rate.
      * @param guaranteedRate The exchange rate (ether price) which must be honored or the call will revert.
      */
@@ -263,7 +263,7 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
         rateNotInvalid(ETH)
         notPaused
         returns (
-            uint // Returns the number of Synths (sUSD) received
+            uint // Returns the number of Synths (mUSD) received
         )
     {
         require(guaranteedRate == exchangeRates().rateForCurrency(ETH), "Guaranteed rate would not be received");
@@ -271,116 +271,116 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
         return _exchangeEtherForSynths();
     }
 
-    function _exchangeEtherForSNX() internal returns (uint) {
-        // How many SNX are they going to be receiving?
+    function _exchangeEtherForMIME() internal returns (uint) {
+        // How many MIME are they going to be receiving?
         uint synthetixToSend = synthetixReceivedForEther(msg.value);
 
         // Store the ETH in our funds wallet
         fundsWallet.transfer(msg.value);
 
-        // And send them the SNX.
+        // And send them the MIME.
         synthetix().transfer(msg.sender, synthetixToSend);
 
-        emit Exchange("ETH", msg.value, "SNX", synthetixToSend);
+        emit Exchange("ETH", msg.value, "MIME", synthetixToSend);
 
         return synthetixToSend;
     }
 
     /**
-     * @notice Exchange ETH to SNX.
+     * @notice Exchange ETH to MIME.
      */
-    function exchangeEtherForSNX()
+    function exchangeEtherForMIME()
         external
         payable
-        rateNotInvalid(SNX)
+        rateNotInvalid(MIME)
         rateNotInvalid(ETH)
         notPaused
         returns (
-            uint // Returns the number of SNX received
+            uint // Returns the number of MIME received
         )
     {
-        return _exchangeEtherForSNX();
+        return _exchangeEtherForMIME();
     }
 
     /**
-     * @notice Exchange ETH to SNX while insisting on a particular set of rates. This allows a user to
+     * @notice Exchange ETH to MIME while insisting on a particular set of rates. This allows a user to
      *         exchange while protecting against frontrunning by the contract owner on the exchange rates.
      * @param guaranteedEtherRate The ether exchange rate which must be honored or the call will revert.
      * @param guaranteedSynthetixRate The synthetix exchange rate which must be honored or the call will revert.
      */
-    function exchangeEtherForSNXAtRate(uint guaranteedEtherRate, uint guaranteedSynthetixRate)
+    function exchangeEtherForMIMEAtRate(uint guaranteedEtherRate, uint guaranteedSynthetixRate)
         external
         payable
-        rateNotInvalid(SNX)
+        rateNotInvalid(MIME)
         rateNotInvalid(ETH)
         notPaused
         returns (
-            uint // Returns the number of SNX received
+            uint // Returns the number of MIME received
         )
     {
         require(guaranteedEtherRate == exchangeRates().rateForCurrency(ETH), "Guaranteed ether rate would not be received");
         require(
-            guaranteedSynthetixRate == exchangeRates().rateForCurrency(SNX),
+            guaranteedSynthetixRate == exchangeRates().rateForCurrency(MIME),
             "Guaranteed synthetix rate would not be received"
         );
 
-        return _exchangeEtherForSNX();
+        return _exchangeEtherForMIME();
     }
 
-    function _exchangeSynthsForSNX(uint synthAmount) internal returns (uint) {
-        // How many SNX are they going to be receiving?
+    function _exchangeSynthsForMIME(uint synthAmount) internal returns (uint) {
+        // How many MIME are they going to be receiving?
         uint synthetixToSend = synthetixReceivedForSynths(synthAmount);
 
         // Ok, transfer the Synths to our funds wallet.
         // These do not go in the deposit queue as they aren't for sale as such unless
         // they're sent back in from the funds wallet.
-        synthsUSD().transferFrom(msg.sender, fundsWallet, synthAmount);
+        synthmUSD().transferFrom(msg.sender, fundsWallet, synthAmount);
 
-        // And send them the SNX.
+        // And send them the MIME.
         synthetix().transfer(msg.sender, synthetixToSend);
 
-        emit Exchange("sUSD", synthAmount, "SNX", synthetixToSend);
+        emit Exchange("mUSD", synthAmount, "MIME", synthetixToSend);
 
         return synthetixToSend;
     }
 
     /**
-     * @notice Exchange sUSD for SNX
+     * @notice Exchange mUSD for MIME
      * @param synthAmount The amount of synths the user wishes to exchange.
      */
-    function exchangeSynthsForSNX(uint synthAmount)
+    function exchangeSynthsForMIME(uint synthAmount)
         external
-        rateNotInvalid(SNX)
+        rateNotInvalid(MIME)
         notPaused
         returns (
-            uint // Returns the number of SNX received
+            uint // Returns the number of MIME received
         )
     {
-        return _exchangeSynthsForSNX(synthAmount);
+        return _exchangeSynthsForMIME(synthAmount);
     }
 
     /**
-     * @notice Exchange sUSD for SNX while insisting on a particular rate. This allows a user to
+     * @notice Exchange mUSD for MIME while insisting on a particular rate. This allows a user to
      *         exchange while protecting against frontrunning by the contract owner on the exchange rate.
      * @param synthAmount The amount of synths the user wishes to exchange.
      * @param guaranteedRate A rate (synthetix price) the caller wishes to insist upon.
      */
-    function exchangeSynthsForSNXAtRate(uint synthAmount, uint guaranteedRate)
+    function exchangeSynthsForMIMEAtRate(uint synthAmount, uint guaranteedRate)
         external
-        rateNotInvalid(SNX)
+        rateNotInvalid(MIME)
         notPaused
         returns (
-            uint // Returns the number of SNX received
+            uint // Returns the number of MIME received
         )
     {
-        require(guaranteedRate == exchangeRates().rateForCurrency(SNX), "Guaranteed rate would not be received");
+        require(guaranteedRate == exchangeRates().rateForCurrency(MIME), "Guaranteed rate would not be received");
 
-        return _exchangeSynthsForSNX(synthAmount);
+        return _exchangeSynthsForMIME(synthAmount);
     }
 
     /**
-     * @notice Allows the owner to withdraw SNX from this contract if needed.
-     * @param amount The amount of SNX to attempt to withdraw (in 18 decimal places).
+     * @notice Allows the owner to withdraw MIME from this contract if needed.
+     * @param amount The amount of MIME to attempt to withdraw (in 18 decimal places).
      */
     function withdrawSynthetix(uint amount) external onlyOwner {
         synthetix().transfer(owner, amount);
@@ -426,18 +426,18 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
         require(synthsToSend > 0, "You have no deposits to withdraw.");
 
         // Send their deposits back to them (minus fees)
-        synthsUSD().transfer(msg.sender, synthsToSend);
+        synthmUSD().transfer(msg.sender, synthsToSend);
 
         emit SynthWithdrawal(msg.sender, synthsToSend);
     }
 
     /**
      * @notice depositSynths: Allows users to deposit synths via the approve / transferFrom workflow
-     * @param amount The amount of sUSD you wish to deposit (must have been approved first)
+     * @param amount The amount of mUSD you wish to deposit (must have been approved first)
      */
     function depositSynths(uint amount) external {
         // Grab the amount of synths. Will fail if not approved first
-        synthsUSD().transferFrom(msg.sender, address(this), amount);
+        synthmUSD().transferFrom(msg.sender, address(this), amount);
 
         // A minimum deposit amount is designed to protect purchasers from over paying
         // gas for fullfilling multiple small synth deposits
@@ -464,31 +464,31 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
 
     function resolverAddressesRequired() public view returns (bytes32[] memory addresses) {
         addresses = new bytes32[](3);
-        addresses[0] = CONTRACT_SYNTHSUSD;
+        addresses[0] = CONTRACT_SYNTHmUSD;
         addresses[1] = CONTRACT_EXRATES;
         addresses[2] = CONTRACT_SYNTHETIX;
     }
 
     /**
-     * @notice Calculate how many SNX you will receive if you transfer
+     * @notice Calculate how many MIME you will receive if you transfer
      *         an amount of synths.
      * @param amount The amount of synths (in 18 decimal places) you want to ask about
      */
     function synthetixReceivedForSynths(uint amount) public view returns (uint) {
-        // And what would that be worth in SNX based on the current price?
-        return amount.divideDecimal(exchangeRates().rateForCurrency(SNX));
+        // And what would that be worth in MIME based on the current price?
+        return amount.divideDecimal(exchangeRates().rateForCurrency(MIME));
     }
 
     /**
-     * @notice Calculate how many SNX you will receive if you transfer
+     * @notice Calculate how many MIME you will receive if you transfer
      *         an amount of ether.
      * @param amount The amount of ether (in wei) you want to ask about
      */
     function synthetixReceivedForEther(uint amount) public view returns (uint) {
-        // How much is the ETH they sent us worth in sUSD (ignoring the transfer fee)?
+        // How much is the ETH they sent us worth in mUSD (ignoring the transfer fee)?
         uint valueSentInSynths = amount.multiplyDecimal(exchangeRates().rateForCurrency(ETH));
 
-        // Now, how many SNX will that USD amount buy?
+        // Now, how many MIME will that USD amount buy?
         return synthetixReceivedForSynths(valueSentInSynths);
     }
 
@@ -504,8 +504,8 @@ contract Depot is Owned, Pausable, ReentrancyGuard, MixinResolver, IDepot {
 
     /* ========== INTERNAL VIEWS ========== */
 
-    function synthsUSD() internal view returns (IERC20) {
-        return IERC20(requireAndGetAddress(CONTRACT_SYNTHSUSD));
+    function synthmUSD() internal view returns (IERC20) {
+        return IERC20(requireAndGetAddress(CONTRACT_SYNTHmUSD));
     }
 
     function synthetix() internal view returns (IERC20) {
