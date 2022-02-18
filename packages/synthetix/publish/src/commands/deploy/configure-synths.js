@@ -30,7 +30,7 @@ module.exports = async ({
 		const tokenStateForSynth = deployer.deployedContracts[`TokenState${currencyKey}`];
 		const proxyForSynth = deployer.deployedContracts[`Proxy${currencyKey}`];
 		const proxyERC20ForSynth =
-			currencyKey === 'sUSD' ? deployer.deployedContracts[`ProxyERC20sUSD`] : undefined;
+			currencyKey === 'mUSD' ? deployer.deployedContracts[`ProxyERC20mUSD`] : undefined;
 
 		let ExistingSynth;
 		try {
@@ -86,7 +86,7 @@ module.exports = async ({
 				comment: `Ensure the ${currencyKey} synth Proxy is correctly connected to the Synth`,
 			});
 
-			// Migration Phrase 2: if there's a ProxyERC20sUSD then the Synth's proxy must use it
+			// Migration Phrase 2: if there's a ProxyERC20mUSD then the Synth's proxy must use it
 			await runStep({
 				contract: `Synth${currencyKey}`,
 				target: synth,
@@ -100,14 +100,14 @@ module.exports = async ({
 			if (proxyERC20ForSynth) {
 				// and make sure this new proxy has the target of the synth
 				await runStep({
-					contract: `ProxyERC20sUSD`,
+					contract: `ProxyERC20mUSD`,
 					target: proxyERC20ForSynth,
 					read: 'target',
 					expected: input => input === addressOf(synth),
 					write: 'setTarget',
 					writeArg: addressOf(synth),
-					comment: 'Ensure the special ERC20 proxy for sUSD has its target set to the Synth',
-					// Skip solidity for this as on mainnet, ProxyERC20sUSD is already done via ProxysUSD above
+					comment: 'Ensure the special ERC20 proxy for mUSD has its target set to the Synth',
+					// Skip solidity for this as on mainnet, ProxyERC20mUSD is already done via ProxymUSD above
 					skipSolidity: network === 'mainnet',
 				});
 			}

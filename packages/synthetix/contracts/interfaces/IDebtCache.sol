@@ -54,5 +54,5 @@ interface IDebtCache {
 
     function recordExcludedDebtChange(bytes32 currencyKey, int256 delta) external;
 
-    function updateCachedsUSDDebt(int amount) external;
+    function updateCachedmUSDDebt(int amount) external;
 }

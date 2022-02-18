@@ -43,8 +43,8 @@ export default function TimelineDisplay(props) {
         </Text>
       </Timeline.Item>
 
-      <Timeline.Item dot={<SendOutlined style={{ fontSize: "16px" }} />} color={props.hasEther ? "green" : "blue"}>
-        <Text delete={props.hasEther}>
+      <Timeline.Item dot={<SendOutlined style={{ fontSize: "16px" }} />} color={props.hamETHer ? "green" : "blue"}>
+        <Text delete={props.hamETHer}>
           Send test ether to your{" "}
           <Blockies seed={(props.address ? props.address : "").toLowerCase()} size={8} scale={2} /> address using
           (bottom left) faucet
@@ -53,9 +53,9 @@ export default function TimelineDisplay(props) {
 
       <Timeline.Item
         dot={<DownloadOutlined style={{ fontSize: "16px" }} />}
-        color={props.contractHasEther ? "green" : "blue"}
+        color={props.contractHamETHer ? "green" : "blue"}
       >
-        <Text delete={props.contractHasEther}>
+        <Text delete={props.contractHamETHer}>
           Deposit some funds into your{" "}
           <Blockies seed={(props.contractAddress ? props.contractAddress : "").toLowerCase()} size={8} scale={2} />{" "}
           smart contract wallet

@@ -35,8 +35,8 @@ contract('Depot', async accounts => {
 		// Approve Transaction
 		await synth.approve(depot.address, synthsToDeposit, { from: depositor });
 
-		// Deposit sUSD in Depot
-		// console.log('Deposit sUSD in Depot amount', synthsToDeposit, depositor);
+		// Deposit mUSD in Depot
+		// console.log('Deposit mUSD in Depot amount', synthsToDeposit, depositor);
 		const txn = await depot.depositSynths(synthsToDeposit, {
 			from: depositor,
 		});
@@ -46,9 +46,9 @@ contract('Depot', async accounts => {
 
 	// Run once at beginning - snapshots will take care of resetting this before each test
 	before(async () => {
-		// Mock sUSD as Depot only needs its ERC20 methods (System Pause will not work for suspending sUSD transfers)
+		// Mock mUSD as Depot only needs its ERC20 methods (System Pause will not work for suspending mUSD transfers)
 		[{ token: synth }] = await Promise.all([
-			mockToken({ accounts, synth: 'sUSD', name: 'Synthetic USD', symbol: 'sUSD' }),
+			mockToken({ accounts, synth: 'mUSD', name: 'Synthetic USD', symbol: 'mUSD' }),
 		]);
 
 		({
@@ -61,7 +61,7 @@ contract('Depot', async accounts => {
 			accounts,
 			mocks: {
 				// mocks necessary for address resolver imports
-				SynthsUSD: synth,
+				SynthmUSD: synth,
 			},
 			contracts: [
 				'Depot',
@@ -477,7 +477,7 @@ contract('Depot', async accounts => {
 				});
 				const gasPaidApprove = web3.utils.toBN(approveTxn.receipt.gasUsed * gasPrice);
 
-				// Deposit sUSD in Depot
+				// Deposit mUSD in Depot
 				const depositTxn = await depot.depositSynths(synthsToDeposit, {
 					from: depositor,
 					gasPrice,
@@ -511,12 +511,12 @@ contract('Depot', async accounts => {
 					});
 				}
 
-				// Exchange("ETH", msg.value, "sUSD", fulfilled);
+				// Exchange("ETH", msg.value, "mUSD", fulfilled);
 				const exchangeEvent = txn.logs.find(log => log.event === 'Exchange');
 				assert.eventEqual(exchangeEvent, 'Exchange', {
 					fromCurrency: 'ETH',
 					fromAmount: ethToSend,
-					toCurrency: 'sUSD',
+					toCurrency: 'mUSD',
 					toAmount: synthsToDeposit,
 				});
 
@@ -581,12 +581,12 @@ contract('Depot', async accounts => {
 					});
 				}
 
-				// Exchange("ETH", msg.value, "sUSD", fulfilled);
+				// Exchange("ETH", msg.value, "mUSD", fulfilled);
 				const exchangeEvent = txn.logs.find(log => log.event === 'Exchange');
 				assert.eventEqual(exchangeEvent, 'Exchange', {
 					fromCurrency: 'ETH',
 					fromAmount: ethToSend,
-					toCurrency: 'sUSD',
+					toCurrency: 'mUSD',
 					toAmount: synthsToDeposit.div(web3.utils.toBN('2')),
 				});
 
@@ -636,14 +636,14 @@ contract('Depot', async accounts => {
 					});
 				}
 
-				// Exchange("ETH", msg.value, "sUSD", fulfilled);
+				// Exchange("ETH", msg.value, "mUSD", fulfilled);
 				const exchangeEvent = transaction.logs.find(log => log.event === 'Exchange');
 				const synthsAmount = multiplyDecimal(ethToSend, ethUsd);
 
 				assert.eventEqual(exchangeEvent, 'Exchange', {
 					fromCurrency: 'ETH',
 					fromAmount: ethToSend,
-					toCurrency: 'sUSD',
+					toCurrency: 'mUSD',
 					toAmount: synthsAmount,
 				});
 
@@ -700,13 +700,13 @@ contract('Depot', async accounts => {
 
 				const gasPaid = web3.utils.toBN(txn.receipt.gasUsed * gasPrice);
 
-				// Exchange("ETH", msg.value, "sUSD", fulfilled);
+				// Exchange("ETH", msg.value, "mUSD", fulfilled);
 				const exchangeEvent = txn.logs.find(log => log.event === 'Exchange');
 
 				assert.eventEqual(exchangeEvent, 'Exchange', {
 					fromCurrency: 'ETH',
 					fromAmount: ethToSend,
-					toCurrency: 'sUSD',
+					toCurrency: 'mUSD',
 					toAmount: synthsToDeposit,
 				});
 
@@ -759,7 +759,7 @@ contract('Depot', async accounts => {
 					assert.eventEqual(exchangeEvent, 'Exchange', {
 						fromCurrency: 'ETH',
 						fromAmount: ethToSend,
-						toCurrency: 'sUSD',
+						toCurrency: 'mUSD',
 						toAmount: synthsToPurchase,
 					});
 				});
@@ -867,7 +867,7 @@ contract('Depot', async accounts => {
 					const exchangeEvent = txn.logs.find(log => log.event === 'Exchange');
 
 					assert.eventEqual(exchangeEvent, 'Exchange', {
-						fromCurrency: 'sUSD',
+						fromCurrency: 'mUSD',
 						fromAmount: synthsToSend,
 						toCurrency: 'SNX',
 						toAmount: snxToPurchase,
@@ -1204,12 +1204,12 @@ contract('Depot', async accounts => {
 			});
 		});
 
-		it('ensure user gets the correct amount of SNX after sending 10 sUSD', async () => {
+		it('ensure user gets the correct amount of SNX after sending 10 mUSD', async () => {
 			const purchaserSNXStartBalance = await synthetix.balanceOf(purchaser);
 			// Purchaser should not have SNX yet
 			assert.equal(purchaserSNXStartBalance, 0);
 
-			// Purchaser sends sUSD
+			// Purchaser sends mUSD
 			const txn = await depot.exchangeSynthsForSNX(synthsToSend, {
 				from: purchaser,
 			});
@@ -1225,7 +1225,7 @@ contract('Depot', async accounts => {
 			const exchangeEvent = txn.logs.find(log => log.event === 'Exchange');
 
 			assert.eventEqual(exchangeEvent, 'Exchange', {
-				fromCurrency: 'sUSD',
+				fromCurrency: 'mUSD',
 				fromAmount: synthsToSend,
 				toCurrency: 'SNX',
 				toAmount: purchaseValueInSynthetix,

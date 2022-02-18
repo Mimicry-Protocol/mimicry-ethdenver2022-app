@@ -11,10 +11,10 @@ function itCanLiquidate({ ctx }) {
 		let someUser;
 		let otherUser;
 		let exchangeRate;
-		let Synthetix, Liquidations, SystemSettings, SynthsUSD;
+		let Synthetix, Liquidations, SystemSettings, SynthmUSD;
 
 		before('target contracts and users', () => {
-			({ Synthetix, Liquidations, SystemSettings, SynthsUSD } = ctx.contracts);
+			({ Synthetix, Liquidations, SystemSettings, SynthmUSD } = ctx.contracts);
 
 			({ owner, someUser, otherUser } = ctx.users);
 
@@ -35,10 +35,10 @@ function itCanLiquidate({ ctx }) {
 			});
 		});
 
-		before('ensure otherUser has sUSD', async () => {
+		before('ensure otherUser has mUSD', async () => {
 			await ensureBalance({
 				ctx,
-				symbol: 'sUSD',
+				symbol: 'mUSD',
 				user: otherUser,
 				balance: ethers.utils.parseEther('100'),
 			});
@@ -101,11 +101,11 @@ function itCanLiquidate({ ctx }) {
 
 					before('otherUser calls liquidateDelinquentAccount', async () => {
 						beforeDebt = (
-							await Synthetix.debtBalanceOf(someUser.address, toBytes32('sUSD'))
+							await Synthetix.debtBalanceOf(someUser.address, toBytes32('mUSD'))
 						).toString();
 						beforeDebttedSnx = await Synthetix.balanceOf(someUser.address);
 						beforeCredittedSnx = await Synthetix.balanceOf(otherUser.address);
-						beforeBalance = await SynthsUSD.balanceOf(otherUser.address);
+						beforeBalance = await SynthmUSD.balanceOf(otherUser.address);
 
 						await Synthetix.connect(otherUser).liquidateDelinquentAccount(
 							someUser.address,
@@ -113,15 +113,15 @@ function itCanLiquidate({ ctx }) {
 						);
 					});
 
-					it('deducts sUSD debt from the liquidated', async () => {
+					it('deducts mUSD debt from the liquidated', async () => {
 						assert.bnLt(
-							await Synthetix.debtBalanceOf(someUser.address, toBytes32('sUSD')),
+							await Synthetix.debtBalanceOf(someUser.address, toBytes32('mUSD')),
 							beforeDebt
 						);
 					});
 
-					it('burns sUSD from otherUser', async () => {
-						assert.bnLt(await SynthsUSD.balanceOf(otherUser.address), beforeBalance);
+					it('burns mUSD from otherUser', async () => {
+						assert.bnLt(await SynthmUSD.balanceOf(otherUser.address), beforeBalance);
 					});
 
 					it('transfers SNX from otherUser', async () => {

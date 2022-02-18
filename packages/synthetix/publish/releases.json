@@ -69,7 +69,7 @@
 			"sip": 85,
 			"layer": "base",
 			"released": "base",
-			"sources": ["EtherCollateralsUSD", "FeePool", "Issuer", "SynthsUSD"]
+			"sources": ["EtherCollateralmUSD", "FeePool", "Issuer", "SynthmUSD"]
 		},
 		{
 			"sip": 86,
@@ -121,9 +121,9 @@
 				"DebtCache",
 				"FeePool",
 				"Issuer",
-				"SynthsAPE",
-				"SynthsETH",
-				"SynthsUSD"
+				"SynthmBTC",
+				"SynthmETH",
+				"SynthmUSD"
 			]
 		},
 		{
@@ -166,7 +166,7 @@
 					"DebtCache",
 					"EscrowChecker",
 					"EtherCollateral",
-					"EtherCollateralsUSD",
+					"EtherCollateralmUSD",
 					"Exchanger",
 					"ExchangeRates",
 					"ExchangeState",
@@ -176,9 +176,9 @@
 					"Issuer",
 					"Math",
 					"ProxyERC20",
-					"ProxyERC20sUSD",
+					"ProxyERC20mUSD",
 					"ProxyFeePool",
-					"ProxysUSD",
+					"ProxymUSD",
 					"ProxySynthetix",
 					"ReadProxyAddressResolver",
 					"RewardEscrow",
@@ -189,11 +189,11 @@
 					"SynthetixBridgeToBase",
 					"SynthetixEscrow",
 					"SynthetixState",
-					"SynthsUSD",
+					"SynthmUSD",
 					"SynthUtil",
 					"SystemSettings",
 					"SystemStatus",
-					"TokenStatesUSD",
+					"TokenStatemUSD",
 					"TokenStateSynthetix",
 					"TradingRewards"
 				]
@@ -203,7 +203,7 @@
 			"sip": 103,
 			"layer": "base",
 			"released": "base",
-			"sources": ["CollateralStateShort", "CollateralShort", "SynthsUSD"]
+			"sources": ["CollateralStateShort", "CollateralShort", "SynthmUSD"]
 		},
 		{
 			"sip": 105,
@@ -239,8 +239,8 @@
 				"EtherWrapper",
 				"FeePool",
 				"NativeEtherWrapper",
-				"SynthsETH",
-				"SynthsUSD",
+				"SynthmETH",
+				"SynthmUSD",
 				"SystemSettings"
 			]
 		},
@@ -307,10 +307,10 @@
 				"CollateralManagerState",
 				"CollateralShort",
 				"CollateralUtil",
-				"SynthsAPE",
-				"SynthsETH",
+				"SynthmBTC",
+				"SynthmETH",
 				"SynthsLINK",
-				"SynthsUSD",
+				"SynthmUSD",
 				"SystemSettings"
 			],
 			"released": "ovm"
@@ -348,9 +348,9 @@
 				"FeePool",
 				"Issuer",
 				"Synthetix",
-				"SynthsETH",
-				"SynthsUSD",
-				"SynthsAPE"
+				"SynthmETH",
+				"SynthmUSD",
+				"SynthmBTC"
 			]
 		},
 		{

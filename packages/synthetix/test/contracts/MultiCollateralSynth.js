@@ -23,8 +23,8 @@ const { setupAllContracts } = require('./setup');
 contract('MultiCollateralSynth', accounts => {
 	const [deployerAccount, owner, , , account1] = accounts;
 
-	const sETH = toBytes32('sETH');
-	const sBTC = toBytes32('sBTC');
+	const mETH = toBytes32('mETH');
+	const mBTC = toBytes32('mBTC');
 
 	let issuer,
 		resolver,
@@ -33,7 +33,7 @@ contract('MultiCollateralSynth', accounts => {
 		exchangeRates,
 		managerState,
 		debtCache,
-		sUSDSynth,
+		mUSDSynth,
 		feePool,
 		synths;
 
@@ -42,9 +42,9 @@ contract('MultiCollateralSynth', accounts => {
 		return event.args.id;
 	};
 
-	const issuesUSDToAccount = async (issueAmount, receiver) => {
+	const issuemUSDToAccount = async (issueAmount, receiver) => {
 		// Set up the depositor with an amount of synths to deposit.
-		await sUSDSynth.issue(receiver, issueAmount, {
+		await mUSDSynth.issue(receiver, issueAmount, {
 			from: owner,
 		});
 	};
@@ -54,11 +54,11 @@ contract('MultiCollateralSynth', accounts => {
 	});
 
 	before(async () => {
-		synths = ['sUSD'];
+		synths = ['mUSD'];
 		({
 			AddressResolver: resolver,
 			Issuer: issuer,
-			SynthsUSD: sUSDSynth,
+			SynthmUSD: mUSDSynth,
 			ExchangeRates: exchangeRates,
 			DebtCache: debtCache,
 			FeePool: feePool,
@@ -83,8 +83,8 @@ contract('MultiCollateralSynth', accounts => {
 			],
 		}));
 
-		await setupPriceAggregators(exchangeRates, owner, [sETH, sBTC]);
-		await updateAggregatorRates(exchangeRates, [sETH, sBTC], [100, 10000].map(toUnit));
+		await setupPriceAggregators(exchangeRates, owner, [mETH, mBTC]);
+		await updateAggregatorRates(exchangeRates, [mETH, mBTC], [100, 10000].map(toUnit));
 
 		await managerState.setAssociatedContract(manager.address, { from: owner });
 
@@ -94,7 +94,7 @@ contract('MultiCollateralSynth', accounts => {
 
 		await manager.addCollaterals([ceth.address], { from: owner });
 
-		await issuesUSDToAccount(toUnit(1000), owner);
+		await issuemUSDToAccount(toUnit(1000), owner);
 		await debtCache.takeDebtSnapshot();
 	});
 

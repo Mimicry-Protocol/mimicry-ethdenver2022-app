@@ -48,7 +48,7 @@ async function extractStakingBalances({ network = DEFAULTS.network, deploymentPa
 
 	// The address of the inverse synth that is about to be purged.
 	// Note that this must be the PROXY address, where Transfer events are emitted from.
-	const iSynthContract = getTarget({ contract: `Proxy${synth === 'sUSD' ? 'ERC20sUSD' : synth}` });
+	const iSynthContract = getTarget({ contract: `Proxy${synth === 'mUSD' ? 'ERC20mUSD' : synth}` });
 
 	if (!iSynthContract) {
 		throw new Error(`Cannot find synth contract for synth: "${synth}"`);
@@ -110,10 +110,10 @@ async function extractStakingBalances({ network = DEFAULTS.network, deploymentPa
 		provider
 	);
 
-	// The exchange fee incurred when users are purged into sUSD
-	const exchangeFee = await SystemSettings.exchangeFeeRate(toBytes32('sUSD'));
+	// The exchange fee incurred when users are purged into mUSD
+	const exchangeFee = await SystemSettings.exchangeFeeRate(toBytes32('mUSD'));
 
-	console.log(gray(`Exchange fee of sUSD is`), yellow(ethers.utils.formatEther(exchangeFee)));
+	console.log(gray(`Exchange fee of mUSD is`), yellow(ethers.utils.formatEther(exchangeFee)));
 
 	/** *********** --------------------- *********** **/
 
@@ -204,7 +204,7 @@ async function extractStakingBalances({ network = DEFAULTS.network, deploymentPa
 
 	// Computes the balances owed to each account
 	function computeOwedBalances(balances) {
-		console.log(`\nComputing owed sUSD balances for accounts using parameters:`);
+		console.log(`\nComputing owed mUSD balances for accounts using parameters:`);
 		console.log(`    Price: ${ethers.utils.formatEther(frozenPrice)}`);
 		console.log(
 			`    Exchange Fee: ${ethers.utils.formatEther(
@@ -232,14 +232,14 @@ async function extractStakingBalances({ network = DEFAULTS.network, deploymentPa
 		const totalOwed = result.reduce((total, curr) => total.add(curr.owed), ethers.constants.Zero);
 
 		console.log(`\n${ethers.utils.formatEther(totalStaked, 'ether')} staked in total.`);
-		console.log(`${ethers.utils.formatEther(totalOwed, 'ether')} total sUSD owed.\n`);
+		console.log(`${ethers.utils.formatEther(totalOwed, 'ether')} total mUSD owed.\n`);
 		return result;
 	}
 
-	function saveOwedBalances(owedSUSDBalances) {
-		let csvString = 'Address,Staked Balance,Owed sUSD,Readable Staked Balance,Readable Owed sUSD\n';
+	function saveOwedBalances(owedmUSDBalances) {
+		let csvString = 'Address,Staked Balance,Owed mUSD,Readable Staked Balance,Readable Owed mUSD\n';
 
-		for (const balance of owedSUSDBalances) {
+		for (const balance of owedmUSDBalances) {
 			const line = `${balance.address},${balance.balance},${balance.owed},${balance.readableBalance},${balance.readableOwed}\n`;
 			csvString = csvString.concat(line);
 		}
@@ -252,9 +252,9 @@ async function extractStakingBalances({ network = DEFAULTS.network, deploymentPa
 	}
 
 	const nonzeroBalances = await fetchStakedBalances();
-	const owedSUSDBalances = computeOwedBalances(nonzeroBalances);
+	const owedmUSDBalances = computeOwedBalances(nonzeroBalances);
 
-	saveOwedBalances(owedSUSDBalances);
+	saveOwedBalances(owedmUSDBalances);
 }
 
 module.exports = {

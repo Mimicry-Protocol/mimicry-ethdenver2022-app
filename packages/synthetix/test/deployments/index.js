@@ -83,11 +83,11 @@ describe('deployments', () => {
 
 									// these mappings are the getters for the legacy rewards contracts
 									const methodMappings = {
-										StakingRewardssETHUniswapV1: {
+										StakingRewardsmETHUniswapV1: {
 											stakingTokenMethod: 'uni',
 											rewardsTokenMethod: 'snx',
 										},
-										StakingRewardssUSDCurve: {
+										StakingRewardsmUSDCurve: {
 											stakingTokenMethod: 'uni',
 											rewardsTokenMethod: 'snx',
 										},
@@ -230,8 +230,8 @@ describe('deployments', () => {
 									'Synthetix',
 									'SynthetixEscrow',
 									'SynthetixState',
-									'SynthsUSD',
-									'SynthsETH',
+									'SynthmUSD',
+									'SynthmETH',
 									'SystemSettings',
 									'SystemStatus',
 								].forEach(name => {

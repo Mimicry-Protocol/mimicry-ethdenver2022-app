@@ -1,10 +1,10 @@
 [
 	{
-		"name": "sETH",
+		"name": "mETH",
 		"rewardsToken": "Synthetix"
 	},
 	{
-		"name": "sBTC",
+		"name": "mBTC",
 		"rewardsToken": "Synthetix"
 	}
 ]

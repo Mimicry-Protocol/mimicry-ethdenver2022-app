@@ -78,13 +78,13 @@ contract DebtCache is BaseDebtCache {
         _excludedIssuedDebt[currencyKey] = uint(newExcludedDebt);
     }
 
-    function updateCachedsUSDDebt(int amount) external onlyIssuer {
+    function updateCachedmUSDDebt(int amount) external onlyIssuer {
         uint delta = SafeDecimalMath.abs(amount);
         if (amount > 0) {
-            _cachedSynthDebt[sUSD] = _cachedSynthDebt[sUSD].add(delta);
+            _cachedSynthDebt[mUSD] = _cachedSynthDebt[mUSD].add(delta);
             _cachedDebt = _cachedDebt.add(delta);
         } else {
-            _cachedSynthDebt[sUSD] = _cachedSynthDebt[sUSD].sub(delta);
+            _cachedSynthDebt[mUSD] = _cachedSynthDebt[mUSD].sub(delta);
             _cachedDebt = _cachedDebt.sub(delta);
         }
 

@@ -1,16 +1,16 @@
 [
 	{
-		"name": "sUSD",
+		"name": "mUSD",
 		"asset": "USD",
 		"subclass": "MultiCollateralSynth"
 	},
 	{
-		"name": "sETH",
+		"name": "mETH",
 		"asset": "ETH",
 		"subclass": "MultiCollateralSynth"
 	},
 	{
-		"name": "sBTC",
+		"name": "mBTC",
 		"asset": "BTC",
 		"subclass": "MultiCollateralSynth"
 	},

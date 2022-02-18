@@ -134,7 +134,7 @@ module.exports = {
 	updateAggregatorRates,
 
 	async updateRatesWithDefaults({ exchangeRates, owner, debtCache }) {
-		const keys = ['SNX', 'sAUD', 'sEUR', 'sBTC', 'iBTC', 'sETH', 'ETH'].map(toBytes32);
+		const keys = ['SNX', 'sAUD', 'sEUR', 'mBTC', 'iBTC', 'mETH', 'ETH'].map(toBytes32);
 		const rates = ['0.1', '0.5', '1.25', '5000', '4000', '172', '172'].map(toUnit);
 		// set up any missing aggregators
 		await setupMissingPriceAggregators(exchangeRates, owner, keys);

@@ -107,7 +107,7 @@
 	"DappMaintenance": {
 		"deploy": false
 	},
-	"SynthsUSD": {
+	"SynthmUSD": {
 		"deploy": false
 	},
 	"SynthsEUR": {
@@ -125,7 +125,7 @@
 	"SynthsCHF": {
 		"deploy": false
 	},
-	"SynthsAPE": {
+	"SynthmBTC": {
 		"deploy": false
 	},
 	"ProxyERC20": {
@@ -137,7 +137,7 @@
 	"ProxySynthetix": {
 		"deploy": false
 	},
-	"ProxysUSD": {
+	"ProxymUSD": {
 		"deploy": false
 	},
 	"ProxysEUR": {
@@ -155,7 +155,7 @@
 	"ProxysCHF": {
 		"deploy": false
 	},
-	"ProxysBTC": {
+	"ProxymBTC": {
 		"deploy": false
 	},
 	"SafeDecimalMath": {
@@ -167,7 +167,7 @@
 	"TokenStateSynthetix": {
 		"deploy": false
 	},
-	"TokenStatesUSD": {
+	"TokenStatemUSD": {
 		"deploy": false
 	},
 	"TokenStatesEUR": {
@@ -185,19 +185,19 @@
 	"TokenStatesCHF": {
 		"deploy": false
 	},
-	"TokenStatesBTC": {
+	"TokenStatemBTC": {
 		"deploy": false
 	},
-	"TokenStatesETH": {
+	"TokenStatemETH": {
 		"deploy": false
 	},
-	"ProxysETH": {
+	"ProxymETH": {
 		"deploy": false
 	},
-	"SynthsETH": {
+	"SynthmETH": {
 		"deploy": false
 	},
-	"ProxyERC20sUSD": {
+	"ProxyERC20mUSD": {
 		"deploy": false
 	},
 	"TokenStatesLINK": {
@@ -266,10 +266,10 @@
 	"SynthetixBridgeToOptimism": {
 		"deploy": false
 	},
-	"ShortingRewardssBTC": {
+	"ShortingRewardsmBTC": {
 		"deploy": false
 	},
-	"ShortingRewardssETH": {
+	"ShortingRewardsmETH": {
 		"deploy": false
 	},
 	"TokenStatesAAVE": {
@@ -320,13 +320,13 @@
 	"OwnerRelayOnEthereum": {
 		"deploy": false
 	},
-	"TokenStatesETHBTC": {
+	"TokenStatemETHBTC": {
 		"deploy": false
 	},
-	"ProxysETHBTC": {
+	"ProxymETHBTC": {
 		"deploy": false
 	},
-	"SynthsETHBTC": {
+	"SynthmETHBTC": {
 		"deploy": false
 	},
 	"SystemSettingsLib": {

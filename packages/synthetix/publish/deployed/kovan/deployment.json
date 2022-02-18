@@ -54,8 +54,8 @@
 			"txn": "",
 			"network": "kovan"
 		},
-		"ProxysBTC": {
-			"name": "ProxysBTC",
+		"ProxymBTC": {
+			"name": "ProxymBTC",
 			"address": "0x3Aa2d4A15aA7F50158DEEAE0208F862a461f19Cf",
 			"source": "ProxyERC20",
 			"link": "https://kovan.etherscan.io/address/0x3Aa2d4A15aA7F50158DEEAE0208F862a461f19Cf",
@@ -99,8 +99,8 @@
 			"txn": "",
 			"network": "kovan"
 		},
-		"ProxyERC20sUSD": {
-			"name": "ProxyERC20sUSD",
+		"ProxyERC20mUSD": {
+			"name": "ProxyERC20mUSD",
 			"address": "0x57Ab1ec28D129707052df4dF418D58a2D46d5f51",
 			"source": "ProxyERC20",
 			"link": "https://kovan.etherscan.io/address/0x57Ab1ec28D129707052df4dF418D58a2D46d5f51",
@@ -162,8 +162,8 @@
 			"txn": "",
 			"network": "kovan"
 		},
-		"SynthsAPE": {
-			"name": "SynthsAPE",
+		"SynthmBTC": {
+			"name": "SynthmBTC",
 			"address": "0xe2d39AB610fEe4C7FC591003553c7557C880eD04",
 			"source": "MultiCollateralSynth",
 			"link": "https://kovan.etherscan.io/address/0xe2d39AB610fEe4C7FC591003553c7557C880eD04",
@@ -207,8 +207,8 @@
 			"txn": "",
 			"network": "kovan"
 		},
-		"SynthsUSD": {
-			"name": "SynthsUSD",
+		"SynthmUSD": {
+			"name": "SynthmUSD",
 			"address": "0xB98c6031344EB6007e94A8eDbc0ee28C13c66290",
 			"source": "MultiCollateralSynth",
 			"link": "https://kovan.etherscan.io/address/0xB98c6031344EB6007e94A8eDbc0ee28C13c66290",
@@ -225,8 +225,8 @@
 			"txn": "",
 			"network": "kovan"
 		},
-		"TokenStatesBTC": {
-			"name": "TokenStatesBTC",
+		"TokenStatemBTC": {
+			"name": "TokenStatemBTC",
 			"address": "0x029E1687c7BB8ead5Ab02DB390eB82b87b2D54a2",
 			"source": "TokenState",
 			"link": "https://kovan.etherscan.io/address/0x029E1687c7BB8ead5Ab02DB390eB82b87b2D54a2",
@@ -270,8 +270,8 @@
 			"txn": "",
 			"network": "kovan"
 		},
-		"TokenStatesUSD": {
-			"name": "TokenStatesUSD",
+		"TokenStatemUSD": {
+			"name": "TokenStatemUSD",
 			"address": "0x9aF5763Dc180f388A5fd20Dd7BA4B2790566f2eF",
 			"source": "TokenState",
 			"link": "https://kovan.etherscan.io/address/0x9aF5763Dc180f388A5fd20Dd7BA4B2790566f2eF",
@@ -288,8 +288,8 @@
 			"txn": "",
 			"network": "kovan"
 		},
-		"TokenStatesETH": {
-			"name": "TokenStatesETH",
+		"TokenStatemETH": {
+			"name": "TokenStatemETH",
 			"address": "0xFbB6526ed92DA8915d4843a86166020d0B7bAAd0",
 			"source": "TokenState",
 			"link": "https://kovan.etherscan.io/address/0xFbB6526ed92DA8915d4843a86166020d0B7bAAd0",
@@ -297,8 +297,8 @@
 			"txn": "",
 			"network": "kovan"
 		},
-		"ProxysETH": {
-			"name": "ProxysETH",
+		"ProxymETH": {
+			"name": "ProxymETH",
 			"address": "0x54c4B5cb58C880DD1734123c8b588e49eDf442Fb",
 			"source": "ProxyERC20",
 			"link": "https://kovan.etherscan.io/address/0x54c4B5cb58C880DD1734123c8b588e49eDf442Fb",
@@ -306,8 +306,8 @@
 			"txn": "",
 			"network": "kovan"
 		},
-		"SynthsETH": {
-			"name": "SynthsETH",
+		"SynthmETH": {
+			"name": "SynthmETH",
 			"address": "0x56a8953C03FC8b859140D5C6f7e7f24dD611d419",
 			"source": "MultiCollateralSynth",
 			"link": "https://kovan.etherscan.io/address/0x56a8953C03FC8b859140D5C6f7e7f24dD611d419",
@@ -378,8 +378,8 @@
 			"txn": "https://kovan.etherscan.io/tx/0xd13eda66ba28b1c5922041988c2c6818ac7bd77eaa390a35c4c2f05ed5b0510a",
 			"network": "kovan"
 		},
-		"ProxysUSD": {
-			"name": "ProxysUSD",
+		"ProxymUSD": {
+			"name": "ProxymUSD",
 			"address": "0x57Ab1ec28D129707052df4dF418D58a2D46d5f51",
 			"source": "ProxyERC20",
 			"link": "https://kovan.etherscan.io/address/0x57Ab1ec28D129707052df4dF418D58a2D46d5f51",
@@ -711,8 +711,8 @@
 			"txn": "https://kovan.etherscan.io/tx/0x106d766932bd8623b8720113c0b4b8a4d6830289bb717c98fc43f9069ca120d5",
 			"network": "kovan"
 		},
-		"ShortingRewardssETH": {
-			"name": "ShortingRewardssETH",
+		"ShortingRewardsmETH": {
+			"name": "ShortingRewardsmETH",
 			"address": "0x945d2dfFEE2d478D3D32E0f42b9649D1cbAe5528",
 			"source": "ShortingRewards",
 			"link": "https://kovan.etherscan.io/address/0x945d2dfFEE2d478D3D32E0f42b9649D1cbAe5528",
@@ -720,8 +720,8 @@
 			"txn": "https://kovan.etherscan.io/tx/0x1436018618aef847ebee8a050660dd7f1e6e4fe9cba2d947ca9c5deea3359e07",
 			"network": "kovan"
 		},
-		"ShortingRewardssBTC": {
-			"name": "ShortingRewardssBTC",
+		"ShortingRewardsmBTC": {
+			"name": "ShortingRewardsmBTC",
 			"address": "0xCEECB8D9c19Abe84E13a2B6De3F5aD6e2991FE6d",
 			"source": "ShortingRewards",
 			"link": "https://kovan.etherscan.io/address/0xCEECB8D9c19Abe84E13a2B6De3F5aD6e2991FE6d",
@@ -2574,7 +2574,7 @@
 						{
 							"indexed": false,
 							"internalType": "uint256",
-							"name": "sUSDAmount",
+							"name": "mUSDAmount",
 							"type": "uint256"
 						},
 						{
@@ -3502,7 +3502,7 @@
 							"type": "address[]"
 						},
 						{
-							"name": "sUSDAmounts",
+							"name": "mUSDAmounts",
 							"type": "uint256[]"
 						}
 					],
@@ -5275,7 +5275,7 @@
 						},
 						{
 							"internalType": "uint256",
-							"name": "susdAmount",
+							"name": "mUSDAmount",
 							"type": "uint256"
 						}
 					],
@@ -5534,7 +5534,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "sUSD",
+					"name": "mUSD",
 					"outputs": [
 						{
 							"internalType": "bytes32",
@@ -15029,7 +15029,7 @@
 						},
 						{
 							"internalType": "uint256",
-							"name": "susdAmount",
+							"name": "mUSDAmount",
 							"type": "uint256"
 						},
 						{
@@ -23809,7 +23809,7 @@
 							"type": "int256"
 						}
 					],
-					"name": "updateCachedsUSDDebt",
+					"name": "updateCachedmUSDDebt",
 					"outputs": [],
 					"payable": false,
 					"stateMutability": "nonpayable",
@@ -26532,7 +26532,7 @@
 					"outputs": [
 						{
 							"internalType": "uint256",
-							"name": "susdValue",
+							"name": "mUSDValue",
 							"type": "uint256"
 						},
 						{
@@ -26553,7 +26553,7 @@
 					"outputs": [
 						{
 							"internalType": "uint256",
-							"name": "susdValue",
+							"name": "mUSDValue",
 							"type": "uint256"
 						},
 						{
@@ -35904,7 +35904,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "sETHIssued",
+					"name": "mETHIssued",
 					"outputs": [
 						{
 							"internalType": "uint256",
@@ -35920,7 +35920,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "sUSDIssued",
+					"name": "mUSDIssued",
 					"outputs": [
 						{
 							"internalType": "uint256",
@@ -36375,7 +36375,7 @@
 						{
 							"indexed": false,
 							"internalType": "uint256",
-							"name": "supplyInsUSD",
+							"name": "supplyInmUSD",
 							"type": "uint256"
 						}
 					],
@@ -36406,7 +36406,7 @@
 						{
 							"indexed": false,
 							"internalType": "uint256",
-							"name": "amountInsUSD",
+							"name": "amountInmUSD",
 							"type": "uint256"
 						}
 					],
@@ -36446,7 +36446,7 @@
 					"outputs": [
 						{
 							"internalType": "uint256",
-							"name": "balanceInsUSD",
+							"name": "balanceInmUSD",
 							"type": "uint256"
 						}
 					],
@@ -36612,7 +36612,7 @@
 					"outputs": [
 						{
 							"internalType": "uint256",
-							"name": "supplyInsUSD",
+							"name": "supplyInmUSD",
 							"type": "uint256"
 						}
 					],

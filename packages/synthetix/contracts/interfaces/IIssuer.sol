@@ -89,7 +89,7 @@ interface IIssuer {
 
     function liquidateDelinquentAccount(
         address account,
-        uint susdAmount,
+        uint mUSDAmount,
         address liquidator
     ) external returns (uint totalRedeemed, uint amountToLiquidate);
 

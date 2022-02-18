@@ -74,7 +74,7 @@
 	"DappMaintenance": {
 		"deploy": false
 	},
-	"SynthsUSD": {
+	"SynthmUSD": {
 		"deploy": false
 	},
 	"SynthsEUR": {
@@ -98,7 +98,7 @@
 	"SynthsXAG": {
 		"deploy": false
 	},
-	"SynthsAPE": {
+	"SynthmBTC": {
 		"deploy": false
 	},
 	"ProxyERC20": {
@@ -110,7 +110,7 @@
 	"ProxySynthetix": {
 		"deploy": false
 	},
-	"ProxysUSD": {
+	"ProxymUSD": {
 		"deploy": false
 	},
 	"ProxysEUR": {
@@ -134,7 +134,7 @@
 	"ProxysXAG": {
 		"deploy": false
 	},
-	"ProxysBTC": {
+	"ProxymBTC": {
 		"deploy": false
 	},
 	"SafeDecimalMath": {
@@ -146,7 +146,7 @@
 	"TokenStateSynthetix": {
 		"deploy": false
 	},
-	"TokenStatesUSD": {
+	"TokenStatemUSD": {
 		"deploy": false
 	},
 	"TokenStatesEUR": {
@@ -170,16 +170,16 @@
 	"TokenStatesXAG": {
 		"deploy": false
 	},
-	"TokenStatesBTC": {
+	"TokenStatemBTC": {
 		"deploy": false
 	},
-	"TokenStatesETH": {
+	"TokenStatemETH": {
 		"deploy": false
 	},
-	"ProxysETH": {
+	"ProxymETH": {
 		"deploy": false
 	},
-	"SynthsETH": {
+	"SynthmETH": {
 		"deploy": false
 	},
 	"TokenStatesBNB": {
@@ -272,7 +272,7 @@
 	"SynthiCEX": {
 		"deploy": false
 	},
-	"ProxyERC20sUSD": {
+	"ProxyERC20mUSD": {
 		"deploy": false
 	},
 	"TokenStatesXRP": {

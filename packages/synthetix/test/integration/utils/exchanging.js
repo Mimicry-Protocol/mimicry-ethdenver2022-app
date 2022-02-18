@@ -7,12 +7,12 @@ async function exchangeSomething({ ctx }) {
 	let { Synthetix } = ctx.contracts;
 	Synthetix = Synthetix.connect(ctx.users.owner);
 
-	const sUSDAmount = ethers.utils.parseEther('10');
-	await ensureBalance({ ctx, symbol: 'sUSD', user: ctx.users.owner, balance: sUSDAmount });
+	const mUSDAmount = ethers.utils.parseEther('10');
+	await ensureBalance({ ctx, symbol: 'mUSD', user: ctx.users.owner, balance: mUSDAmount });
 
 	await updateCache({ ctx });
 
-	const tx = await Synthetix.exchange(toBytes32('sUSD'), sUSDAmount, toBytes32('sETH'));
+	const tx = await Synthetix.exchange(toBytes32('mUSD'), mUSDAmount, toBytes32('mETH'));
 	await tx.wait();
 }
 

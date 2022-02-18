@@ -1,11 +1,11 @@
 import { Switch } from "antd";
 import React, { useEffect, useState } from "react";
-import { useThemeSwitcher } from "react-css-theme-switcher";
+import { umETHemeSwitcher } from "react-css-theme-switcher";
 
 export default function ThemeSwitcher() {
   const theme = window.localStorage.getItem("theme");
   const [isDarkMode, setIsDarkMode] = useState(!(!theme || theme === "light"));
-  const { switcher, currentTheme, themes } = useThemeSwitcher();
+  const { switcher, currentTheme, themes } = umETHemeSwitcher();
 
   useEffect(() => {
     window.localStorage.setItem("theme", currentTheme);

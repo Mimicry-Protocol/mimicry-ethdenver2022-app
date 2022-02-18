@@ -161,37 +161,37 @@
 				"status": "current",
 				"keccak256": "0xb05769807f7fef6fcca6529c4f532c52416b7a41c145ce558f95642e7e5656be"
 			},
-			"TokenStatesUSD": {
+			"TokenStatemUSD": {
 				"address": "0x96FDc785344B05a8a9d554985bfd51FAf5e1dF7D",
 				"status": "current",
 				"keccak256": "0xf21329a188a29886c60f6cefaba24298faee0fba7c13eac581a7b94820e9726b"
 			},
-			"ProxysUSD": {
+			"ProxymUSD": {
 				"address": "0xbB4C265687E85c3847e58E1136A7cc4FE564A943",
 				"status": "current",
 				"keccak256": "0x680dbc00b1b3884976ce60a5bfac4f218e89133835c193f9fe9d02b162fd2058"
 			},
-			"ProxyERC20sUSD": {
+			"ProxyERC20mUSD": {
 				"address": "0x2C316bf4A0543C92D760c14fEbe2679Bb465B752",
 				"status": "current",
 				"keccak256": "0x680dbc00b1b3884976ce60a5bfac4f218e89133835c193f9fe9d02b162fd2058"
 			},
-			"SynthsUSD": {
+			"SynthmUSD": {
 				"address": "0x150380cA0685267A0390096821BD6659ffE4e732",
 				"status": "current",
 				"keccak256": "0x8da9e910f3b5084a5cd123a4ae91d1760daf39f835316ead2eb8b3e7b1a5e486"
 			},
-			"TokenStatesETH": {
+			"TokenStatemETH": {
 				"address": "0xcaFE05Ae698a784396D21382339f92a2BFdB7adE",
 				"status": "current",
 				"keccak256": "0xf21329a188a29886c60f6cefaba24298faee0fba7c13eac581a7b94820e9726b"
 			},
-			"ProxysETH": {
+			"ProxymETH": {
 				"address": "0xa636F7B67561b624facBA2dDfc3a734CA7cB22cE",
 				"status": "current",
 				"keccak256": "0x680dbc00b1b3884976ce60a5bfac4f218e89133835c193f9fe9d02b162fd2058"
 			},
-			"SynthsETH": {
+			"SynthmETH": {
 				"address": "0x268731ADc0122aC71A0d384b3B7fCcd28eB676c6",
 				"status": "current",
 				"keccak256": "0x153f392299fac48cc06ca86dd544a0d67fb9056f588e0f63609461d457787804"
@@ -206,7 +206,7 @@
 				"status": "current",
 				"keccak256": "0x3e1ac23bd389124b0ee1ddaee93b056dc97315d7da51d4b03661abfc9168aeb3"
 			},
-			"EtherCollateralsUSD": {
+			"EtherCollateralmUSD": {
 				"address": "0x31F648eeCB0387cBCe269B2af0c320f6789c00C0",
 				"status": "current",
 				"keccak256": "0x85918fcd0515828e0a6698e27e43151d5e0333d936ea6b5a9f6f9341a9b68266"

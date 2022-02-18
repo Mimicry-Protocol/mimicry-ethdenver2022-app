@@ -49,7 +49,7 @@ interface IIssuerInternalDebtCache {
             bool isStale
         );
 
-    function updateCachedsUSDDebt(int amount) external;
+    function updateCachedmUSDDebt(int amount) external;
 }
 
 // https://docs.synthetix.io/contracts/source/contracts/issuer
@@ -66,8 +66,8 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
 
     /* ========== ENCODED NAMES ========== */
 
-    bytes32 internal constant sUSD = "sUSD";
-    bytes32 internal constant sETH = "sETH";
+    bytes32 internal constant mUSD = "mUSD";
+    bytes32 internal constant mETH = "mETH";
     bytes32 internal constant SNX = "SNX";
 
     // Flexible storage names
@@ -205,7 +205,7 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
             anyRateIsInvalid = anyRateIsInvalid || invalid;
         }
 
-        if (currencyKey == sUSD) {
+        if (currencyKey == mUSD) {
             return (debt, anyRateIsInvalid);
         }
 
@@ -254,7 +254,7 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
     {
         (alreadyIssued, totalSystemDebt, anyRateIsInvalid) = _debtBalanceOfAndTotalDebt(
             synthetixDebtShare().balanceOf(_issuer),
-            sUSD
+            mUSD
         );
         (uint issuable, bool isInvalid) = _maxIssuableSynths(_issuer);
         maxIssuable = issuable;
@@ -276,7 +276,7 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
     }
 
     function _maxIssuableSynths(address _issuer) internal view returns (uint, bool) {
-        // What is the value of their SNX balance in sUSD
+        // What is the value of their SNX balance in mUSD
         (uint snxRate, bool isInvalid) = exchangeRates().rateAndInvalid(SNX);
         uint destinationValue = _snxToUSD(_collateral(_issuer), snxRate);
 
@@ -454,18 +454,18 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
     function _removeSynth(bytes32 currencyKey) internal {
         address synthToRemove = address(synths[currencyKey]);
         require(synthToRemove != address(0), "Synth does not exist");
-        require(currencyKey != sUSD, "Cannot remove synth");
+        require(currencyKey != mUSD, "Cannot remove synth");
 
         uint synthSupply = IERC20(synthToRemove).totalSupply();
 
         if (synthSupply > 0) {
-            (uint amountOfsUSD, uint rateToRedeem, ) =
-                exchangeRates().effectiveValueAndRates(currencyKey, synthSupply, "sUSD");
+            (uint amountOfmUSD, uint rateToRedeem, ) =
+                exchangeRates().effectiveValueAndRates(currencyKey, synthSupply, "mUSD");
             require(rateToRedeem > 0, "Cannot remove synth to redeem without rate");
             ISynthRedeemer _synthRedeemer = synthRedeemer();
-            synths[sUSD].issue(address(_synthRedeemer), amountOfsUSD);
-            // ensure the debt cache is aware of the new sUSD issued
-            debtCache().updateCachedsUSDDebt(SafeCast.toInt256(amountOfsUSD));
+            synths[mUSD].issue(address(_synthRedeemer), amountOfmUSD);
+            // ensure the debt cache is aware of the new mUSD issued
+            debtCache().updateCachedmUSDDebt(SafeCast.toInt256(amountOfmUSD));
             _synthRedeemer.deprecate(IERC20(address(Proxyable(address(synthToRemove)).proxy())), rateToRedeem);
         }
 
@@ -574,23 +574,23 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
 
     function liquidateDelinquentAccount(
         address account,
-        uint susdAmount,
+        uint mUSDAmount,
         address liquidator
     ) external onlySynthetix returns (uint totalRedeemed, uint amountToLiquidate) {
-        // Ensure waitingPeriod and sUSD balance is settled as burning impacts the size of debt pool
-        require(!exchanger().hasWaitingPeriodOrSettlementOwing(liquidator, sUSD), "sUSD needs to be settled");
+        // Ensure waitingPeriod and mUSD balance is settled as burning impacts the size of debt pool
+        require(!exchanger().hasWaitingPeriodOrSettlementOwing(liquidator, mUSD), "mUSD needs to be settled");
 
         // Check account is liquidation open
         require(liquidations().isOpenForLiquidation(account), "Account not open for liquidation");
 
-        // require liquidator has enough sUSD
-        require(IERC20(address(synths[sUSD])).balanceOf(liquidator) >= susdAmount, "Not enough sUSD");
+        // require liquidator has enough mUSD
+        require(IERC20(address(synths[mUSD])).balanceOf(liquidator) >= mUSDAmount, "Not enough mUSD");
 
         uint liquidationPenalty = liquidations().liquidationPenalty();
 
-        // What is their debt in sUSD?
+        // What is their debt in mUSD?
         (uint debtBalance, uint totalDebtIssued, bool anyRateIsInvalid) =
-            _debtBalanceOfAndTotalDebt(synthetixDebtShare().balanceOf(account), sUSD);
+            _debtBalanceOfAndTotalDebt(synthetixDebtShare().balanceOf(account), mUSD);
         (uint snxRate, bool snxRateInvalid) = exchangeRates().rateAndInvalid(SNX);
         _requireRatesNotInvalid(anyRateIsInvalid || snxRateInvalid);
 
@@ -599,7 +599,7 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
             liquidations().calculateAmountToFixCollateral(debtBalance, _snxToUSD(collateralForAccount, snxRate));
 
         // Cap amount to liquidate to repair collateral ratio based on issuance ratio
-        amountToLiquidate = amountToFixRatio < susdAmount ? amountToFixRatio : susdAmount;
+        amountToLiquidate = amountToFixRatio < mUSDAmount ? amountToFixRatio : mUSDAmount;
 
         // what's the equivalent amount of snx for the amountToLiquidate?
         uint snxRedeemed = _usdToSnx(amountToLiquidate, snxRate);
@@ -608,19 +608,19 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
         totalRedeemed = snxRedeemed.multiplyDecimal(SafeDecimalMath.unit().add(liquidationPenalty));
 
         // if total SNX to redeem is greater than account's collateral
-        // account is under collateralised, liquidate all collateral and reduce sUSD to burn
+        // account is under collateralised, liquidate all collateral and reduce mUSD to burn
         if (totalRedeemed > collateralForAccount) {
             // set totalRedeemed to all transferable collateral
             totalRedeemed = collateralForAccount;
 
-            // whats the equivalent sUSD to burn for all collateral less penalty
+            // whats the equivalent mUSD to burn for all collateral less penalty
             amountToLiquidate = _snxToUSD(
                 collateralForAccount.divideDecimal(SafeDecimalMath.unit().add(liquidationPenalty)),
                 snxRate
             );
         }
 
-        // burn sUSD from messageSender (liquidator) and reduce account's debt
+        // burn mUSD from messageSender (liquidator) and reduce account's debt
         _burnSynths(account, liquidator, amountToLiquidate, debtBalance, totalDebtIssued);
 
         // Remove liquidation flag if amount liquidated fixes ratio
@@ -675,10 +675,10 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
         _setLastIssueEvent(from);
 
         // Create their synths
-        synths[sUSD].issue(from, amount);
+        synths[mUSD].issue(from, amount);
 
         // Account for the issued debt in the cache
-        debtCache().updateCachedsUSDDebt(SafeCast.toInt256(amount));
+        debtCache().updateCachedmUSDDebt(SafeCast.toInt256(amount));
     }
 
     function _burnSynths(
@@ -688,7 +688,7 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
         uint existingDebt,
         uint totalDebtIssued
     ) internal returns (uint amountBurnt) {
-        // liquidation requires sUSD to be already settled / not in waiting period
+        // liquidation requires mUSD to be already settled / not in waiting period
 
         // If they're trying to burn more debt than they actually owe, rather than fail the transaction, let's just
         // clear their debt and leave them be.
@@ -698,13 +698,13 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
         _removeFromDebtRegister(debtAccount, amountBurnt, existingDebt, totalDebtIssued);
 
         // synth.burn does a safe subtraction on balance (so it will revert if there are not enough synths).
-        synths[sUSD].burn(burnAccount, amountBurnt);
+        synths[mUSD].burn(burnAccount, amountBurnt);
 
         // Account for the burnt debt in the cache.
-        debtCache().updateCachedsUSDDebt(-SafeCast.toInt256(amountBurnt));
+        debtCache().updateCachedmUSDDebt(-SafeCast.toInt256(amountBurnt));
     }
 
-    // If burning to target, `amount` is ignored, and the correct quantity of sUSD is burnt to reach the target
+    // If burning to target, `amount` is ignored, and the correct quantity of mUSD is burnt to reach the target
     // c-ratio, allowing fees to be claimed. In this case, pending settlements will be skipped as the user
     // will still have debt remaining after reaching their target.
     function _voluntaryBurnSynths(
@@ -715,15 +715,15 @@ contract Issuer is Owned, MixinSystemSettings, IIssuer {
         if (!burnToTarget) {
             // If not burning to target, then burning requires that the minimum stake time has elapsed.
             require(_canBurnSynths(from), "Minimum stake time not reached");
-            // First settle anything pending into sUSD as burning or issuing impacts the size of the debt pool
-            (, uint refunded, uint numEntriesSettled) = exchanger().settle(from, sUSD);
+            // First settle anything pending into mUSD as burning or issuing impacts the size of the debt pool
+            (, uint refunded, uint numEntriesSettled) = exchanger().settle(from, mUSD);
             if (numEntriesSettled > 0) {
-                amount = exchanger().calculateAmountAfterSettlement(from, sUSD, amount, refunded);
+                amount = exchanger().calculateAmountAfterSettlement(from, mUSD, amount, refunded);
             }
         }
 
         (uint existingDebt, uint totalSystemValue, bool anyRateIsInvalid) =
-            _debtBalanceOfAndTotalDebt(synthetixDebtShare().balanceOf(from), sUSD);
+            _debtBalanceOfAndTotalDebt(synthetixDebtShare().balanceOf(from), mUSD);
         (uint maxIssuableSynthsForAccount, bool snxRateInvalid) = _maxIssuableSynths(from);
         _requireRatesNotInvalid(anyRateIsInvalid || snxRateInvalid);
         require(existingDebt > 0, "No debt to forgive");

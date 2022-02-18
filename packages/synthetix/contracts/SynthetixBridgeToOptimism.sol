@@ -50,7 +50,7 @@ contract SynthetixBridgeToOptimism is BaseSynthetixBridge, ISynthetixBridgeToOpt
     }
 
     function hasZeroDebt() internal view {
-        require(issuer().debtBalanceOf(msg.sender, "sUSD") == 0, "Cannot deposit or migrate with debt");
+        require(issuer().debtBalanceOf(msg.sender, "mUSD") == 0, "Cannot deposit or migrate with debt");
     }
 
     /* ========== VIEWS ========== */

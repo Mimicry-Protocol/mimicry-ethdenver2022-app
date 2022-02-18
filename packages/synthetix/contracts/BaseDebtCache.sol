@@ -27,7 +27,7 @@ import "./interfaces/IWrapperFactory.sol";
 // updated by performing a debt snapshot, which recomputes the global debt sum using
 // current synth supplies and exchange rates. This is performed usually by a snapshot keeper.
 //
-// Some synths are backed by non-SNX collateral, such as sETH being backed by ETH
+// Some synths are backed by non-SNX collateral, such as mETH being backed by ETH
 // held in the EtherWrapper (SIP-112). This debt is called "excluded debt" and is
 // excluded from the global debt in `_cachedDebt`.
 //
@@ -44,8 +44,8 @@ contract BaseDebtCache is Owned, MixinSystemSettings, IDebtCache {
 
     /* ========== ENCODED NAMES ========== */
 
-    bytes32 internal constant sUSD = "sUSD";
-    bytes32 internal constant sETH = "sETH";
+    bytes32 internal constant mUSD = "mUSD";
+    bytes32 internal constant mETH = "mETH";
 
     /* ========== ADDRESS RESOLVER CONFIGURATION ========== */
 
@@ -206,7 +206,7 @@ contract BaseDebtCache is Owned, MixinSystemSettings, IDebtCache {
         return _excludedIssuedDebts(currencyKeys);
     }
 
-    // Returns the total sUSD debt backed by non-SNX collateral.
+    // Returns the total mUSD debt backed by non-SNX collateral.
     function totalNonSnxBackedDebt() external view returns (uint excludedDebt, bool isInvalid) {
         bytes32[] memory currencyKeys = issuer().availableCurrencyKeys();
         (uint[] memory rates, bool ratesAreInvalid) = exchangeRates().ratesAndInvalidForCurrencies(currencyKeys);
@@ -227,7 +227,7 @@ contract BaseDebtCache is Owned, MixinSystemSettings, IDebtCache {
         excludedDebt = longValue.add(shortValue);
 
         // 2. EtherWrapper.
-        // Subtract sETH and sUSD issued by EtherWrapper.
+        // Subtract mETH and mUSD issued by EtherWrapper.
         excludedDebt = excludedDebt.add(etherWrapper().totalIssuedSynths());
 
         // 3. WrapperFactory.

@@ -114,7 +114,7 @@ This repo may be installed via `npm install` to support both node.js scripting a
 
 All interfaces are available via the path [`synthetix/contracts/interfaces`](./contracts/interfaces/).
 
-:zap: In your code, the key is to use `IAddressResolver` which can be tied to the immutable proxy: [`ReadProxyAddressResolver`](https://contracts.synthetix.io/ReadProxyAddressResolver) ([introduced in SIP-57](https://sips.synthetix.io/sips/sip-57)). You can then fetch `Synthetix`, `FeePool`, `Depot`, et al via `IAddressResolver.getAddress(bytes32 name)` where `name` is the `bytes32` version of the contract name (case-sensitive). Or you can fetch any synth using `IAddressResolver.getSynth(bytes32 synth)` where `synth` is the `bytes32` name of the synth (e.g. `iETH`, `sUSD`, `sDEFI`).
+:zap: In your code, the key is to use `IAddressResolver` which can be tied to the immutable proxy: [`ReadProxyAddressResolver`](https://contracts.synthetix.io/ReadProxyAddressResolver) ([introduced in SIP-57](https://sips.synthetix.io/sips/sip-57)). You can then fetch `Synthetix`, `FeePool`, `Depot`, et al via `IAddressResolver.getAddress(bytes32 name)` where `name` is the `bytes32` version of the contract name (case-sensitive). Or you can fetch any synth using `IAddressResolver.getSynth(bytes32 synth)` where `synth` is the `bytes32` name of the synth (e.g. `iETH`, `mUSD`, `sDEFI`).
 
 E.g.
 
@@ -249,7 +249,7 @@ snx.getSuspensionReasons();
 
 // retrieve the array of synths used
 snx.getSynths({ network: 'rinkeby' }).map(({ name }) => name);
-// ['sUSD', 'sEUR', ...]
+// ['mUSD', 'sEUR', ...]
 
 // retrieve an object detailing the contract deployed to the given network.
 snx.getTarget({ network: 'rinkeby', contract: 'ProxySynthetix' });
@@ -299,7 +299,7 @@ snx.getVersions();
 snx.networks;
 // [ 'local', 'kovan', 'rinkeby', 'ropsten', 'mainnet' ]
 
-snx.toBytes32('sUSD');
+snx.toBytes32('mUSD');
 // '0x7355534400000000000000000000000000000000000000000000000000000000'
 ```
 
@@ -325,7 +325,7 @@ $ npx synthetix ast contracts/Synth.sol
   ]
 }
 
-$ npx synthetix bytes32 sUSD
+$ npx synthetix bytes32 mUSD
 0x7355534400000000000000000000000000000000000000000000000000000000
 
 $ npx synthetix networks
@@ -341,7 +341,7 @@ $ npx synthetix suspension-reason --code 2
 Market Closure
 
 $ npx synthetix synths --network rinkeby --key name
-["sUSD", "sEUR", ... ]
+["mUSD", "sEUR", ... ]
 
 $ npx synthetix target --network rinkeby --contract ProxySynthetix
 {

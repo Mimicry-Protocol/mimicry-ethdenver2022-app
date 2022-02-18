@@ -27,7 +27,7 @@ contract CollateralManager is ICollateralManager, Owned, Pausable, MixinResolver
 
     /* ========== CONSTANTS ========== */
 
-    bytes32 private constant sUSD = "sUSD";
+    bytes32 private constant mUSD = "mUSD";
 
     uint private constant SECONDS_IN_A_YEAR = 31556926 * 1e18;
 
@@ -60,7 +60,7 @@ contract CollateralManager is ICollateralManager, Owned, Pausable, MixinResolver
     // The factor that will scale the utilisation ratio.
     uint public utilisationMultiplier = 1e18;
 
-    // The maximum amount of debt in sUSD that can be issued by non snx collateral.
+    // The maximum amount of debt in mUSD that can be issued by non snx collateral.
     uint public maxDebt;
 
     // The rate that determines the skew limit maximum.
@@ -171,18 +171,18 @@ contract CollateralManager is ICollateralManager, Owned, Pausable, MixinResolver
         return state.short(synth);
     }
 
-    function totalLong() public view returns (uint susdValue, bool anyRateIsInvalid) {
+    function totalLong() public view returns (uint mUSDValue, bool anyRateIsInvalid) {
         bytes32[] memory synths = _currencyKeys.elements;
 
         if (synths.length > 0) {
             for (uint i = 0; i < synths.length; i++) {
                 bytes32 synth = synths[i];
-                if (synth == sUSD) {
-                    susdValue = susdValue.add(state.long(synth));
+                if (synth == mUSD) {
+                    mUSDValue = mUSDValue.add(state.long(synth));
                 } else {
                     (uint rate, bool invalid) = _exchangeRates().rateAndInvalid(synth);
                     uint amount = state.long(synth).multiplyDecimal(rate);
-                    susdValue = susdValue.add(amount);
+                    mUSDValue = mUSDValue.add(amount);
                     if (invalid) {
                         anyRateIsInvalid = true;
                     }
@@ -191,7 +191,7 @@ contract CollateralManager is ICollateralManager, Owned, Pausable, MixinResolver
         }
     }
 
-    function totalShort() public view returns (uint susdValue, bool anyRateIsInvalid) {
+    function totalShort() public view returns (uint mUSDValue, bool anyRateIsInvalid) {
         bytes32[] memory synths = _shortableSynths.elements;
 
         if (synths.length > 0) {
@@ -199,7 +199,7 @@ contract CollateralManager is ICollateralManager, Owned, Pausable, MixinResolver
                 bytes32 synth = _synth(synths[i]).currencyKey();
                 (uint rate, bool invalid) = _exchangeRates().rateAndInvalid(synth);
                 uint amount = state.short(synth).multiplyDecimal(rate);
-                susdValue = susdValue.add(amount);
+                mUSDValue = mUSDValue.add(amount);
                 if (invalid) {
                     anyRateIsInvalid = true;
                 }
@@ -207,7 +207,7 @@ contract CollateralManager is ICollateralManager, Owned, Pausable, MixinResolver
         }
     }
 
-    function totalLongAndShort() public view returns (uint susdValue, bool anyRateIsInvalid) {
+    function totalLongAndShort() public view returns (uint mUSDValue, bool anyRateIsInvalid) {
         bytes32[] memory currencyKeys = _currencyKeys.elements;
 
         if (currencyKeys.length > 0) {
@@ -215,7 +215,7 @@ contract CollateralManager is ICollateralManager, Owned, Pausable, MixinResolver
             for (uint i = 0; i < rates.length; i++) {
                 uint longAmount = state.long(currencyKeys[i]).multiplyDecimal(rates[i]);
                 uint shortAmount = state.short(currencyKeys[i]).multiplyDecimal(rates[i]);
-                susdValue = susdValue.add(longAmount).add(shortAmount);
+                mUSDValue = mUSDValue.add(longAmount).add(shortAmount);
                 if (invalid) {
                     anyRateIsInvalid = true;
                 }
@@ -225,7 +225,7 @@ contract CollateralManager is ICollateralManager, Owned, Pausable, MixinResolver
 
     function getBorrowRate() public view returns (uint borrowRate, bool anyRateIsInvalid) {
         // get the snx backed debt.
-        uint snxDebt = _issuer().totalIssuedSynths(sUSD, true);
+        uint snxDebt = _issuer().totalIssuedSynths(mUSD, true);
 
         // now get the non snx backed debt.
         (uint nonSnxDebt, bool ratesInvalid) = totalLong();
@@ -297,7 +297,7 @@ contract CollateralManager is ICollateralManager, Owned, Pausable, MixinResolver
     }
 
     function exceedsDebtLimit(uint amount, bytes32 currency) external view returns (bool canIssue, bool anyRateIsInvalid) {
-        uint usdAmount = _exchangeRates().effectiveValue(currency, amount, sUSD);
+        uint usdAmount = _exchangeRates().effectiveValue(currency, amount, mUSD);
 
         (uint longAndShortValue, bool invalid) = totalLongAndShort();
 

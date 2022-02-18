@@ -80,7 +80,7 @@ Small details of a contract should be tested in unit tests, and integration test
 
 ### Behaviors
 
-Some high level features of the system are expected to exist in both L1 and L2 instances, such as staking, or sUSD's ERC20 properties. So, instead of writing duplicate tests, we implement behaviors and use these behaviors to avoid test code duplication.
+Some high level features of the system are expected to exist in both L1 and L2 instances, such as staking, or mUSD's ERC20 properties. So, instead of writing duplicate tests, we implement behaviors and use these behaviors to avoid test code duplication.
 
 Whenever writing tests for a feature that is expected to exist in both L1 and L2 instances, please use a behavior. If a feature previously existed on an instance but not in the other, please extract the tests to a behavior and use the behavior in both instances.
 

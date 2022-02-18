@@ -29,7 +29,7 @@ module.exports = ({
 			});
 
 			// Check that no non-deployable is marked for deployment.
-			// Note: if nonDeployable = 'TokenState', this will match 'TokenStatesUSD'
+			// Note: if nonDeployable = 'TokenState', this will match 'TokenStatemUSD'
 			nonUpgradeable.map(nonUpgradeableContract => {
 				contractsToDeploy.map(contractName => {
 					if (contractName.match(new RegExp(`^${nonUpgradeableContract}`, 'g'))) {

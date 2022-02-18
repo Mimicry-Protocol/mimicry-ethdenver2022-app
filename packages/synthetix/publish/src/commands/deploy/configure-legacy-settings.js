@@ -280,7 +280,7 @@ module.exports = async ({
 				target: SynthetixEscrow,
 				read: 'havven',
 				expected: input => input === addressOf(ProxyERC20),
-				write: 'setHavven',
+				write: 'mETHavven',
 				writeArg: addressOf(ProxyERC20),
 				comment:
 					'Ensure the legacy token sale escrow can find the Synthetix proxy to read and transfer',

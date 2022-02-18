@@ -27,13 +27,13 @@ async function _getAmount({ ctx, symbol, user, amount }) {
 		await _getSNX({ ctx, user, amount });
 	} else if (symbol === 'WETH') {
 		await _getWETH({ ctx, user, amount });
-	} else if (symbol === 'sUSD') {
-		await _getsUSD({ ctx, user, amount });
+	} else if (symbol === 'mUSD') {
+		await _getmUSD({ ctx, user, amount });
 	} else if (symbol === 'ETH') {
 		await _getETHFromOtherUsers({ ctx, user, amount });
 	} else {
 		throw new Error(
-			`Symbol ${symbol} not yet supported. TODO: Support via exchanging sUSD to other Synths.`
+			`Symbol ${symbol} not yet supported. TODO: Support via exchanging mUSD to other Synths.`
 		);
 	}
 
@@ -139,12 +139,12 @@ async function _getSNXForOwnerOnL2ByHackMinting({ ctx, amount }) {
 	await tx.wait();
 }
 
-async function _getsUSD({ ctx, user, amount }) {
-	let { Synthetix, SynthsUSD } = ctx.contracts;
+async function _getmUSD({ ctx, user, amount }) {
+	let { Synthetix, SynthmUSD } = ctx.contracts;
 
 	let tx;
 
-	const requiredSNX = await _getSNXAmountRequiredForsUSDAmount({ ctx, amount });
+	const requiredSNX = await _getSNXAmountRequiredFormUSDAmount({ ctx, amount });
 	await ensureBalance({ ctx, symbol: 'SNX', user, balance: requiredSNX });
 
 	Synthetix = Synthetix.connect(ctx.users.owner);
@@ -166,13 +166,13 @@ async function _getsUSD({ ctx, user, amount }) {
 	tx = await Synthetix.issueSynths(amount);
 	await tx.wait();
 
-	SynthsUSD = SynthsUSD.connect(tmpWallet);
+	SynthmUSD = SynthmUSD.connect(tmpWallet);
 
-	tx = await SynthsUSD.transfer(user.address, amount);
+	tx = await SynthmUSD.transfer(user.address, amount);
 	await tx.wait();
 }
 
-async function _getSNXAmountRequiredForsUSDAmount({ ctx, amount }) {
+async function _getSNXAmountRequiredFormUSDAmount({ ctx, amount }) {
 	const { Exchanger, SystemSettings } = ctx.contracts;
 
 	const ratio = await SystemSettings.issuanceRatio();
@@ -180,7 +180,7 @@ async function _getSNXAmountRequiredForsUSDAmount({ ctx, amount }) {
 
 	const [expectedAmount, ,] = await Exchanger.getAmountsForExchange(
 		collateral,
-		toBytes32('sUSD'),
+		toBytes32('mUSD'),
 		toBytes32('SNX')
 	);
 

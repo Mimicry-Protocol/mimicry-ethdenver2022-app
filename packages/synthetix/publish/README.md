@@ -34,7 +34,7 @@ node publish deploy # "--help" for options
   ```javascript
   // config.json
   {
-    "ProxysUSD": {
+    "ProxymUSD": {
       "deploy": true // whether or not to deploy this or use existing instance from any deployment.json file
     },
 
@@ -93,8 +93,8 @@ node publish nominate # "--help" for options
 ### Example
 
 ```bash
-node publish nominate -n rinkeby -d publish/deployed/rinkeby -g 3 -c Synthetix -c ProxysUSD -o 0x0000000000000000000000000000000000000000
-node publish nominate -o 0xB64fF7a4a33Acdf48d97dab0D764afD0F6176882 -n kovan -c ProxysUSD -d publish/deployed/kovan -g 20
+node publish nominate -n rinkeby -d publish/deployed/rinkeby -g 3 -c Synthetix -c ProxymUSD -o 0x0000000000000000000000000000000000000000
+node publish nominate -o 0xB64fF7a4a33Acdf48d97dab0D764afD0F6176882 -n kovan -c ProxymUSD -d publish/deployed/kovan -g 20
 ```
 
 ## 5. Owner Actions
@@ -116,7 +116,7 @@ node publish remove-synths # "--help" for options
 ### Example
 
 ```bash
-node publish remove-synths -n rinkeby -d publish/deployed/rinkeby -g 3 -s sRUB -s sETH
+node publish remove-synths -n rinkeby -d publish/deployed/rinkeby -g 3 -s sRUB -s mETH
 ```
 
 ## 7. Replace Synths

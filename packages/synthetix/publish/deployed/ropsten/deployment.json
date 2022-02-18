@@ -45,8 +45,8 @@
 			"txn": "",
 			"network": "ropsten"
 		},
-		"ProxysBTC": {
-			"name": "ProxysBTC",
+		"ProxymBTC": {
+			"name": "ProxymBTC",
 			"address": "0xC1701AbD559FC263829CA3917d03045F95b5224A",
 			"source": "ProxyERC20",
 			"link": "https://ropsten.etherscan.io/address/0xC1701AbD559FC263829CA3917d03045F95b5224A",
@@ -90,8 +90,8 @@
 			"txn": "",
 			"network": "ropsten"
 		},
-		"ProxysUSD": {
-			"name": "ProxysUSD",
+		"ProxymUSD": {
+			"name": "ProxymUSD",
 			"address": "0xDDEfe42790f2dEC7b0C37D4399884eFceA5361b1",
 			"source": "ProxyERC20",
 			"link": "https://ropsten.etherscan.io/address/0xDDEfe42790f2dEC7b0C37D4399884eFceA5361b1",
@@ -171,8 +171,8 @@
 			"txn": "",
 			"network": "ropsten"
 		},
-		"SynthsAPE": {
-			"name": "SynthsAPE",
+		"SynthmBTC": {
+			"name": "SynthmBTC",
 			"address": "0x44f31a95Bda5dA86B1B8c809B239eE4d35dD094e",
 			"source": "Synth",
 			"link": "https://ropsten.etherscan.io/address/0x44f31a95Bda5dA86B1B8c809B239eE4d35dD094e",
@@ -216,8 +216,8 @@
 			"txn": "",
 			"network": "ropsten"
 		},
-		"SynthsUSD": {
-			"name": "SynthsUSD",
+		"SynthmUSD": {
+			"name": "SynthmUSD",
 			"address": "0x5Eb054cfAc1e39e3C1b5C11A1b9C019e803fA033",
 			"source": "Synth",
 			"link": "https://ropsten.etherscan.io/address/0x5Eb054cfAc1e39e3C1b5C11A1b9C019e803fA033",
@@ -252,8 +252,8 @@
 			"txn": "",
 			"network": "ropsten"
 		},
-		"TokenStatesBTC": {
-			"name": "TokenStatesBTC",
+		"TokenStatemBTC": {
+			"name": "TokenStatemBTC",
 			"address": "0x159B105D8f9F1341C7aAAafF19aFb569c17297F3",
 			"source": "TokenState",
 			"link": "https://ropsten.etherscan.io/address/0x159B105D8f9F1341C7aAAafF19aFb569c17297F3",
@@ -297,8 +297,8 @@
 			"txn": "",
 			"network": "ropsten"
 		},
-		"TokenStatesUSD": {
-			"name": "TokenStatesUSD",
+		"TokenStatemUSD": {
+			"name": "TokenStatemUSD",
 			"address": "0x686cbD15BBC680F8261c7502c360Aa44A2593de6",
 			"source": "TokenState",
 			"link": "https://ropsten.etherscan.io/address/0x686cbD15BBC680F8261c7502c360Aa44A2593de6",
@@ -342,8 +342,8 @@
 			"txn": "",
 			"network": "ropsten"
 		},
-		"TokenStatesETH": {
-			"name": "TokenStatesETH",
+		"TokenStatemETH": {
+			"name": "TokenStatemETH",
 			"address": "0x8e90f4D385677dFB3FFC6d09652eEd17D0872e17",
 			"source": "TokenState",
 			"link": "https://ropsten.etherscan.io/address/0x8e90f4D385677dFB3FFC6d09652eEd17D0872e17",
@@ -351,8 +351,8 @@
 			"txn": "",
 			"network": "ropsten"
 		},
-		"ProxysETH": {
-			"name": "ProxysETH",
+		"ProxymETH": {
+			"name": "ProxymETH",
 			"address": "0x0Df1B6d92feBCA3B2793AfA3649868991CC4901D",
 			"source": "ProxyERC20",
 			"link": "https://ropsten.etherscan.io/address/0x0Df1B6d92feBCA3B2793AfA3649868991CC4901D",
@@ -360,8 +360,8 @@
 			"txn": "",
 			"network": "ropsten"
 		},
-		"SynthsETH": {
-			"name": "SynthsETH",
+		"SynthmETH": {
+			"name": "SynthmETH",
 			"address": "0xECFb2AD9Cd05ACdA3496aEA95d74081Bbd878661",
 			"source": "MultiCollateralSynth",
 			"link": "https://ropsten.etherscan.io/address/0xECFb2AD9Cd05ACdA3496aEA95d74081Bbd878661",
@@ -702,8 +702,8 @@
 			"txn": "https://ropsten.etherscan.io/tx/0xfa54009c974db6f756b8d82fd48abf624e65434ac30c8d815dba4d7daa1baa4b",
 			"network": "ropsten"
 		},
-		"ProxyERC20sUSD": {
-			"name": "ProxyERC20sUSD",
+		"ProxyERC20mUSD": {
+			"name": "ProxyERC20mUSD",
 			"address": "0x21718C0FbD10900565fa57C76e1862cd3F6a4d8E",
 			"source": "ProxyERC20",
 			"link": "https://ropsten.etherscan.io/address/0x21718C0FbD10900565fa57C76e1862cd3F6a4d8E",
@@ -3287,7 +3287,7 @@
 						{
 							"indexed": false,
 							"internalType": "uint256",
-							"name": "sUSDAmount",
+							"name": "mUSDAmount",
 							"type": "uint256"
 						},
 						{
@@ -4562,7 +4562,7 @@
 							"type": "address[]"
 						},
 						{
-							"name": "sUSDAmounts",
+							"name": "mUSDAmounts",
 							"type": "uint256[]"
 						}
 					],
@@ -6203,7 +6203,7 @@
 						},
 						{
 							"internalType": "uint256",
-							"name": "susdAmount",
+							"name": "mUSDAmount",
 							"type": "uint256"
 						}
 					],
@@ -6427,7 +6427,7 @@
 				{
 					"constant": true,
 					"inputs": [],
-					"name": "sUSD",
+					"name": "mUSD",
 					"outputs": [
 						{
 							"internalType": "bytes32",
@@ -16022,7 +16022,7 @@
 						},
 						{
 							"internalType": "uint256",
-							"name": "susdAmount",
+							"name": "mUSDAmount",
 							"type": "uint256"
 						},
 						{

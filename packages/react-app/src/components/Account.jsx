@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import React from "react";
-import { useThemeSwitcher } from "react-css-theme-switcher";
+import { umETHemeSwitcher } from "react-css-theme-switcher";
 
 import Address from "./Address";
 import Balance from "./Balance";
@@ -56,7 +56,7 @@ export default function Account({
   blockExplorer,
   isContract,
 }) {
-  const { currentTheme } = useThemeSwitcher();
+  const { currentTheme } = umETHemeSwitcher();
 
   const modalButtons = [];
   if (web3Modal) {

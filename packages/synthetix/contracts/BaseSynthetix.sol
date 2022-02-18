@@ -22,7 +22,7 @@ contract BaseSynthetix is IERC20, ExternStateToken, MixinResolver, ISynthetix {
     string public constant TOKEN_NAME = "Synthetix Network Token";
     string public constant TOKEN_SYMBOL = "SNX";
     uint8 public constant DECIMALS = 18;
-    bytes32 public constant sUSD = "sUSD";
+    bytes32 public constant mUSD = "mUSD";
 
     // ========== ADDRESS RESOLVER CONFIGURATION ==========
     bytes32 private constant CONTRACT_SYSTEMSTATUS = "SystemStatus";
@@ -140,7 +140,7 @@ contract BaseSynthetix is IERC20, ExternStateToken, MixinResolver, ISynthetix {
     }
 
     function _canTransfer(address account, uint value) internal view returns (bool) {
-        if (issuer().debtBalanceOf(account, sUSD) > 0) {
+        if (issuer().debtBalanceOf(account, mUSD) > 0) {
             (uint transferable, bool anyRateIsInvalid) =
                 issuer().transferableSynthetixAndAnyRateIsInvalid(account, tokenState.balanceOf(account));
             require(value <= transferable, "Cannot transfer staked or escrowed SNX");
@@ -297,14 +297,14 @@ contract BaseSynthetix is IERC20, ExternStateToken, MixinResolver, ISynthetix {
         return issuer().burnSynthsToTargetOnBehalf(burnForAddress, messageSender);
     }
 
-    function liquidateDelinquentAccount(address account, uint susdAmount)
+    function liquidateDelinquentAccount(address account, uint mUSDAmount)
         external
         systemActive
         optionalProxy
         returns (bool)
     {
         (uint totalRedeemed, uint amountLiquidated) =
-            issuer().liquidateDelinquentAccount(account, susdAmount, messageSender);
+            issuer().liquidateDelinquentAccount(account, mUSDAmount, messageSender);
 
         emitAccountLiquidated(account, totalRedeemed, amountLiquidated, messageSender);
 

@@ -10,7 +10,7 @@ module.exports = async ({ account, addressOf, deployer, getDeployParameter, netw
 
 	await deployer.deployContract({
 		name: 'Depot',
-		deps: ['ProxySynthetix', 'SynthsUSD', 'FeePool'],
+		deps: ['ProxySynthetix', 'SynthmUSD', 'FeePool'],
 		args: [account, account, addressOf(ReadProxyAddressResolver)],
 	});
 
@@ -86,7 +86,7 @@ module.exports = async ({ account, addressOf, deployer, getDeployParameter, netw
 			account,
 			addressOf(collateralManager),
 			addressOf(ReadProxyAddressResolver),
-			toBytes32('sETH'),
+			toBytes32('mETH'),
 			(await getDeployParameter('COLLATERAL_ETH'))['MIN_CRATIO'],
 			(await getDeployParameter('COLLATERAL_ETH'))['MIN_COLLATERAL'],
 		],
@@ -115,7 +115,7 @@ module.exports = async ({ account, addressOf, deployer, getDeployParameter, netw
 			account,
 			addressOf(collateralManager),
 			addressOf(ReadProxyAddressResolver),
-			toBytes32('sBTC'),
+			toBytes32('mBTC'),
 			(await getDeployParameter('COLLATERAL_RENBTC'))['MIN_CRATIO'],
 			(await getDeployParameter('COLLATERAL_RENBTC'))['MIN_COLLATERAL'],
 			RENBTC_ADDRESS, // if undefined then this will error as expected.
@@ -129,7 +129,7 @@ module.exports = async ({ account, addressOf, deployer, getDeployParameter, netw
 			account,
 			addressOf(collateralManager),
 			addressOf(ReadProxyAddressResolver),
-			toBytes32('sUSD'),
+			toBytes32('mUSD'),
 			(await getDeployParameter('COLLATERAL_SHORT'))['MIN_CRATIO'],
 			(await getDeployParameter('COLLATERAL_SHORT'))['MIN_COLLATERAL'],
 		],

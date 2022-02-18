@@ -27,7 +27,7 @@ const {
 } = require('../..');
 
 contract('BaseSynthetix', async accounts => {
-	const [sUSD, sAUD, sEUR, SNX, sETH] = ['sUSD', 'sAUD', 'sEUR', 'SNX', 'sETH'].map(toBytes32);
+	const [mUSD, sAUD, sEUR, SNX, mETH] = ['mUSD', 'sAUD', 'sEUR', 'SNX', 'mETH'].map(toBytes32);
 
 	const [, owner, account1, account2, account3] = accounts;
 
@@ -50,7 +50,7 @@ contract('BaseSynthetix', async accounts => {
 			SynthetixEscrow: escrow,
 		} = await setupAllContracts({
 			accounts,
-			synths: ['sUSD', 'sETH', 'sEUR', 'sAUD'],
+			synths: ['mUSD', 'mETH', 'sEUR', 'sAUD'],
 			contracts: [
 				'BaseSynthetix',
 				'SupplySchedule',
@@ -67,7 +67,7 @@ contract('BaseSynthetix', async accounts => {
 			],
 		}));
 
-		await setupPriceAggregators(exchangeRates, owner, [sAUD, sEUR, sETH]);
+		await setupPriceAggregators(exchangeRates, owner, [sAUD, sEUR, mETH]);
 	});
 
 	addSnapshotBeforeRestoreAfterEach();
@@ -148,7 +148,7 @@ contract('BaseSynthetix', async accounts => {
 			await onlyGivenAddressCanInvoke({
 				fnc: baseSynthetix.exchangeWithVirtual,
 				accounts,
-				args: [sUSD, amount, sAUD, toBytes32('AGGREGATOR')],
+				args: [mUSD, amount, sAUD, toBytes32('AGGREGATOR')],
 				reason: 'Cannot be run on this layer',
 			});
 		});
@@ -157,7 +157,7 @@ contract('BaseSynthetix', async accounts => {
 			await onlyGivenAddressCanInvoke({
 				fnc: baseSynthetix.exchangeWithTrackingForInitiator,
 				accounts,
-				args: [sUSD, amount, sAUD, owner, toBytes32('AGGREGATOR')],
+				args: [mUSD, amount, sAUD, owner, toBytes32('AGGREGATOR')],
 				reason: 'Cannot be run on this layer',
 			});
 		});
@@ -166,7 +166,7 @@ contract('BaseSynthetix', async accounts => {
 			await onlyGivenAddressCanInvoke({
 				fnc: baseSynthetix.exchangeAtomically,
 				accounts,
-				args: [sUSD, amount, sETH, toBytes32('AGGREGATOR')],
+				args: [mUSD, amount, mETH, toBytes32('AGGREGATOR')],
 				reason: 'Cannot be run on this layer',
 			});
 		});
@@ -399,24 +399,24 @@ contract('BaseSynthetix', async accounts => {
 
 	describe('isWaitingPeriod()', () => {
 		it('returns false by default', async () => {
-			assert.isFalse(await baseSynthetix.isWaitingPeriod(sETH));
+			assert.isFalse(await baseSynthetix.isWaitingPeriod(mETH));
 		});
-		describe('when a user has exchanged into sETH', () => {
+		describe('when a user has exchanged into mETH', () => {
 			beforeEach(async () => {
 				await updateRatesWithDefaults({ exchangeRates, owner, debtCache });
 
 				await baseSynthetix.issueSynths(toUnit('100'), { from: owner });
-				await baseSynthetix.exchange(sUSD, toUnit('10'), sETH, { from: owner });
+				await baseSynthetix.exchange(mUSD, toUnit('10'), mETH, { from: owner });
 			});
 			it('then waiting period is true', async () => {
-				assert.isTrue(await baseSynthetix.isWaitingPeriod(sETH));
+				assert.isTrue(await baseSynthetix.isWaitingPeriod(mETH));
 			});
 			describe('when the waiting period expires', () => {
 				beforeEach(async () => {
 					await fastForward(await systemSettings.waitingPeriodSecs());
 				});
 				it('returns false by default', async () => {
-					assert.isFalse(await baseSynthetix.isWaitingPeriod(sETH));
+					assert.isFalse(await baseSynthetix.isWaitingPeriod(mETH));
 				});
 			});
 		});
@@ -433,7 +433,7 @@ contract('BaseSynthetix', async accounts => {
 
 				await updateAggregatorRates(
 					exchangeRates,
-					[sAUD, sEUR, sETH],
+					[sAUD, sEUR, mETH],
 					['0.5', '1.25', '100'].map(toUnit)
 				);
 				await debtCache.takeDebtSnapshot();
@@ -466,13 +466,13 @@ contract('BaseSynthetix', async accounts => {
 
 	describe('availableCurrencyKeys()', () => {
 		it('returns all currency keys by default', async () => {
-			assert.deepEqual(await baseSynthetix.availableCurrencyKeys(), [sUSD, sETH, sEUR, sAUD]);
+			assert.deepEqual(await baseSynthetix.availableCurrencyKeys(), [mUSD, mETH, sEUR, sAUD]);
 		});
 	});
 
 	describe('isWaitingPeriod()', () => {
 		it('returns false by default', async () => {
-			assert.isFalse(await baseSynthetix.isWaitingPeriod(sETH));
+			assert.isFalse(await baseSynthetix.isWaitingPeriod(mETH));
 		});
 	});
 
@@ -607,12 +607,12 @@ contract('BaseSynthetix', async accounts => {
 			);
 		});
 
-		describe('when the user has issued some sUSD and exchanged for other synths', () => {
+		describe('when the user has issued some mUSD and exchanged for other synths', () => {
 			beforeEach(async () => {
 				await baseSynthetix.issueSynths(toUnit('100'), { from: owner });
-				await baseSynthetix.exchange(sUSD, toUnit('10'), sETH, { from: owner });
-				await baseSynthetix.exchange(sUSD, toUnit('10'), sAUD, { from: owner });
-				await baseSynthetix.exchange(sUSD, toUnit('10'), sEUR, { from: owner });
+				await baseSynthetix.exchange(mUSD, toUnit('10'), mETH, { from: owner });
+				await baseSynthetix.exchange(mUSD, toUnit('10'), sAUD, { from: owner });
+				await baseSynthetix.exchange(mUSD, toUnit('10'), sEUR, { from: owner });
 			});
 			it('should transfer using the ERC20 transfer function @gasprofile', async () => {
 				await baseSynthetix.transfer(account1, toUnit('10'), { from: owner });
@@ -703,7 +703,7 @@ contract('BaseSynthetix', async accounts => {
 					await ensureTransferReverts();
 
 					// the remainder of the synths have prices
-					await updateAggregatorRates(exchangeRates, [sETH], ['100'].map(toUnit));
+					await updateAggregatorRates(exchangeRates, [mETH], ['100'].map(toUnit));
 					await debtCache.takeDebtSnapshot();
 
 					await ensureTransferReverts();
@@ -734,7 +734,7 @@ contract('BaseSynthetix', async accounts => {
 					await ensureTransferReverts();
 
 					// now give the remainder of synths rates
-					await updateAggregatorRates(exchangeRates, [sETH], ['100'].map(toUnit));
+					await updateAggregatorRates(exchangeRates, [mETH], ['100'].map(toUnit));
 					await debtCache.takeDebtSnapshot();
 
 					// now SNX transfer should work
@@ -840,7 +840,7 @@ contract('BaseSynthetix', async accounts => {
 			await baseSynthetix.issueSynths(maxIssuableSynths, { from: account1 });
 
 			// Exchange into sEUR
-			await baseSynthetix.exchange(sUSD, maxIssuableSynths, sEUR, { from: account1 });
+			await baseSynthetix.exchange(mUSD, maxIssuableSynths, sEUR, { from: account1 });
 
 			// Ensure that we can transfer in and out of the account successfully
 			await baseSynthetix.transfer(account1, toUnit('10000'), {
@@ -890,7 +890,7 @@ contract('BaseSynthetix', async accounts => {
 			assert.bnEqual(transferable1, '0');
 
 			// Exchange into sAUD
-			await baseSynthetix.exchange(sUSD, issuedSynths, sAUD, { from: account1 });
+			await baseSynthetix.exchange(mUSD, issuedSynths, sAUD, { from: account1 });
 
 			// Increase the value of sAUD relative to synthetix
 			const newAUDExchangeRate = toUnit('1');
@@ -901,12 +901,12 @@ contract('BaseSynthetix', async accounts => {
 			assert.equal(transferable2.gt(toUnit('1000')), true);
 		});
 
-		describe('when the user has issued some sUSD and exchanged for other synths', () => {
+		describe('when the user has issued some mUSD and exchanged for other synths', () => {
 			beforeEach(async () => {
 				await baseSynthetix.issueSynths(toUnit('100'), { from: owner });
-				await baseSynthetix.exchange(sUSD, toUnit('10'), sETH, { from: owner });
-				await baseSynthetix.exchange(sUSD, toUnit('10'), sAUD, { from: owner });
-				await baseSynthetix.exchange(sUSD, toUnit('10'), sEUR, { from: owner });
+				await baseSynthetix.exchange(mUSD, toUnit('10'), mETH, { from: owner });
+				await baseSynthetix.exchange(mUSD, toUnit('10'), sAUD, { from: owner });
+				await baseSynthetix.exchange(mUSD, toUnit('10'), sEUR, { from: owner });
 			});
 			it('should transfer using the ERC20 transfer function @gasprofile', async () => {
 				await baseSynthetix.transfer(account1, toUnit('10'), { from: owner });

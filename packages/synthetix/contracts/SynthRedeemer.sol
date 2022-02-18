@@ -19,30 +19,30 @@ contract SynthRedeemer is ISynthRedeemer, MixinResolver {
     mapping(address => uint) public redemptions;
 
     bytes32 private constant CONTRACT_ISSUER = "Issuer";
-    bytes32 private constant CONTRACT_SYNTHSUSD = "SynthsUSD";
+    bytes32 private constant CONTRACT_SYNTHmUSD = "SynthmUSD";
 
     constructor(address _resolver) public MixinResolver(_resolver) {}
 
     function resolverAddressesRequired() public view returns (bytes32[] memory addresses) {
         addresses = new bytes32[](2);
         addresses[0] = CONTRACT_ISSUER;
-        addresses[1] = CONTRACT_SYNTHSUSD;
+        addresses[1] = CONTRACT_SYNTHmUSD;
     }
 
     function issuer() internal view returns (IIssuer) {
         return IIssuer(requireAndGetAddress(CONTRACT_ISSUER));
     }
 
-    function sUSD() internal view returns (IERC20) {
-        return IERC20(requireAndGetAddress(CONTRACT_SYNTHSUSD));
+    function mUSD() internal view returns (IERC20) {
+        return IERC20(requireAndGetAddress(CONTRACT_SYNTHmUSD));
     }
 
-    function totalSupply(IERC20 synthProxy) public view returns (uint supplyInsUSD) {
-        supplyInsUSD = synthProxy.totalSupply().multiplyDecimal(redemptions[address(synthProxy)]);
+    function totalSupply(IERC20 synthProxy) public view returns (uint supplyInmUSD) {
+        supplyInmUSD = synthProxy.totalSupply().multiplyDecimal(redemptions[address(synthProxy)]);
     }
 
-    function balanceOf(IERC20 synthProxy, address account) external view returns (uint balanceInsUSD) {
-        balanceInsUSD = synthProxy.balanceOf(account).multiplyDecimal(redemptions[address(synthProxy)]);
+    function balanceOf(IERC20 synthProxy, address account) external view returns (uint balanceInmUSD) {
+        balanceInmUSD = synthProxy.balanceOf(account).multiplyDecimal(redemptions[address(synthProxy)]);
     }
 
     function redeemAll(IERC20[] calldata synthProxies) external {
@@ -67,9 +67,9 @@ contract SynthRedeemer is ISynthRedeemer, MixinResolver {
         require(rateToRedeem > 0, "Synth not redeemable");
         require(amountOfSynth > 0, "No balance of synth to redeem");
         issuer().burnForRedemption(address(synthProxy), msg.sender, amountOfSynth);
-        uint amountInsUSD = amountOfSynth.multiplyDecimal(rateToRedeem);
-        sUSD().transfer(msg.sender, amountInsUSD);
-        emit SynthRedeemed(address(synthProxy), msg.sender, amountOfSynth, amountInsUSD);
+        uint amountInmUSD = amountOfSynth.multiplyDecimal(rateToRedeem);
+        mUSD().transfer(msg.sender, amountInmUSD);
+        emit SynthRedeemed(address(synthProxy), msg.sender, amountOfSynth, amountInmUSD);
     }
 
     function deprecate(IERC20 synthProxy, uint rateToRedeem) external onlyIssuer {
@@ -77,10 +77,10 @@ contract SynthRedeemer is ISynthRedeemer, MixinResolver {
         require(redemptions[synthProxyAddress] == 0, "Synth is already deprecated");
         require(rateToRedeem > 0, "No rate for synth to redeem");
         uint totalSynthSupply = synthProxy.totalSupply();
-        uint supplyInsUSD = totalSynthSupply.multiplyDecimal(rateToRedeem);
-        require(sUSD().balanceOf(address(this)) >= supplyInsUSD, "sUSD must first be supplied");
+        uint supplyInmUSD = totalSynthSupply.multiplyDecimal(rateToRedeem);
+        require(mUSD().balanceOf(address(this)) >= supplyInmUSD, "mUSD must first be supplied");
         redemptions[synthProxyAddress] = rateToRedeem;
-        emit SynthDeprecated(address(synthProxy), rateToRedeem, totalSynthSupply, supplyInsUSD);
+        emit SynthDeprecated(address(synthProxy), rateToRedeem, totalSynthSupply, supplyInmUSD);
     }
 
     function requireOnlyIssuer() internal view {
@@ -92,6 +92,6 @@ contract SynthRedeemer is ISynthRedeemer, MixinResolver {
         _;
     }
 
-    event SynthRedeemed(address synth, address account, uint amountOfSynth, uint amountInsUSD);
-    event SynthDeprecated(address synth, uint rateToRedeem, uint totalSynthSupply, uint supplyInsUSD);
+    event SynthRedeemed(address synth, address account, uint amountOfSynth, uint amountInmUSD);
+    event SynthDeprecated(address synth, uint rateToRedeem, uint totalSynthSupply, uint supplyInmUSD);
 }

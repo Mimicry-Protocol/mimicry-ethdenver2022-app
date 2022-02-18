@@ -8,14 +8,14 @@ const { skipFeePeriod, skipMinimumStakeTime } = require('../utils/skip');
 function itCanStake({ ctx }) {
 	describe('staking and claiming', () => {
 		const SNXAmount = ethers.utils.parseEther('1000');
-		const amountToIssueAndBurnsUSD = ethers.utils.parseEther('1');
+		const amountToIssueAndBurnmUSD = ethers.utils.parseEther('1');
 
 		let user;
-		let Synthetix, SynthsUSD, FeePool;
-		let balancesUSD, debtsUSD;
+		let Synthetix, SynthmUSD, FeePool;
+		let balancemUSD, debtmUSD;
 
 		before('target contracts and users', () => {
-			({ Synthetix, SynthsUSD, FeePool } = ctx.contracts);
+			({ Synthetix, SynthmUSD, FeePool } = ctx.contracts);
 
 			user = ctx.users.someUser;
 		});
@@ -24,23 +24,23 @@ function itCanStake({ ctx }) {
 			await ensureBalance({ ctx, symbol: 'SNX', user, balance: SNXAmount });
 		});
 
-		describe('when the user issues sUSD', () => {
+		describe('when the user issues mUSD', () => {
 			before('record balances', async () => {
-				balancesUSD = await SynthsUSD.balanceOf(user.address);
+				balancemUSD = await SynthmUSD.balanceOf(user.address);
 			});
 
-			before('issue sUSD', async () => {
+			before('issue mUSD', async () => {
 				Synthetix = Synthetix.connect(user);
 
-				const tx = await Synthetix.issueSynths(amountToIssueAndBurnsUSD);
+				const tx = await Synthetix.issueSynths(amountToIssueAndBurnmUSD);
 				const { gasUsed } = await tx.wait();
 				console.log(`issueSynths() gas used: ${Math.round(gasUsed / 1000).toString()}k`);
 			});
 
-			it('issues the expected amount of sUSD', async () => {
+			it('issues the expected amount of mUSD', async () => {
 				assert.bnEqual(
-					await SynthsUSD.balanceOf(user.address),
-					balancesUSD.add(amountToIssueAndBurnsUSD)
+					await SynthmUSD.balanceOf(user.address),
+					balancemUSD.add(amountToIssueAndBurnmUSD)
 				);
 			});
 
@@ -63,7 +63,7 @@ function itCanStake({ ctx }) {
 
 					describe('when the user claims rewards', () => {
 						before('record balances', async () => {
-							balancesUSD = await SynthsUSD.balanceOf(user.address);
+							balancemUSD = await SynthmUSD.balanceOf(user.address);
 						});
 
 						before('claim', async () => {
@@ -74,39 +74,39 @@ function itCanStake({ ctx }) {
 							console.log(`claimFees() gas used: ${Math.round(gasUsed / 1000).toString()}k`);
 						});
 
-						it('shows a slight increase in the users sUSD balance', async () => {
-							assert.bnGt(await SynthsUSD.balanceOf(user.address), balancesUSD);
+						it('shows a slight increase in the users mUSD balance', async () => {
+							assert.bnGt(await SynthmUSD.balanceOf(user.address), balancemUSD);
 						});
 					});
 				});
 			});
 		});
 
-		describe('when the user burns sUSD', () => {
+		describe('when the user burns mUSD', () => {
 			before('skip min stake time', async () => {
 				await skipMinimumStakeTime({ ctx });
 			});
 
 			before('record debt', async () => {
-				debtsUSD = await Synthetix.debtBalanceOf(user.address, toBytes32('sUSD'));
+				debtmUSD = await Synthetix.debtBalanceOf(user.address, toBytes32('mUSD'));
 			});
 
-			before('burn sUSD', async () => {
+			before('burn mUSD', async () => {
 				Synthetix = Synthetix.connect(user);
 
-				const tx = await Synthetix.burnSynths(amountToIssueAndBurnsUSD);
+				const tx = await Synthetix.burnSynths(amountToIssueAndBurnmUSD);
 				const { gasUsed } = await tx.wait();
 				console.log(`burnSynths() gas used: ${Math.round(gasUsed / 1000).toString()}k`);
 			});
 
 			it('reduced the expected amount of debt', async () => {
-				const newDebtsUSD = await Synthetix.debtBalanceOf(user.address, toBytes32('sUSD'));
-				const debtReduction = debtsUSD.sub(newDebtsUSD);
+				const newDebtmUSD = await Synthetix.debtBalanceOf(user.address, toBytes32('mUSD'));
+				const debtReduction = debtmUSD.sub(newDebtmUSD);
 
 				const tolerance = ethers.utils.parseUnits('0.01', 'ether');
 				assert.bnClose(
 					debtReduction.toString(),
-					amountToIssueAndBurnsUSD.toString(),
+					amountToIssueAndBurnmUSD.toString(),
 					tolerance.toString()
 				);
 			});

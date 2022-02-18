@@ -77,13 +77,13 @@
 	"DappMaintenance": {
 		"deploy": false
 	},
-	"SynthsUSD": {
+	"SynthmUSD": {
 		"deploy": false
 	},
 	"ProxyERC20": {
 		"deploy": false
 	},
-	"ProxyERC20sUSD": {
+	"ProxyERC20mUSD": {
 		"deploy": false
 	},
 	"ProxyFeePool": {
@@ -92,7 +92,7 @@
 	"ProxySynthetix": {
 		"deploy": false
 	},
-	"ProxysUSD": {
+	"ProxymUSD": {
 		"deploy": false
 	},
 	"SafeDecimalMath": {
@@ -104,7 +104,7 @@
 	"TokenStateSynthetix": {
 		"deploy": false
 	},
-	"TokenStatesUSD": {
+	"TokenStatemUSD": {
 		"deploy": false
 	},
 	"CollateralManager": {
@@ -116,22 +116,22 @@
 	"EtherWrapper": {
 		"deploy": false
 	},
-	"TokenStatesETH": {
+	"TokenStatemETH": {
 		"deploy": false
 	},
-	"ProxysETH": {
+	"ProxymETH": {
 		"deploy": false
 	},
-	"SynthsETH": {
+	"SynthmETH": {
 		"deploy": false
 	},
-	"TokenStatesBTC": {
+	"TokenStatemBTC": {
 		"deploy": false
 	},
-	"ProxysBTC": {
+	"ProxymBTC": {
 		"deploy": false
 	},
-	"SynthsAPE": {
+	"SynthmBTC": {
 		"deploy": false
 	},
 	"TokenStatesLINK": {
@@ -164,7 +164,7 @@
 	"CollateralEth": {
 		"deploy": false
 	},
-	"StakingRewardssUSDDAIUniswapV3": {
+	"StakingRewardsmUSDDAIUniswapV3": {
 		"deploy": false
 	},
 	"StakingRewardsSNXWETHUniswapV3": {

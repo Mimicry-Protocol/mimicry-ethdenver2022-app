@@ -1,6 +1,6 @@
 [
 	{
-		"name": "sETHUniswapV1",
+		"name": "mETHUniswapV1",
 		"stakingToken": "0xe9cf7887b93150d4f2da7dfc6d502b216438f244",
 		"rewardsToken": "Synthetix"
 	},
@@ -10,7 +10,7 @@
 		"rewardsToken": "Synthetix"
 	},
 	{
-		"name": "sUSDCurve",
+		"name": "mUSDCurve",
 		"stakingToken": "0xc25a3a3b969415c80451098fa907ec722572917f",
 		"rewardsToken": "Synthetix"
 	},
