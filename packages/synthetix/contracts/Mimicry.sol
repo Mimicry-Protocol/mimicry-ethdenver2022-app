@@ -8,6 +8,7 @@ import "./Synthetix.sol";
 import "./FeePool.sol";
 import "./Exchanger.sol";
 import "./AddressResolver.sol";
+import "./MultiCollateralSynth.sol";
 
 contract Mimicry {
     // MimicryNFT private nft;
@@ -15,6 +16,7 @@ contract Mimicry {
     FeePool private feePool;
     Exchanger private exchanger;
     AddressResolver private resolver;
+    MultiCollateralSynth private mcs;
 
     constructor() public {
         // nft = new MimicryNFT("Mimicry", "MIME");
@@ -22,6 +24,7 @@ contract Mimicry {
         synthetix = Synthetix(resolver.getAddress("Synthetix"));
         feePool = FeePool(resolver.getAddress("FeePool"));
         exchanger = Exchanger(resolver.getAddress("Exchanger"));
+        mcs = MultiCollateralSynth(resolver.getAddress("MultiCollateralSynth"));
     }
 
     function mintPosition(
@@ -38,8 +41,17 @@ contract Mimicry {
             _collectionType
         );
 
+        mcs.issue(_bidder, _usdcAmount);
+
         // mint nft to caller
         // nft.userMint(_bidder, _usdcAmount, betType, collectionType);
+    }
+
+    function liquidatePosition(address _bidder, uint256 tokenId) public {
+        // TODO: get the amount represented by the tokenId
+        // then pass the amount as the second argument to this function
+        uint256 amount = 1;
+        mcs.burn(_bidder, amount);
     }
 
     // function getPositions(
