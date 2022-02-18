@@ -2,7 +2,7 @@
 
 
 ## TODO
-1. Change token name to MIME (@gracelyn)
+1. Change token name to MIME (@gracelyn) :white_check_mark:
 2. Create synthetics for sample NFT collection (@dallon) :white_check_mark:
 3. Hook FE into contract layer by using [Synthetix FE Repo](https://github.com/Synthetixio/synthetix-js) as an example (@jpapi, @dallon)
 4. Hook in oracle for NFT pricing (@jpapi, @dallon)
