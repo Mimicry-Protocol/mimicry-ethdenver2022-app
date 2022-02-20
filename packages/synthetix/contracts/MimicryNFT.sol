@@ -88,7 +88,7 @@ contract MimicryNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
         data.bidder = _bidder;
 
         tokenIdToMetadata[tokenId] = data;
-        walletToNFTsOwned[_bidder] = tokenId;
+        walletToNFTsOwned[_bidder].push(tokenId);
 
         _mint(_bidder, tokenId);
     }
