@@ -41,7 +41,7 @@ contract Mimicry {
             _collectionType
         );
 
-        mcs.issue(_bidder, _usdcAmount);
+        // mcs.issue(_bidder, _usdcAmount);
 
         // mint nft to caller
         // nft.userMint(_bidder, _usdcAmount, betType, collectionType);
@@ -51,7 +51,7 @@ contract Mimicry {
         // TODO: get the amount represented by the tokenId
         // then pass the amount as the second argument to this function
         uint256 amount = 1;
-        mcs.burn(_bidder, amount);
+        // mcs.burn(_bidder, amount);
     }
 
     // function getPositions(
