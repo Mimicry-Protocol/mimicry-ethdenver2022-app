@@ -48,22 +48,20 @@ contract Mimicry {
     }
 
     function getPositions(
-        address _caller,
-        uint256 limit,
-        uint256 offset
+        address _caller
     ) public view returns (MimicryNFT.NFTMetadata[] memory, uint256) {
 
         uint256[] memory tokenIds = nft.GetWalletToNFTsOwned(_caller);
         MimicryNFT.NFTMetadata[]
-            memory metadatasToReturn = new MimicryNFT.NFTMetadata[](
-                tokenIds.length);
+        memory metadatasToReturn = new MimicryNFT.NFTMetadata[](
+            tokenIds.length);
         for (uint i = 0; i < tokenIds.length; i++) {
             metadatasToReturn[i] = nft.GetTokenIdToMetadata(tokenIds[i]);
             // if (data.deletedTimestamp > 0) {
             //     continue;
             // }
         }
-        return (metadatasToReturn, 0);
+        return (metadatasToReturn, tokenIds.length);
 
         // uint256 tokensInCurrentPageCount = 0;
         // MimicryNFT.NFTMetadata[]
