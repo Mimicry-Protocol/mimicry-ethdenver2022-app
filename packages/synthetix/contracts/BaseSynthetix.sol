@@ -22,7 +22,7 @@ contract BaseSynthetix is IERC20, ExternStateToken, MixinResolver, ISynthetix {
     string public constant TOKEN_NAME = "Synthetix Network Token";
     string public constant TOKEN_SYMBOL = "MIME";
     uint8 public constant DECIMALS = 18;
-    bytes32 public constant mUSD = "mUSD";
+    bytes32 public constant sUSD = "sUSD";
 
     // ========== ADDRESS RESOLVER CONFIGURATION ==========
     bytes32 private constant CONTRACT_SYSTEMSTATUS = "SystemStatus";
@@ -107,8 +107,8 @@ contract BaseSynthetix is IERC20, ExternStateToken, MixinResolver, ISynthetix {
         return exchanger().maxSecsLeftInWaitingPeriod(messageSender, currencyKey) > 0;
     }
 
-    function anySynthOrMIMERateIsInvalid() external view returns (bool anyRateInvalid) {
-        return issuer().anySynthOrMIMERateIsInvalid();
+    function anySynthOrSNXRateIsInvalid() external view returns (bool anyRateInvalid) {
+        return issuer().anySynthOrSNXRateIsInvalid();
     }
 
     function maxIssuableSynths(address account) external view returns (uint maxIssuable) {
@@ -140,11 +140,11 @@ contract BaseSynthetix is IERC20, ExternStateToken, MixinResolver, ISynthetix {
     }
 
     function _canTransfer(address account, uint value) internal view returns (bool) {
-        if (issuer().debtBalanceOf(account, mUSD) > 0) {
+        if (issuer().debtBalanceOf(account, sUSD) > 0) {
             (uint transferable, bool anyRateIsInvalid) =
                 issuer().transferableSynthetixAndAnyRateIsInvalid(account, tokenState.balanceOf(account));
-            require(value <= transferable, "Cannot transfer staked or escrowed MIME");
-            require(!anyRateIsInvalid, "A synth or MIME rate is invalid");
+            require(value <= transferable, "Cannot transfer staked or escrowed SNX");
+            require(!anyRateIsInvalid, "A synth or SNX rate is invalid");
         }
         
         return true;
@@ -297,18 +297,18 @@ contract BaseSynthetix is IERC20, ExternStateToken, MixinResolver, ISynthetix {
         return issuer().burnSynthsToTargetOnBehalf(burnForAddress, messageSender);
     }
 
-    function liquidateDelinquentAccount(address account, uint mUSDAmount)
+    function liquidateDelinquentAccount(address account, uint susdAmount)
         external
         systemActive
         optionalProxy
         returns (bool)
     {
         (uint totalRedeemed, uint amountLiquidated) =
-            issuer().liquidateDelinquentAccount(account, mUSDAmount, messageSender);
+            issuer().liquidateDelinquentAccount(account, susdAmount, messageSender);
 
         emitAccountLiquidated(account, totalRedeemed, amountLiquidated, messageSender);
 
-        // Transfer MIME redeemed to messageSender
+        // Transfer SNX redeemed to messageSender
         // Reverts if amount to redeem is more than balanceOf account, ie due to escrowed balance
         return _transferByProxy(account, messageSender, totalRedeemed);
     }
@@ -400,17 +400,17 @@ contract BaseSynthetix is IERC20, ExternStateToken, MixinResolver, ISynthetix {
     }
 
     // ========== EVENTS ==========
-    event AccountLiquidated(address indexed account, uint MIMERedeemed, uint amountLiquidated, address liquidator);
+    event AccountLiquidated(address indexed account, uint snxRedeemed, uint amountLiquidated, address liquidator);
     bytes32 internal constant ACCOUNTLIQUIDATED_SIG = keccak256("AccountLiquidated(address,uint256,uint256,address)");
 
     function emitAccountLiquidated(
         address account,
-        uint256 MIMERedeemed,
+        uint256 snxRedeemed,
         uint256 amountLiquidated,
         address liquidator
     ) internal {
         proxy._emit(
-            abi.encode(MIMERedeemed, amountLiquidated, liquidator),
+            abi.encode(snxRedeemed, amountLiquidated, liquidator),
             2,
             ACCOUNTLIQUIDATED_SIG,
             addressToBytes32(account),

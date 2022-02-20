@@ -233,9 +233,11 @@ function reportDeployedContracts({ deployer }) {
 			name,
 			address
 		}
-	}).filter(({ name }) => name === "Mimicry")[0];
+	}).filter(({ name }) => name === "Synthetix")[0];
 
-	fs.writeFileSync("publish/mimicry_deploy.json", stringify(mimicryData));
+	console.log("SYNTHETIX DEPLOY AFTER FILTER", mimicryData);
+
+	fs.writeFileSync("publish/synthetix_deploy.json", stringify(mimicryData));
 
 	console.log();
 	if (tableData.length) {
