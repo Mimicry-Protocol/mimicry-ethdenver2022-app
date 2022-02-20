@@ -43,7 +43,7 @@ contract MimicryNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
         return tokenIdToMetadata[tokenId];
     }
 
-    constructor(string memory _name, string memory _symbol) public 
+    constructor() public 
         ERC721()
     {}
 
