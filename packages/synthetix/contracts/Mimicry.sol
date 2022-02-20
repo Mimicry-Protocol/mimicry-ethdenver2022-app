@@ -56,10 +56,10 @@ contract Mimicry {
         memory metadatasToReturn = new MimicryNFT.NFTMetadata[](
             tokenIds.length);
         for (uint i = 0; i < tokenIds.length; i++) {
-            metadatasToReturn[i] = nft.GetTokenIdToMetadata(tokenIds[i]);
-            // if (data.deletedTimestamp > 0) {
-            //     continue;
-            // }
+            MimicryNFT.NFTMetadata memory data = nft.GetTokenIdToMetadata(tokenIds[i]);
+            if (data.creationTimestamp > 0) {
+                metadatasToReturn[i] = data;
+            }
         }
         return (metadatasToReturn, tokenIds.length);
 

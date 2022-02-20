@@ -304,13 +304,12 @@ function App(props) {
   }) => {
     if (!didFetchLastPage && address && readContracts && readContracts.Mimicry) {
       try {
-        debugger;
         const [nextPage, nextOffset] = await readContracts.Mimicry.getPositions(address);
-        debugger;
-        // if (nextPage && nextPage.length > 0) {
-        //   const tmpPositions = userPositions.concat(nextPage);
-        //   setUserPositions(tmpPositions);
-        // }
+        if (nextPage && nextPage.length > 0) {
+          // TODO: fix this on BE instead of filtering it out on FE
+          const tmpPositions = userPositions.concat(nextPage.filter((x) => Number(x.creationTimestamp._hex) > 0));
+          setUserPositions(tmpPositions);
+        }
         // if (parseInt(nextOffset._hex) === offset || nextPage.length < limit) {
         //   setDidFetchLastPage(true);
         // }

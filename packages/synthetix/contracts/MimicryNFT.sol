@@ -60,6 +60,7 @@ contract MimicryNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
         );
 
         data.deletedTimestamp = block.timestamp;
+        delete tokenIdToMetadata[_tokenId];
         _burn(_tokenId);
     }
 
