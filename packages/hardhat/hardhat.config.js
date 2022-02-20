@@ -280,6 +280,15 @@ module.exports = {
           },
         },
       },
+      {
+        version: "0.5.4",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
     ],
   },
   ovm: {

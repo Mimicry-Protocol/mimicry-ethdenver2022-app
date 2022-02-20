@@ -17,16 +17,21 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("Mimicry", {
-    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+  await deploy("MimicryNFT", {
     from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
     log: true,
-    waitConfirmations: 5,
   });
 
-  // Getting a previously deployed contract
-  const Mimicry = await ethers.getContract("Mimicry", deployer);
+  await deploy("Mimicry", {
+    from: deployer,
+    log: true,
+  });
+
+  await deploy("MimicryUtils", {
+    from: deployer,
+    log: true,
+  });
+
   /*  await Mimicry.setBetType("Hello");
   
     To take ownership of mimicry using the ownable library uncomment next line and add the 
