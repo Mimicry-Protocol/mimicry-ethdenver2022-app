@@ -187,7 +187,8 @@ function App(props) {
 
   // const contractConfig = useContractConfig();
 
-  const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
+  const contractConfig = { deployedContracts: deployedContracts || {},
+                           externalContracts: externalContracts || {} };
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
@@ -209,9 +210,6 @@ function App(props) {
   const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
-
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "Mimicry", "purpose");
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -367,7 +365,35 @@ function App(props) {
     }
 
     try {
-      tx(writeContracts.Mimicry.mintPosition(address, betType, selectedCollectionId, usdcAmount));
+
+      console.log("SHORT MARKET TYPE: ", shortMarketType);
+      if (shortMarketType) {
+        console.log("shorting the market");
+        tx(writeContracts.Synthetix.issueSynths(usdcAmount));
+      }
+
+      else if (forCollectionType) {
+        console.log("longing a collection");
+        tx(writeContracts.Synthetix.issueSynths(usdcAmount));
+        console.log(ethers.utils.formatBytes32String("mUSD"));
+        tx(writeContracts.Synthetix.exchange(
+          ethers.utils.formatBytes32String("mUSD"),
+          usdcAmount,
+          ethers.utils.formatBytes32String("mETH")
+          ));
+        console.log("Succesfully exchanged");
+      }
+
+      else if (againstCollectionType) {
+        console.log("shorting a collection");
+        tx(writeContracts.Synthetix.issueSynths(usdcAmount));
+        //TODO figure out where to hook in to short
+      }
+
+      else {
+        console.warn("you must choose a bet type");
+      }
+
     } catch (e) {
       console.log(e);
     }
@@ -408,12 +434,12 @@ function App(props) {
         value: ethers.utils.parseEther("0.1"),
       });
     }
-    try {
+    /*try {
       tx(writeContracts.Mimicry.liquidatePosition(address, tokenId));
     } catch (e) {
       console.log("error in liquidating", e);
     }
-
+    */
     const newUserPositions = userPositions.filter(x => Number(x.tokenId._hex) !== tokenId);
     setUserPositions(newUserPositions);
     setOffset(0);
