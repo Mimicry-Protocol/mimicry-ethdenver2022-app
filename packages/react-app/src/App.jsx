@@ -304,15 +304,17 @@ function App(props) {
   }) => {
     if (!didFetchLastPage && address && readContracts && readContracts.Mimicry) {
       try {
-        const [nextPage, nextOffset] = await readContracts.Mimicry.getPositions(address, limit, offset);
+        const [nextPage, nextOffset] = await readContracts.Mimicry.getPositions(address);
         if (nextPage && nextPage.length > 0) {
-          const tmpPositions = userPositions.concat(nextPage);
+          // TODO: fix this on BE instead of filtering it out on FE
+          const tmpPositions = userPositions.concat(nextPage.filter((x) => Number(x.creationTimestamp._hex) > 0));
           setUserPositions(tmpPositions);
         }
-        if (parseInt(nextOffset._hex) === offset || nextPage.length < limit) {
-          setDidFetchLastPage(true);
-        }
-        setOffset(parseInt(nextOffset._hex));
+        // if (parseInt(nextOffset._hex) === offset || nextPage.length < limit) {
+        //   setDidFetchLastPage(true);
+        // }
+        // setOffset(parseInt(nextOffset._hex));
+        setDidFetchLastPage(true);
       } catch (e) {
         console.log("ERROR IN GETTING USER POSITIONS", e);
         setDidFetchLastPage(true);
